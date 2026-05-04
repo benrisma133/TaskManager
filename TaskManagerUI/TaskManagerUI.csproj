@@ -9,11 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Assets\" />
     <Folder Include="Controls\Cards\" />
     <Folder Include="Controls\Components\" />
     <Folder Include="Models\" />
-    <Folder Include="Helpers\" />
     <Folder Include="Pages\" />
   </ItemGroup>
 
