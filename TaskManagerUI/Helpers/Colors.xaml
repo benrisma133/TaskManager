@@ -53,4 +53,8 @@
     <!-- SHADOW -->
     <Color x:Key="ShadowColor">#000000</Color>
 
+    <!-- PRIORITY -->
+    <SolidColorBrush x:Key="PriorityHighBrush"      Color="#FF6B35"/>
+    <SolidColorBrush x:Key="PriorityHighLightBrush" Color="#4A1F0A"/>
+
 </ResourceDictionary>

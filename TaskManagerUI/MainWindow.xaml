@@ -8,15 +8,10 @@
         Title="MainWindow" Height="450" Width="800"
         Background="{DynamicResource AppBackgroundBrush}">
     <WrapPanel Margin="20" VerticalAlignment="Center">
-        <components:StatusBadge Status="Active"      Margin="8"/>
-        <components:StatusBadge Status="InProgress"  Margin="8"/>
-        <components:StatusBadge Status="Completed"   Margin="8"/>
-        <components:StatusBadge Status="Done"        Margin="8"/>
-        <components:StatusBadge Status="Paused"      Margin="8"/>
-        <components:StatusBadge Status="Todo"        Margin="8"/>
-        <components:StatusBadge Status="Cancelled"   Margin="8"/>
-        <components:StatusBadge Status="Archived"    Margin="8"/>
-        
+        <components:PriorityBadge Status="Low"      Margin="8"/>
+        <components:PriorityBadge Status="High"  Margin="8"/>
+        <components:PriorityBadge Status="Medium"   Margin="8"/>
+        <components:PriorityBadge Status="Critical"        Margin="8"/>
         
     </WrapPanel>
     
