@@ -1,0 +1,95 @@
+﻿<UserControl x:Class="TaskManagerUI.Controls.Components.TimerControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:components="clr-namespace:TaskManagerUI.Controls.Components">
+
+    <Grid Width="200" Height="260">
+
+        <!-- Ring area -->
+        <Grid Width="200" Height="200" VerticalAlignment="Top">
+
+            <!-- Track ring -->
+            <Ellipse Width="164" Height="164"
+                     Stroke="{DynamicResource RingTrackBrush}"
+                     StrokeThickness="10"
+                     Fill="Transparent"/>
+
+            <!-- Progress arc -->
+            <Canvas Width="200" Height="200">
+                <Path x:Name="ProgressArc"
+                      StrokeThickness="10"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"
+                      Fill="Transparent"
+                      Stroke="{DynamicResource AccentBrush}"/>
+            </Canvas>
+
+            <!-- Tick dot (top of ring) -->
+            <Ellipse x:Name="TickDot"
+                     Width="8" Height="8"
+                     Fill="{DynamicResource AccentBrush}"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Top"
+                     Margin="0,40,0,0"/>
+
+            <!-- Complete checkmark (hidden by default) -->
+            <Path x:Name="CheckMark"
+                  Stroke="{DynamicResource SuccessBrush}"
+                  StrokeThickness="4"
+                  StrokeStartLineCap="Round"
+                  StrokeEndLineCap="Round"
+                  StrokeLineJoin="Round"
+                  Data="M 76,90 L 92,106 L 124,74"
+                  Visibility="Collapsed"/>
+
+            <!-- Inner soft circle -->
+            <Ellipse Width="144" Height="144"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center">
+                <Ellipse.Fill>
+                    <SolidColorBrush Color="{DynamicResource AppBackgroundColor}"
+                                     Opacity="0.5"/>
+                </Ellipse.Fill>
+            </Ellipse>
+
+            <!-- Time display -->
+            <TextBlock x:Name="TimeDisplay"
+                       Text="00:00"
+                       FontSize="36"
+                       FontWeight="Medium"
+                       Foreground="{DynamicResource TextPrimaryBrush}"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Margin="0,-10,0,0"/>
+
+            <!-- State label -->
+            <TextBlock x:Name="StateLabel"
+                       Text="remaining"
+                       FontSize="12"
+                       Foreground="{DynamicResource TextSecondaryBrush}"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Margin="0,40,0,0"/>
+
+        </Grid>
+
+        <!-- Buttons -->
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Margin="0,0,0,4">
+
+            <components:TimerButton x:Name="StopBtn"
+                                    State="Stop"
+                                    Margin="8,0"
+                                    Click="Stop_Click"/>
+
+            <components:TimerButton x:Name="PlayPauseBtn"
+                                    State="Play"
+                                    Margin="8,0"
+                                    Click="PlayPause_Click"/>
+
+        </StackPanel>
+
+    </Grid>
+</UserControl>
