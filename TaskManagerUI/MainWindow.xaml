@@ -3,14 +3,22 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TaskManagerUI"
+        xmlns:components="clr-namespace:TaskManagerUI.Controls.Components"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <TextBlock Text="Bismillah 🚀"
-                   FontSize="34"
-                   FontWeight="Bold"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
-    </Grid>
+        Title="MainWindow" Height="450" Width="800"
+        Background="{DynamicResource AppBackgroundBrush}">
+    <WrapPanel Margin="20" VerticalAlignment="Center">
+        <components:StatusBadge Status="Active"      Margin="8"/>
+        <components:StatusBadge Status="InProgress"  Margin="8"/>
+        <components:StatusBadge Status="Completed"   Margin="8"/>
+        <components:StatusBadge Status="Done"        Margin="8"/>
+        <components:StatusBadge Status="Paused"      Margin="8"/>
+        <components:StatusBadge Status="Todo"        Margin="8"/>
+        <components:StatusBadge Status="Cancelled"   Margin="8"/>
+        <components:StatusBadge Status="Archived"    Margin="8"/>
+        
+        
+    </WrapPanel>
+    
+    
 </Window>
