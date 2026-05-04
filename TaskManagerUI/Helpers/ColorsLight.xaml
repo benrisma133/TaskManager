@@ -1,0 +1,56 @@
+﻿ ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ACCENT -->
+    <SolidColorBrush x:Key="AccentBrush"        Color="#2563EB"/>
+    <SolidColorBrush x:Key="AccentHoverBrush"   Color="#1D4ED8"/>
+    <SolidColorBrush x:Key="AccentPressedBrush" Color="#1E40AF"/>
+    <SolidColorBrush x:Key="AccentLightBrush"   Color="#DBEAFE"/>
+
+    <!-- BACKGROUND -->
+    <SolidColorBrush x:Key="AppBackgroundBrush"       Color="#F1F5F9"/>
+    <SolidColorBrush x:Key="SidebarBackgroundBrush"   Color="#F8FAFC"/>
+    <SolidColorBrush x:Key="CardBackgroundBrush"      Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="CardHoverBackgroundBrush" Color="#F1F5F9"/>
+    <SolidColorBrush x:Key="InputBackgroundBrush"     Color="#F8FAFC"/>
+    <SolidColorBrush x:Key="HeaderBackgroundBrush"    Color="#E2E8F0"/>
+    <SolidColorBrush x:Key="PopupBackgroundBrush"     Color="#FFFFFF"/>
+
+    <!-- TEXT -->
+    <SolidColorBrush x:Key="TextPrimaryBrush"     Color="#0F172A"/>
+    <SolidColorBrush x:Key="TextSecondaryBrush"   Color="#475569"/>
+    <SolidColorBrush x:Key="TextMutedBrush"       Color="#94A3B8"/>
+    <SolidColorBrush x:Key="TextPlaceholderBrush" Color="#94A3B8"/>
+    <SolidColorBrush x:Key="TextOnAccentBrush"    Color="#FFFFFF"/>
+
+    <!-- BORDER -->
+    <SolidColorBrush x:Key="BorderDefaultBrush" Color="#E2E8F0"/>
+    <SolidColorBrush x:Key="BorderHoverBrush"   Color="#2563EB"/>
+    <SolidColorBrush x:Key="BorderFocusBrush"   Color="#2563EB"/>
+    <SolidColorBrush x:Key="BorderErrorBrush"   Color="#EF4444"/>
+
+    <!-- STATUS -->
+    <SolidColorBrush x:Key="SuccessBrush"      Color="#10B981"/>
+    <SolidColorBrush x:Key="SuccessLightBrush" Color="#D1FAE5"/>
+    <SolidColorBrush x:Key="WarningBrush"      Color="#F59E0B"/>
+    <SolidColorBrush x:Key="WarningLightBrush" Color="#FEF3C7"/>
+    <SolidColorBrush x:Key="ErrorBrush"        Color="#EF4444"/>
+    <SolidColorBrush x:Key="ErrorLightBrush"   Color="#FEE2E2"/>
+    <SolidColorBrush x:Key="InfoBrush"         Color="#2563EB"/>
+    <SolidColorBrush x:Key="InfoLightBrush"    Color="#DBEAFE"/>
+
+    <!-- MENU -->
+    <SolidColorBrush x:Key="MenuNormalBrush"           Color="#F8FAFC"/>
+    <SolidColorBrush x:Key="MenuHoverBrush"            Color="#F1F5F9"/>
+    <SolidColorBrush x:Key="MenuActiveBrush"           Color="#DBEAFE"/>
+    <SolidColorBrush x:Key="MenuActiveForegroundBrush" Color="#2563EB"/>
+    <SolidColorBrush x:Key="MenuNormalForegroundBrush" Color="#0F172A"/>
+
+    <!-- SCROLLBAR -->
+    <SolidColorBrush x:Key="ScrollThumbBrush" Color="#CBD5E1"/>
+    <SolidColorBrush x:Key="ScrollTrackBrush" Color="Transparent"/>
+
+    <!-- SHADOW -->
+    <Color x:Key="ShadowColor">#94A3B8</Color>
+
+</ResourceDictionary>
