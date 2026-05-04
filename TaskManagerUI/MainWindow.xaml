@@ -7,12 +7,12 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         Background="{DynamicResource AppBackgroundBrush}">
+
+
     <WrapPanel Margin="20" VerticalAlignment="Center">
-        <components:ProgressBar Width="100" ProgressWidth="10"     Margin="8"/>
-        <components:PriorityBadge Status="High"  Margin="8"/>
-        <components:PriorityBadge Status="Medium"   Margin="8"/>
-        <components:PriorityBadge Status="Critical"        Margin="8"/>
+        <components:TimerControl EstimatedMinutes="2" Margin="8"/>
+        <components:TimerControl EstimatedMinutes="5" Margin="8"/>
     </WrapPanel>
-    
-    
+
+
 </Window>

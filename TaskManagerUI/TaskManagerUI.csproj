@@ -9,8 +9,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Sounds\complete.wav" />
+    <None Remove="Assets\Sounds\complete2.wav" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Controls\Cards\" />
     <Folder Include="Pages\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Sounds\complete.wav">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Sounds\complete2.wav">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
