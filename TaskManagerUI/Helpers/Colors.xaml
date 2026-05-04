@@ -57,4 +57,23 @@
     <SolidColorBrush x:Key="PriorityHighBrush"      Color="#FF6B35"/>
     <SolidColorBrush x:Key="PriorityHighLightBrush" Color="#4A1F0A"/>
 
+
+    <!-- TIMER BUTTON -->
+    <SolidColorBrush x:Key="TimerPlayBrush"        Color="#3B82F6"/>
+    <SolidColorBrush x:Key="TimerPlayHoverBrush"   Color="#2563EB"/>
+    <SolidColorBrush x:Key="TimerPlayPressedBrush" Color="#1D4ED8"/>
+
+    <SolidColorBrush x:Key="TimerPauseBrush"        Color="#F59E0B"/>
+    <SolidColorBrush x:Key="TimerPauseHoverBrush"   Color="#D97706"/>
+    <SolidColorBrush x:Key="TimerPausePressedBrush" Color="#B45309"/>
+
+    <SolidColorBrush x:Key="TimerStopBrush"        Color="#EF4444"/>
+    <SolidColorBrush x:Key="TimerStopHoverBrush"   Color="#DC2626"/>
+    <SolidColorBrush x:Key="TimerStopPressedBrush" Color="#B91C1C"/>
+
+
+    <!-- Timer brushes -->
+    <SolidColorBrush x:Key="RingTrackBrush" Color="#E0E0E0"/>
+
+
 </ResourceDictionary>
