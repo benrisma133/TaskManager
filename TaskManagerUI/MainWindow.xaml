@@ -39,7 +39,7 @@
                          Value="21"
                          Label="best record"
                          Icon="{StaticResource IconAward}"
-                         AccentBrush="{DynamicResource InfoBrush}"
+                         AccentBrush="{DynamicResource PriorityHighBrush}"
                          Margin="8"
                          VerticalAlignment="Top"/>
 
