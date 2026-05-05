@@ -61,6 +61,59 @@
                 <RowDefinition Height="12"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
+
+            <!-- ROW 0: Icon + Title -->
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- CHANGED: Fixed size, padding, background bound to AccentBrush via ElementName -->
+                <Border x:Name="IconBg"
+                        Width="44" Height="44"
+                        CornerRadius="10"
+                        Padding="10"
+                        Background="{DynamicResource AccentBrush}">
+
+                    <!-- CHANGED: Removed Canvas+ScaleTransform, using simple Viewbox with Stretch -->
+                    <Viewbox>
+                        <!-- CHANGED: Fill=White so icon is always visible on colored background -->
+                        <!-- CHANGED: ElementName=Root for reliable binding instead of AncestorType -->
+                        <!-- CHANGED: Added Stretch=Uniform so icon scales correctly -->
+                        <Path x:Name="IconPath"
+                              Stroke="White"
+                              StrokeThickness="2"
+                              StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round"
+                              StrokeLineJoin="Round"
+                              Fill="Transparent"
+                              Stretch="Uniform"
+                              Data="{StaticResource IconDesktop}"/>
+                    </Viewbox>
+
+                </Border>
+
+                <!-- CHANGED: FontSize from 18 to 14 — 18 was too large for a stat card -->
+                <!-- Name + Type stack -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="12,0,0,0">
+                    <TextBlock x:Name="NameText"
+                               Text="Desktop App"
+                               FontSize="15"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextPrimaryBrush}"
+                               TextTrimming="CharacterEllipsis"/>
+                    <TextBlock x:Name="TypeText"
+                               Text="Project"
+                               FontSize="12"
+                               Foreground="{DynamicResource TextMutedBrush}"
+                               Margin="0,3,0,0"/>
+                </StackPanel>
+
+            </Grid>
+            
+            
+
         </Grid>
 
     </Border>
