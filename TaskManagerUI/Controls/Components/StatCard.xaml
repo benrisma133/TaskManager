@@ -1,0 +1,136 @@
+﻿<UserControl x:Class="TaskManagerUI.Controls.Components.StatCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TaskManagerUI.Controls.Components"
+             mc:Ignorable="d" 
+             x:Name="Root">
+
+    <Border x:Name="CardBorder"
+            Background="{DynamicResource CardBackgroundBrush}"
+            BorderBrush="{DynamicResource BorderDefaultBrush}"
+            BorderThickness="1"
+            CornerRadius="12"
+            Padding="20"
+            Margin="0"
+            Cursor="Hand"
+            RenderTransformOrigin="0.5,0.5">
+
+        <Border.RenderTransform>
+            <TranslateTransform x:Name="CardTranslate"/>
+        </Border.RenderTransform>
+
+        <Border.Triggers>
+            <EventTrigger RoutedEvent="MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetName="CardTranslate"
+                                         Storyboard.TargetProperty="Y"
+                                         To="-2"
+                                         Duration="0:0:0.2"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetName="CardTranslate"
+                                         Storyboard.TargetProperty="Y"
+                                         To="0"
+                                         Duration="0:0:0.2"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Border.Triggers>
+
+        <Border.Effect>
+            <DropShadowEffect x:Name="CardShadow"
+                              BlurRadius="15"
+                              ShadowDepth="0"
+                              Opacity="0.3"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- ROW 0: Icon + Title -->
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- CHANGED: Fixed size, padding, background bound to AccentBrush via ElementName -->
+                <Border x:Name="IconBg"
+                        Width="44" Height="44"
+                        CornerRadius="10"
+                        Padding="10"
+                        Background="{Binding AccentBrush, ElementName=Root}">
+
+                    <!-- CHANGED: Removed Canvas+ScaleTransform, using simple Viewbox with Stretch -->
+                    <Viewbox>
+                        <!-- CHANGED: Fill=White so icon is always visible on colored background -->
+                        <!-- CHANGED: ElementName=Root for reliable binding instead of AncestorType -->
+                        <!-- CHANGED: Added Stretch=Uniform so icon scales correctly -->
+                        <Path x:Name="IconPath"
+                              Stroke="White"
+                              StrokeThickness="2"
+                              StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round"
+                              StrokeLineJoin="Round"
+                              Fill="Transparent"
+                              Stretch="Uniform"
+                              Data="{Binding Icon, ElementName=Root}"/>
+                    </Viewbox>
+
+                </Border>
+
+                <!-- CHANGED: FontSize from 18 to 14 — 18 was too large for a stat card -->
+                <TextBlock x:Name="TitleText"
+                           Grid.Column="1"
+                           VerticalAlignment="Center"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextPrimaryBrush}"
+                           TextWrapping="Wrap"
+                           Margin="12,0,0,0"/>
+
+            </Grid>
+
+            <!-- ROW 1: Spacer — unchanged -->
+            <Grid Grid.Row="1"/>
+
+            <!-- ROW 2: Value + Label -->
+            <Grid Grid.Row="2">
+                <StackPanel HorizontalAlignment="Center"
+                            Orientation="Vertical">
+
+                    <!-- CHANGED: Foreground bound to AccentBrush so value color matches icon -->
+                    <TextBlock x:Name="ValueText"
+                               HorizontalAlignment="Center"
+                               FontSize="36"
+                               FontWeight="Bold"
+                               Foreground="{Binding AccentBrush, ElementName=Root}"
+                               Margin="0,0,0,6"/>
+
+                    <!-- CHANGED: Foreground changed to TextMutedBrush — label is secondary info -->
+                    <!-- CHANGED: FontWeight from SemiBold to Normal — label should be subtle -->
+                    <TextBlock x:Name="LabelText"
+                               HorizontalAlignment="Center"
+                               FontSize="12"
+                               FontWeight="Normal"
+                               Foreground="{DynamicResource TextMutedBrush}"/>
+
+                </StackPanel>
+            </Grid>
+
+        </Grid>
+
+    </Border>
+
+</UserControl>
