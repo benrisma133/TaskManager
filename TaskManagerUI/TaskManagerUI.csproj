@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controls\Cards\" />
     <Folder Include="Pages\" />
   </ItemGroup>
 
