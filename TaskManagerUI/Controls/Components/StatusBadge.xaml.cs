@@ -74,6 +74,14 @@ namespace TaskManagerUI.Controls.Components
                     BadgeBorder.Background = (Brush)App.Current.Resources["ErrorLightBrush"];
                     BadgeText.Foreground = (Brush)App.Current.Resources["ErrorBrush"];
                     break;
+                case "custom":
+                    BadgeBorder.Background = (Brush)App.Current.Resources["AccentLightBrush"];
+                    BadgeText.Foreground = (Brush)App.Current.Resources["AccentBrush"];
+                    break;
+                case "system":
+                    BadgeBorder.Background = (Brush)App.Current.Resources["SuccessLightBrush"];
+                    BadgeText.Foreground = (Brush)App.Current.Resources["SuccessBrush"];
+                    break;
                 default:
                     BadgeBorder.Background = (Brush)App.Current.Resources["CardHoverBackgroundBrush"];
                     BadgeText.Foreground = (Brush)App.Current.Resources["TextSecondaryBrush"];
