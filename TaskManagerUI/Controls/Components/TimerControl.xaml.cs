@@ -5,6 +5,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
+using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
 
 namespace TaskManagerUI.Controls.Components
 {
@@ -120,6 +122,8 @@ namespace TaskManagerUI.Controls.Components
                 PlayPauseBtn.State = TimerButtonState.Pause;
                 StateLabel.Text = "remaining";
                 StateLabel.Foreground = TryFindResource("TextSecondaryBrush") as Brush;
+
+                PlayTickTockSound();
             }
             else
             {
@@ -260,5 +264,42 @@ namespace TaskManagerUI.Controls.Components
             }
             catch { }
         }
+
+        private WaveOutEvent _tickTockOutput;
+        private AudioFileReader _tickTockReader;
+
+        private void PlayTickTockSound()
+        {
+            try
+            {
+                var path = @"C:\Users\DELL\Desktop\My Prog. Career Path\Projects\C#\WPF\TaskManager\TaskManagerUI\Assets\Sounds\ticktock_pcm.wav";
+
+                _tickTockReader = new AudioFileReader(path);
+                _tickTockOutput = new WaveOutEvent();
+                _tickTockOutput.Init(_tickTockReader);
+                _tickTockOutput.Play();
+
+                var elapsed = 0;
+                var fadeTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
+                fadeTimer.Tick += (s, e) =>
+                {
+                    elapsed += 100;
+                    _tickTockReader.Volume = Math.Max(0f, 1f - (elapsed / 3000f));
+                    if (elapsed >= 3000)
+                    {
+                        fadeTimer.Stop();
+                        _tickTockOutput.Stop();
+                        _tickTockOutput.Dispose();
+                        _tickTockReader.Dispose();
+                    }
+                };
+                fadeTimer.Start();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
     }
 }
