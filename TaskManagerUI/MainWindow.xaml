@@ -5,14 +5,52 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:components="clr-namespace:TaskManagerUI.Controls.Components"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="MainWindow" Height="600" Width="1000"
         Background="{DynamicResource AppBackgroundBrush}">
 
 
-    <WrapPanel Margin="20" VerticalAlignment="Center">
-        <components:TimerControl EstimatedMinutes="2" Margin="8"/>
-        <components:TimerControl EstimatedMinutes="5" Margin="8"/>
-    </WrapPanel>
+    <UniformGrid Rows="2" Columns="4" Margin="8">
+
+        <components:StatCard Title="Tasks Today"
+                         Value="12"
+                         Label="tasks done"
+                         Icon="{StaticResource IconTasks}"
+                         AccentBrush="{DynamicResource AccentBrush}"
+                         Margin="8"
+                         VerticalAlignment="Top"/>
+
+        <components:StatCard Title="Minutes Today"
+                         Value="94"
+                         Label="minutes logged"
+                         Icon="{StaticResource IconClock}"
+                         AccentBrush="{DynamicResource SuccessBrush}"
+                         Margin="8"
+                         VerticalAlignment="Top"/>
+
+        <components:StatCard Title="Current Streak"
+                         Value="7"
+                         Label="days in a row"
+                         Icon="{StaticResource IconStreak}"
+                         AccentBrush="{DynamicResource WarningBrush}"
+                         Margin="8"
+                         VerticalAlignment="Top"/>
+
+        <components:StatCard Title="Longest Streak"
+                         Value="21"
+                         Label="best record"
+                         Icon="{StaticResource IconAward}"
+                         AccentBrush="{DynamicResource InfoBrush}"
+                         Margin="8"
+                         VerticalAlignment="Top"/>
+
+        <components:TimerControl EstimatedMinutes="2" />
+        <components:TimerControl EstimatedMinutes="5" />
+
+
+
+    </UniformGrid>
+    
+    
 
 
 </Window>
