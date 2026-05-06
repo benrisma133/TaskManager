@@ -5,8 +5,76 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TaskManagerUI.Controls.Cards"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+             x:Name="Root">
+
+    <Border x:Name="CardBorder"
+            Background="{DynamicResource CardBackgroundBrush}"
+            BorderBrush="{DynamicResource BorderDefaultBrush}"
+            BorderThickness="1"
+            CornerRadius="12"
+            Padding="20"
+            HorizontalAlignment="Stretch"
+            Margin="0"
+            RenderTransformOrigin="0.5,0.5">
+
+        <Border.RenderTransform>
+            <TranslateTransform x:Name="CardTranslate"/>
+        </Border.RenderTransform>
+
+        <Border.Triggers>
+            <EventTrigger RoutedEvent="MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetName="CardTranslate"
+                                         Storyboard.TargetProperty="Y"
+                                         To="-2"
+                                         Duration="0:0:0.2"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetName="CardTranslate"
+                                         Storyboard.TargetProperty="Y"
+                                         To="0"
+                                         Duration="0:0:0.2"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Border.Triggers>
+
+        <Border.Effect>
+            <DropShadowEffect
+                    x:Name="CardShadow"
+                    Color="#C39BD3"
+                    BlurRadius="30"
+                    ShadowDepth="5"
+                    Opacity="0.4"/>
+        </Border.Effect>
+
+        <Grid>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Row 0: Icon + Title + Category -->
+                <RowDefinition Height="12"/>
+                <!-- Row 1: Divider -->
+                <RowDefinition Height="Auto"/>
+                <!-- Row 2: Priority + DueDate + DaysLeft -->
+                <RowDefinition Height="12"/>
+                <!-- Row 3: Divider -->
+                <RowDefinition Height="Auto"/>
+                <!-- Row 4: Progress label + ProgressBar -->
+                <RowDefinition Height="12"/>
+                <!-- Row 5: Divider -->
+                <RowDefinition Height="Auto"/>
+                <!-- Row 6: Status badge + Edit/Delete -->
+            </Grid.RowDefinitions>
             
-    </Grid>
+        </Grid>
+
+
+    </Border>
+    
 </UserControl>
