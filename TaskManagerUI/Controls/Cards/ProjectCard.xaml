@@ -129,7 +129,80 @@
                     Background="{DynamicResource BorderDefaultBrush}"
                     VerticalAlignment="Center"/>
 
-            
+
+            <!-- ROW 3: Priority + DueDate + DaysLeft  -->
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- COLUMN 0: Priority -->
+                <StackPanel Grid.Column="0" Margin="0,0,12,0">
+
+                    <TextBlock Text="Priority"
+                               FontSize="11"
+                               Foreground="{DynamicResource TextMutedBrush}"/>
+
+                    <Border Height="4"/>
+
+                    <!-- PriorityBadge -->
+                    <components:PriorityBadge x:Name="PriorityBadge" 
+                                              Margin="0,3,0,0" 
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"
+                                              Status="Critical"/>
+
+
+                </StackPanel>
+
+                <Border Grid.Column="1"/>
+
+                <!-- COLUMN 1: Grade -->
+                <StackPanel Grid.Column="2" Margin="0,0,8,0">
+                    <TextBlock Text="Due Date"
+                               FontSize="11"
+                               Foreground="{DynamicResource TextMutedBrush}"/>
+
+                    <Border Height="4"/>
+
+                    <TextBlock x:Name="DueDateText"
+                               Text="May 15"
+                               FontSize="13"
+                               Foreground="{DynamicResource TextSecondaryBrush}"
+                               Margin="0,6,0,0"
+                               VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+
+                <Border Grid.Column="3"/>
+
+                <!-- COLUMN 2: DaysLeft -->
+                <StackPanel Grid.Column="4">
+                    <TextBlock Text="Days Left"
+                               FontSize="11"
+                               Foreground="{DynamicResource TextMutedBrush}"/>
+
+                    <Border Height="4"/>
+
+                    <TextBlock x:Name="DaysLeftText"
+                               Text="3d left"
+                               FontSize="13"
+                               Foreground="{DynamicResource TextSecondaryBrush}"
+                               Margin="0,6,0,0"
+                               TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+
+            </Grid>
+
+            <!-- ROW 2: Divider -->
+            <Border Grid.Row="3"
+                    Height="1"
+                    Background="{DynamicResource BorderDefaultBrush}"
+                    VerticalAlignment="Center"/>
 
         </Grid>
 
