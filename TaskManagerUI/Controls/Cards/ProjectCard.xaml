@@ -114,6 +114,7 @@
                                FontWeight="SemiBold"
                                Foreground="{DynamicResource TextPrimaryBrush}"
                                TextTrimming="CharacterEllipsis"/>
+                    
                     <TextBlock x:Name="TypeText"
                                Text="Web App"
                                FontSize="12"
@@ -200,6 +201,36 @@
 
             <!-- ROW 2: Divider -->
             <Border Grid.Row="3"
+                    Height="1"
+                    Background="{DynamicResource BorderDefaultBrush}"
+                    VerticalAlignment="Center"/>
+
+            <!-- COLUMN 0: Progress -->
+            <StackPanel Grid.Row="4" Margin="0,0,12,0">
+                <Grid Margin="0,0,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Progress"
+                               FontSize="11"
+                               Foreground="{DynamicResource TextMutedBrush}"/>
+                    <TextBlock x:Name="ProgressText"
+                               Text="91.99 %"
+                               Grid.Column="1"
+                               FontSize="11"
+                               Foreground="{DynamicResource AccentBrush}"/>
+                </Grid>
+
+                <!-- Progress Bar -->
+                <components:ProgressBar x:Name="ProgressFill"
+                                        Margin="0,8,0,0"
+                                        ProgressWidth="91.99"/>
+
+            </StackPanel>
+
+            <!-- ROW 2: Divider -->
+            <Border Grid.Row="5"
                     Height="1"
                     Background="{DynamicResource BorderDefaultBrush}"
                     VerticalAlignment="Center"/>
