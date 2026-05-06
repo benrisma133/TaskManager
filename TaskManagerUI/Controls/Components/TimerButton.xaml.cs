@@ -7,8 +7,8 @@ namespace TaskManagerUI.Controls.Components
 {
     public partial class TimerButton : UserControl
     {
-        private Border _bg;
-        public event RoutedEventHandler Click;
+        private Border? _bg;
+        public event RoutedEventHandler? Click;
 
         
 
@@ -25,7 +25,10 @@ namespace TaskManagerUI.Controls.Components
 
         private void TimerButton_Loaded(object sender, RoutedEventArgs e)
         {
-            _bg = (Border)Btn.Template.FindName("bg", Btn);
+            _bg = Btn.Template.FindName("bg", Btn) as Border;
+
+            _bg?.SetCurrentValue(Border.BackgroundProperty, BaseBrush ?? Brushes.Gray);
+
             UpdateVisual();
         }
 
@@ -117,24 +120,24 @@ namespace TaskManagerUI.Controls.Components
             switch (State)
             {
                 case TimerButtonState.Play:
-                    Icon = TryFindResource("IconPlay") as Geometry;
-                    BaseBrush = TryFindResource("TimerPlayBrush") as Brush;
-                    HoverBrush = TryFindResource("TimerPlayHoverBrush") as Brush;
-                    PressedBrush = TryFindResource("TimerPlayPressedBrush") as Brush;
+                    Icon = (Geometry)FindResource("IconPlay");
+                    BaseBrush = (Brush)FindResource("TimerPlayBrush");
+                    HoverBrush = (Brush)FindResource("TimerPlayHoverBrush");
+                    PressedBrush = (Brush)FindResource("TimerPlayPressedBrush");
                     break;
 
                 case TimerButtonState.Pause:
-                    Icon = TryFindResource("IconPause") as Geometry;
-                    BaseBrush = TryFindResource("TimerPauseBrush") as Brush;
-                    HoverBrush = TryFindResource("TimerPauseHoverBrush") as Brush;
-                    PressedBrush = TryFindResource("TimerPausePressedBrush") as Brush;
+                    Icon = (Geometry)FindResource("IconPause");
+                    BaseBrush = (Brush)FindResource("TimerPauseBrush");
+                    HoverBrush = (Brush)FindResource("TimerPauseHoverBrush");
+                    PressedBrush = (Brush)FindResource("TimerPausePressedBrush");
                     break;
 
                 case TimerButtonState.Stop:
-                    Icon = TryFindResource("IconStop") as Geometry;
-                    BaseBrush = TryFindResource("TimerStopBrush") as Brush;
-                    HoverBrush = TryFindResource("TimerStopHoverBrush") as Brush;
-                    PressedBrush = TryFindResource("TimerStopPressedBrush") as Brush;
+                    Icon = (Geometry)FindResource("IconStop");
+                    BaseBrush = (Brush)FindResource("TimerStopBrush");
+                    HoverBrush = (Brush)FindResource("TimerStopHoverBrush");
+                    PressedBrush = (Brush)FindResource("TimerStopPressedBrush");
                     break;
             }
         }
