@@ -18,9 +18,9 @@ namespace TaskManagerUI.Controls.Components
         private bool _completed;
         private bool _tickDotVisible = true;
 
-        public event EventHandler<TimeSpan> Ticked;
-        public event EventHandler Completed;
-        public event EventHandler Stopped;
+        public event EventHandler<TimeSpan>? Ticked;
+        public event EventHandler? Completed;
+        public event EventHandler? Stopped;
 
         // ── Dependency Property ───────────────────────────────────────────
 
@@ -59,7 +59,7 @@ namespace TaskManagerUI.Controls.Components
 
         // ── Timer logic ───────────────────────────────────────────────────
 
-        private void Timer_Tick(object sender, EventArgs e)
+        private void Timer_Tick(object? sender, EventArgs e)
         {
             _remaining = _remaining.Subtract(TimeSpan.FromSeconds(1));
             UpdateDisplay();
@@ -69,7 +69,7 @@ namespace TaskManagerUI.Controls.Components
                 OnCompleted();
         }
 
-        private void TickDot_Tick(object sender, EventArgs e)
+        private void TickDot_Tick(object? sender, EventArgs e)
         {
             _tickDotVisible = !_tickDotVisible;
 
@@ -265,8 +265,8 @@ namespace TaskManagerUI.Controls.Components
             catch { }
         }
 
-        private WaveOutEvent _tickTockOutput;
-        private AudioFileReader _tickTockReader;
+        private WaveOutEvent? _tickTockOutput;
+        private AudioFileReader? _tickTockReader;
 
         private void PlayTickTockSound()
         {
