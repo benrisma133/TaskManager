@@ -46,6 +46,11 @@
         <components:TimerControl EstimatedMinutes="2" />
         <components:TimerControl EstimatedMinutes="5" />
 
+        <components:SessionCard StartTime="09:00 AM"
+                        Duration="1h 30m"
+                        Notes="Working on IRepository"
+                        IsRunning="True"/>
+
 
 
     </UniformGrid>
