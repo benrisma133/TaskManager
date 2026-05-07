@@ -2,7 +2,7 @@
 
 namespace TaskManagerUI.Models
 {
-    public class Task
+    public class TaskModel
     {
         public int TaskID { get; set; }
         public string Title { get; set; } = null!;

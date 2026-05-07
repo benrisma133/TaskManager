@@ -7,60 +7,60 @@ namespace TaskManagerUI
     public partial class TestWindow : Window
     {
 
-        private readonly List<Models.Task> _tasks = new List<Models.Task>
+        private readonly List<Models.TaskModel> _tasks = new List<Models.TaskModel>
         {
             // Project 1 - Task Manager App
-            new Models.Task { TaskID = 1,  ProjectID = 1, Title = "Setup WPF project",        IsCompleted = true,  Status = "Completed",   Priority = "High"   },
-            new Models.Task { TaskID = 2,  ProjectID = 1, Title = "Design MainWindow layout",  IsCompleted = true,  Status = "Completed",   Priority = "High"   },
-            new Models.Task { TaskID = 3,  ProjectID = 1, Title = "Implement ProjectCard",     IsCompleted = true,  Status = "Completed",   Priority = "High"   },
-            new Models.Task { TaskID = 4,  ProjectID = 1, Title = "Implement CategoryCard",    IsCompleted = false, Status = "In Progress", Priority = "Medium" },
-            new Models.Task { TaskID = 5,  ProjectID = 1, Title = "Add CI/CD pipeline",        IsCompleted = false, Status = "In Progress", Priority = "Medium" },
+            new Models.TaskModel { TaskID = 1,  ProjectID = 1, Title = "Setup WPF project",        IsCompleted = true,  Status = "Completed",   Priority = "High"   },
+            new Models.TaskModel { TaskID = 2,  ProjectID = 1, Title = "Design MainWindow layout",  IsCompleted = true,  Status = "Completed",   Priority = "High"   },
+            new Models.TaskModel { TaskID = 3,  ProjectID = 1, Title = "Implement ProjectCard",     IsCompleted = true,  Status = "Completed",   Priority = "High"   },
+            new Models.TaskModel { TaskID = 4,  ProjectID = 1, Title = "Implement CategoryCard",    IsCompleted = false, Status = "In Progress", Priority = "Medium" },
+            new Models.TaskModel { TaskID = 5,  ProjectID = 1, Title = "Add CI/CD pipeline",        IsCompleted = false, Status = "In Progress", Priority = "Medium" },
 
             // Project 2 - E-Commerce Platform
-            new Models.Task { TaskID = 6,  ProjectID = 2, Title = "Setup ASP.NET Core project",IsCompleted = true,  Status = "Completed",   Priority = "High"   },
-            new Models.Task { TaskID = 7,  ProjectID = 2, Title = "Design database schema",    IsCompleted = false, Status = "In Progress", Priority = "Critical"},
-            new Models.Task { TaskID = 8,  ProjectID = 2, Title = "Implement auth system",     IsCompleted = false, Status = "Todo",        Priority = "Critical"},
+            new Models.TaskModel { TaskID = 6,  ProjectID = 2, Title = "Setup ASP.NET Core project",IsCompleted = true,  Status = "Completed",   Priority = "High"   },
+            new Models.TaskModel { TaskID = 7,  ProjectID = 2, Title = "Design database schema",    IsCompleted = false, Status = "In Progress", Priority = "Critical"},
+            new Models.TaskModel { TaskID = 8,  ProjectID = 2, Title = "Implement auth system",     IsCompleted = false, Status = "Todo",        Priority = "Critical"},
 
             // Project 3 - Fitness Tracker
-            new Models.Task { TaskID = 9,  ProjectID = 3, Title = "Design UI mockups",         IsCompleted = true,  Status = "Completed",   Priority = "Medium" },
-            new Models.Task { TaskID = 10, ProjectID = 3, Title = "Implement tracking logic",  IsCompleted = true,  Status = "Completed",   Priority = "High"   },
-            new Models.Task { TaskID = 11, ProjectID = 3, Title = "Add charts and stats",      IsCompleted = true,  Status = "Completed",   Priority = "Medium" },
-            new Models.Task { TaskID = 12, ProjectID = 3, Title = "Publish to app store",      IsCompleted = true,  Status = "Completed",   Priority = "High"   },
+            new Models.TaskModel { TaskID = 9,  ProjectID = 3, Title = "Design UI mockups",         IsCompleted = true,  Status = "Completed",   Priority = "Medium" },
+            new Models.TaskModel { TaskID = 10, ProjectID = 3, Title = "Implement tracking logic",  IsCompleted = true,  Status = "Completed",   Priority = "High"   },
+            new Models.TaskModel { TaskID = 11, ProjectID = 3, Title = "Add charts and stats",      IsCompleted = true,  Status = "Completed",   Priority = "Medium" },
+            new Models.TaskModel { TaskID = 12, ProjectID = 3, Title = "Publish to app store",      IsCompleted = true,  Status = "Completed",   Priority = "High"   },
 
             // Project 4 - REST API Gateway
-            new Models.Task { TaskID = 13, ProjectID = 4, Title = "Setup API project",         IsCompleted = true,  Status = "Completed",   Priority = "High"   },
-            new Models.Task { TaskID = 14, ProjectID = 4, Title = "Implement routing",         IsCompleted = true,  Status = "Completed",   Priority = "High"   },
-            new Models.Task { TaskID = 15, ProjectID = 4, Title = "Add authentication",        IsCompleted = false, Status = "In Progress", Priority = "Critical"},
-            new Models.Task { TaskID = 16, ProjectID = 4, Title = "Write API documentation",   IsCompleted = false, Status = "Todo",        Priority = "Low"    },
+            new Models.TaskModel { TaskID = 13, ProjectID = 4, Title = "Setup API project",         IsCompleted = true,  Status = "Completed",   Priority = "High"   },
+            new Models.TaskModel { TaskID = 14, ProjectID = 4, Title = "Implement routing",         IsCompleted = true,  Status = "Completed",   Priority = "High"   },
+            new Models.TaskModel { TaskID = 15, ProjectID = 4, Title = "Add authentication",        IsCompleted = false, Status = "In Progress", Priority = "Critical"},
+            new Models.TaskModel { TaskID = 16, ProjectID = 4, Title = "Write API documentation",   IsCompleted = false, Status = "Todo",        Priority = "Low"    },
 
             // Project 5 - ASP.NET Core Bootcamp
-            new Models.Task { TaskID = 17, ProjectID = 5, Title = "Complete module 1",         IsCompleted = true,  Status = "Completed",   Priority = "High"   },
-            new Models.Task { TaskID = 18, ProjectID = 5, Title = "Complete module 2",         IsCompleted = true,  Status = "Completed",   Priority = "High"   },
-            new Models.Task { TaskID = 19, ProjectID = 5, Title = "Complete module 3",         IsCompleted = false, Status = "In Progress", Priority = "Medium" },
-            new Models.Task { TaskID = 20, ProjectID = 5, Title = "Build final project",       IsCompleted = false, Status = "Todo",        Priority = "High"   },
+            new Models.TaskModel { TaskID = 17, ProjectID = 5, Title = "Complete module 1",         IsCompleted = true,  Status = "Completed",   Priority = "High"   },
+            new Models.TaskModel { TaskID = 18, ProjectID = 5, Title = "Complete module 2",         IsCompleted = true,  Status = "Completed",   Priority = "High"   },
+            new Models.TaskModel { TaskID = 19, ProjectID = 5, Title = "Complete module 3",         IsCompleted = false, Status = "In Progress", Priority = "Medium" },
+            new Models.TaskModel { TaskID = 20, ProjectID = 5, Title = "Build final project",       IsCompleted = false, Status = "Todo",        Priority = "High"   },
 
             // Project 6 - UI Design System
-            new Models.Task { TaskID = 21, ProjectID = 6, Title = "Define color tokens",       IsCompleted = true,  Status = "Completed",   Priority = "High"   },
-            new Models.Task { TaskID = 22, ProjectID = 6, Title = "Build button components",   IsCompleted = true,  Status = "Completed",   Priority = "Medium" },
-            new Models.Task { TaskID = 23, ProjectID = 6, Title = "Build card components",     IsCompleted = false, Status = "In Progress", Priority = "Medium" },
-            new Models.Task { TaskID = 24, ProjectID = 6, Title = "Write component docs",      IsCompleted = false, Status = "Todo",        Priority = "Low"    },
+            new Models.TaskModel { TaskID = 21, ProjectID = 6, Title = "Define color tokens",       IsCompleted = true,  Status = "Completed",   Priority = "High"   },
+            new Models.TaskModel { TaskID = 22, ProjectID = 6, Title = "Build button components",   IsCompleted = true,  Status = "Completed",   Priority = "Medium" },
+            new Models.TaskModel { TaskID = 23, ProjectID = 6, Title = "Build card components",     IsCompleted = false, Status = "In Progress", Priority = "Medium" },
+            new Models.TaskModel { TaskID = 24, ProjectID = 6, Title = "Write component docs",      IsCompleted = false, Status = "Todo",        Priority = "Low"    },
 
             // Project 7 - CI/CD Pipeline Setup
-            new Models.Task { TaskID = 25, ProjectID = 7, Title = "Setup GitHub Actions",      IsCompleted = true,  Status = "Completed",   Priority = "High"   },
-            new Models.Task { TaskID = 26, ProjectID = 7, Title = "Add build step",            IsCompleted = true,  Status = "Completed",   Priority = "High"   },
-            new Models.Task { TaskID = 27, ProjectID = 7, Title = "Add test step",             IsCompleted = true,  Status = "Completed",   Priority = "High"   },
-            new Models.Task { TaskID = 28, ProjectID = 7, Title = "Add publish artifact step", IsCompleted = true,  Status = "Completed",   Priority = "Medium" },
+            new Models.TaskModel { TaskID = 25, ProjectID = 7, Title = "Setup GitHub Actions",      IsCompleted = true,  Status = "Completed",   Priority = "High"   },
+            new Models.TaskModel { TaskID = 26, ProjectID = 7, Title = "Add build step",            IsCompleted = true,  Status = "Completed",   Priority = "High"   },
+            new Models.TaskModel { TaskID = 27, ProjectID = 7, Title = "Add test step",             IsCompleted = true,  Status = "Completed",   Priority = "High"   },
+            new Models.TaskModel { TaskID = 28, ProjectID = 7, Title = "Add publish artifact step", IsCompleted = true,  Status = "Completed",   Priority = "Medium" },
 
             // Project 8 - AI Chat Assistant
-            new Models.Task { TaskID = 29, ProjectID = 8, Title = "Research LLM APIs",         IsCompleted = false, Status = "In Progress", Priority = "Critical"},
-            new Models.Task { TaskID = 30, ProjectID = 8, Title = "Design chat UI",            IsCompleted = false, Status = "Todo",        Priority = "High"   },
-            new Models.Task { TaskID = 31, ProjectID = 8, Title = "Implement chat logic",      IsCompleted = false, Status = "Todo",        Priority = "Critical"},
+            new Models.TaskModel { TaskID = 29, ProjectID = 8, Title = "Research LLM APIs",         IsCompleted = false, Status = "In Progress", Priority = "Critical"},
+            new Models.TaskModel { TaskID = 30, ProjectID = 8, Title = "Design chat UI",            IsCompleted = false, Status = "Todo",        Priority = "High"   },
+            new Models.TaskModel { TaskID = 31, ProjectID = 8, Title = "Implement chat logic",      IsCompleted = false, Status = "Todo",        Priority = "Critical"},
 
             // Project 9 - ManageClient System
-            new Models.Task { TaskID = 32, ProjectID = 9, Title = "Setup 3-tier architecture", IsCompleted = true,  Status = "Completed",   Priority = "High"   },
-            new Models.Task { TaskID = 33, ProjectID = 9, Title = "Implement CRUD operations", IsCompleted = true,  Status = "Completed",   Priority = "High"   },
-            new Models.Task { TaskID = 34, ProjectID = 9, Title = "Add search feature",        IsCompleted = true,  Status = "Completed",   Priority = "Medium" },
-            new Models.Task { TaskID = 35, ProjectID = 9, Title = "Add CI/CD pipeline",        IsCompleted = true,  Status = "Completed",   Priority = "Medium" },
+            new Models.TaskModel { TaskID = 32, ProjectID = 9, Title = "Setup 3-tier architecture", IsCompleted = true,  Status = "Completed",   Priority = "High"   },
+            new Models.TaskModel { TaskID = 33, ProjectID = 9, Title = "Implement CRUD operations", IsCompleted = true,  Status = "Completed",   Priority = "High"   },
+            new Models.TaskModel { TaskID = 34, ProjectID = 9, Title = "Add search feature",        IsCompleted = true,  Status = "Completed",   Priority = "Medium" },
+            new Models.TaskModel { TaskID = 35, ProjectID = 9, Title = "Add CI/CD pipeline",        IsCompleted = true,  Status = "Completed",   Priority = "Medium" },
         };
 
         public TestWindow()
