@@ -7,13 +7,28 @@
         mc:Ignorable="d"
         Title="TestWindow" Height="600" Width="1000"
         Background="{DynamicResource AppBackgroundBrush}">
-    <Grid>
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="20">
-            <UniformGrid x:Name="CardsPanel"
-                     Columns="3"
-                     VerticalAlignment="Top"/>
+    <Grid>
+        
+
+
+        <!-- Projects Title -->
+        <TextBlock Grid.Row="2"
+                   Text="Projects"
+                   FontSize="18"
+                   FontWeight="Bold"
+                   Margin="8,24,8,8"
+                   Foreground="{DynamicResource TextPrimaryBrush}"/>
+
+        <!-- Projects Section -->
+        <ScrollViewer Grid.Row="3"
+                      VerticalScrollBarVisibility="Auto"
+                      Padding="20">
+            <UniformGrid x:Name="ProjectsPanel"
+                         Columns="3"
+                         VerticalAlignment="Top"/>
         </ScrollViewer>
 
     </Grid>
+
 </Window>
