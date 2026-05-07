@@ -44,8 +44,7 @@ namespace TaskManagerUI.Controls.Cards
         public void LoadCategory(Category category)
         {
             // Row 0
-            IconBg.Background = new SolidColorBrush(
-                (Color)ColorConverter.ConvertFromString(category.Color));
+            IconBg.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(category.Color));
             IconPath.Data = GetIconByName(category.Icon);
             NameText.Text = category.Name;
             TypeText.Text = category.Type;

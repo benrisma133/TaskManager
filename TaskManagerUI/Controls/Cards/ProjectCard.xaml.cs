@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TaskManagerUI.Models;
 
 namespace TaskManagerUI.Controls.Cards
 {
@@ -24,5 +25,11 @@ namespace TaskManagerUI.Controls.Cards
         {
             InitializeComponent();
         }
+
+        public void LoadProject(Project project)
+        {
+
+        }
+
     }
 }
