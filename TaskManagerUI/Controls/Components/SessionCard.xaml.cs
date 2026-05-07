@@ -1,28 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using TaskManagerUI.Models;
 
-namespace TaskManagerUI.Controls.Cards
+// Fixed namespace
+namespace TaskManagerUI.Controls.Components
 {
-    /// <summary>
-    /// Interaction logic for SessionCard.xaml
-    /// </summary>
     public partial class SessionCard : UserControl
     {
         public SessionCard()
         {
             InitializeComponent();
+        }
+
+        public void LoadSession(TimerSession session)
+        {
+            StartTimeText.Text = session.StartTimeText;
+
+            DurationText.Text = session.DurationText;
+            DurationText.Foreground = session.IsRunning
+                ? (Brush)App.Current.Resources["SuccessBrush"]
+                : (Brush)App.Current.Resources["TextSecondaryBrush"];
+
+            if (!string.IsNullOrEmpty(session.Notes))
+            {
+                NotesText.Text = session.Notes;
+                NotesText.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                NotesText.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }
