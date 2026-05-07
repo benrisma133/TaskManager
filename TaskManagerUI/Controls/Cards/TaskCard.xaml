@@ -217,17 +217,18 @@
                                     CornerRadius="8"
                                     Padding="14,10">
 
-                                <TextBlock x:Name="StartTaskBtn"
-                                            Text="▶ Start Task"
-                                            FontSize="12"
-                                            FontWeight="Medium"/>
+                                <TextBlock x:Name="StartTaskText"
+                                           Text="▶ Start Task"
+                                           FontSize="12"
+                                           FontWeight="Medium"
+                                           Foreground="{DynamicResource AccentBrush}"/>
 
 
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentBrush}"/>
-                                    <Setter TargetName="StartTaskBtn" Property="Foreground" Value="White"/>
+                                    <Setter TargetName="StartTaskText" Property="Foreground" Value="White"/>
                                 </Trigger>
                                 <Trigger Property="IsPressed" Value="True">
                                     <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentPressedBrush}"/>
