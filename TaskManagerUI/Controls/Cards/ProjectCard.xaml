@@ -235,6 +235,100 @@
                     Background="{DynamicResource BorderDefaultBrush}"
                     VerticalAlignment="Center"/>
 
+            <!-- ROW 5: Status + Butt -->
+            <Grid Grid.Row="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Status Badge -->
+                <!-- Use StatusBadge component instead of manual Border+TextBlock -->
+                <components:StatusBadge x:Name="CategoryStatus"
+                                        VerticalAlignment="Center"/>
+
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right">
+
+                    <!-- Edit Button -->
+                    <Button x:Name="EditBtn"
+                            Width="32" Height="32"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            Margin="0,0,6,0">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="Bd"
+                                        Background="{DynamicResource AccentLightBrush}"
+                                        CornerRadius="8">
+                                    <Viewbox Width="14" Height="14">
+                                        <Canvas Width="24" Height="24">
+                                            <Path x:Name="EditIcon1"
+                                                  Data="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13"
+                                                  Stroke="{DynamicResource AccentBrush}"
+                                                  StrokeThickness="2" Fill="Transparent"
+                                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                            <Path x:Name="EditIcon2"
+                                                  Data="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.43741 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z"
+                                                  Stroke="{DynamicResource AccentBrush}"
+                                                  StrokeThickness="2" Fill="Transparent"
+                                                  StrokeLineJoin="Round"/>
+                                        </Canvas>
+                                    </Viewbox>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Bd"        Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                        <Setter TargetName="EditIcon1" Property="Stroke"     Value="White"/>
+                                        <Setter TargetName="EditIcon2" Property="Stroke"     Value="White"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <!-- Delete Button -->
+                    <Button x:Name="DeleteBtn"
+                            Width="32" Height="32"
+                            BorderThickness="0"
+                            Cursor="Hand">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="Bd"
+                                        Background="{DynamicResource ErrorLightBrush}"
+                                        CornerRadius="8">
+                                    <Viewbox Width="14" Height="14">
+                                        <Canvas Width="24" Height="24">
+                                            <Path x:Name="DeleteIcon1"
+                                                  Data="M3 6H5H21"
+                                                  Stroke="{DynamicResource ErrorBrush}"
+                                                  StrokeThickness="2" Fill="Transparent"
+                                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                            <Path x:Name="DeleteIcon2"
+                                                  Data="M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6"
+                                                  Stroke="{DynamicResource ErrorBrush}"
+                                                  StrokeThickness="2" Fill="Transparent"
+                                                  StrokeLineJoin="Round"/>
+                                        </Canvas>
+                                    </Viewbox>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Bd"          Property="Background" Value="{DynamicResource ErrorBrush}"/>
+                                        <Setter TargetName="DeleteIcon1" Property="Stroke"     Value="White"/>
+                                        <Setter TargetName="DeleteIcon2" Property="Stroke"     Value="White"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                </StackPanel>
+
+            </Grid>
+
         </Grid>
 
 
