@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="Repository/Repository.csproj" Id="698f3e49-2454-4a7d-8fba-992de63db3d3" />
   <Project Path="TaskManagerUI/TaskManagerUI.csproj" />
 </Solution>
