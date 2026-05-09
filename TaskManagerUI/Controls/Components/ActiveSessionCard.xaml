@@ -37,18 +37,63 @@
             </Grid.RowDefinitions>
 
             <!-- Row 0: Header -->
-            <StackPanel Grid.Row="0"
-                        Orientation="Horizontal">
-                <TextBlock Text="⚡"
-                           FontSize="14"
-                           VerticalAlignment="Center"
-                           Margin="0,0,6,0"/>
-                <TextBlock Text="Active Session"
-                           FontSize="13"
-                           FontWeight="SemiBold"
-                           Foreground="{DynamicResource AccentBrush}"
-                           VerticalAlignment="Center"/>
-            </StackPanel>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Left: Title -->
+                <StackPanel Grid.Column="0"
+                            Orientation="Horizontal">
+                    <TextBlock Text="⚡"
+                               FontSize="14"
+                               VerticalAlignment="Center"
+                               Margin="0,0,6,0"/>
+                    <TextBlock Text="Active Session"
+                               FontSize="13"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource AccentBrush}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Right: Close Button -->
+                <Button x:Name="CloseBtn"
+                        Grid.Column="1"
+                        Width="30" Height="30"
+                        BorderThickness="0"
+                        Cursor="Hand"
+                        ToolTip="Close">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Bd"
+                                    Background="{DynamicResource CardHoverBackgroundBrush}"
+                                    CornerRadius="8">
+                               
+                                <Path Data="{StaticResource IconClose}"
+                                      Fill="{DynamicResource TextMutedBrush}"
+                                      x:Name="CloseIcon"
+                                      Width="14" Height="14"
+                                      Stroke="White" StrokeThickness="2"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      Stretch="Uniform"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd"        Property="Background" Value="{DynamicResource ErrorLightBrush}"/>
+                                    <Setter TargetName="CloseIcon" Property="Fill"       Value="{DynamicResource ErrorBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="Bd"        Property="Background" Value="{DynamicResource ErrorBrush}"/>
+                                    <Setter TargetName="CloseIcon" Property="Fill"       Value="White"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+            </Grid>
 
             <!-- Row 1: Divider -->
             <Border Grid.Row="1"
@@ -92,67 +137,14 @@
                             VerticalAlignment="Center">
 
                     <!-- Pause Button -->
-                    <Button x:Name="PauseBtn"
-                            Width="36" Height="36"
-                            BorderThickness="0"
-                            Cursor="Hand"
-                            Margin="0,0,8,0"
-                            ToolTip="Pause">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border x:Name="Bd"
-                                        Background="{DynamicResource AccentLightBrush}"
-                                        CornerRadius="8">
-                                    <TextBlock x:Name="PauseIcon"
-                                               Text="⏸"
-                                               FontSize="14"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Foreground="{DynamicResource AccentBrush}"/>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="Bd"        Property="Background" Value="{DynamicResource AccentBrush}"/>
-                                        <Setter TargetName="PauseIcon" Property="Foreground" Value="White"/>
-                                    </Trigger>
-                                    <Trigger Property="IsPressed" Value="True">
-                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentPressedBrush}"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
+                    <components:TimerButton x:Name="PauseBtn" 
+                                            Margin="2"
+                                            State="Pause"/>
 
                     <!-- Stop Button -->
-                    <Button x:Name="StopBtn"
-                            Width="36" Height="36"
-                            BorderThickness="0"
-                            Cursor="Hand"
-                            ToolTip="Stop">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border x:Name="Bd"
-                                        Background="{DynamicResource ErrorLightBrush}"
-                                        CornerRadius="8">
-                                    <TextBlock x:Name="StopIcon"
-                                               Text="⏹"
-                                               FontSize="14"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Foreground="{DynamicResource ErrorBrush}"/>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="Bd"       Property="Background" Value="{DynamicResource ErrorBrush}"/>
-                                        <Setter TargetName="StopIcon" Property="Foreground" Value="White"/>
-                                    </Trigger>
-                                    <Trigger Property="IsPressed" Value="True">
-                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ErrorBrush}"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
+                    <components:TimerButton x:Name="StopBtn" 
+                                            Margin="2"
+                                            State="Stop"/>
 
                 </StackPanel>
             </Grid>
@@ -165,26 +157,58 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Progress Bar -->
-                <components:ProgressBar x:Name="SessionProgress"
-                                        Grid.Row="0"
-                                        ProgressWidth="0"
-                                        Margin="0"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                <!-- Running Status -->
-                <StackPanel Grid.Row="2"
-                            Orientation="Horizontal">
-                    <Ellipse x:Name="RunningDot"
-                             Width="8" Height="8"
-                             Fill="{DynamicResource SuccessBrush}"
-                             VerticalAlignment="Center"
-                             Margin="0,0,6,0"/>
-                    <TextBlock x:Name="StatusText"
-                               Text="Running"
-                               FontSize="11"
-                               Foreground="{DynamicResource SuccessBrush}"
-                               VerticalAlignment="Center"/>
-                </StackPanel>
+                    <!-- Progress Bar -->
+                    <components:ProgressBar x:Name="SessionProgress"
+                                            Grid.Column="0"
+                                            ProgressWidth="0"
+                                            VerticalAlignment="Center"
+                                            Margin="0,0,8,0"/>
+
+                    <!-- Progress Text -->
+                    <TextBlock x:Name="ProgressTextBlock"
+                               Grid.Column="1"
+                               VerticalAlignment="Center"
+                               Text="0%"
+                               Foreground="{DynamicResource AccentBrush}"/>
+                </Grid>
+
+
+
+                <!-- Running Status + StatusBadge -->
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Existing Running Status (keep as is) -->
+                    <StackPanel Grid.Column="0"
+                                Orientation="Horizontal">
+                        <Ellipse x:Name="RunningDot"
+                                 Width="8" Height="8"
+                                 Fill="{DynamicResource SuccessBrush}"
+                                 VerticalAlignment="Center"
+                                 Margin="0,0,6,0"/>
+                        <TextBlock x:Name="StatusText"
+                                   Text="Running"
+                                   FontSize="11"
+                                   Foreground="{DynamicResource SuccessBrush}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- StatusBadge on the right -->
+                    <components:StatusBadge x:Name="SessionStatusBadge"
+                                            Grid.Column="1"
+                                            Status="InProgress"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"/>
+                </Grid>
             </Grid>
 
         </Grid>

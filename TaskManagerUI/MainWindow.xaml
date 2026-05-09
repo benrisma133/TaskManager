@@ -5,57 +5,47 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:components="clr-namespace:TaskManagerUI.Controls.Components"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="1000"
+        Title="Task Manager" Height="600" Width="1000"
         Background="{DynamicResource AppBackgroundBrush}">
 
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Top Bar -->
+            <RowDefinition Height="*"/>
+            <!-- Content -->
+            <RowDefinition Height="Auto"/>
+            <!-- Active Session Card -->
+        </Grid.RowDefinitions>
 
-    <UniformGrid Rows="2" Columns="4" Margin="8">
+        <!-- ── Top Bar ──────────────────────────────────────── -->
+        <Border Grid.Row="0" 
+                Background="{DynamicResource AppBackgroundBrush}"
+                Padding="20,12">
+            <TextBlock Text="Task Manager"
+                       Foreground="{DynamicResource TextPrimaryBrush}"
+                       FontSize="18"
+                       FontWeight="SemiBold"/>
+        </Border>
 
-        <components:StatCard Title="Tasks Today"
-                         Value="12"
-                         Label="tasks done"
-                         Icon="{StaticResource IconTasks}"
-                         AccentBrush="{DynamicResource AccentBrush}"
-                         Margin="8"
-                         VerticalAlignment="Top"/>
+        <!-- ── Main Content ─────────────────────────────────── -->
+        <Border Grid.Row="1" Padding="20">
+            <TextBlock Text="Dashboard Content Here"
+                       Foreground="{DynamicResource TextMutedBrush}"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"/>
+        </Border>
 
-        <components:StatCard Title="Minutes Today"
-                         Value="94"
-                         Label="minutes logged"
-                         Icon="{StaticResource IconClock}"
-                         AccentBrush="{DynamicResource SuccessBrush}"
-                         Margin="8"
-                         VerticalAlignment="Top"/>
+        <!-- ── Active Session Card (Bottom) ─────────────────── -->
+        <components:ActiveSessionCard
+                Grid.Row="2"
+                x:Name="SessionCard"
+                Visibility="Collapsed"
+                Margin="20,0,20,16"
+                PauseClick="OnPauseClick"
+                StopClick="OnStopClick"
+                CloseClick="OnCloseClick"/>
 
-        <components:StatCard Title="Current Streak"
-                         Value="7"
-                         Label="days in a row"
-                         Icon="{StaticResource IconStreak}"
-                         AccentBrush="{DynamicResource WarningBrush}"
-                         Margin="8"
-                         VerticalAlignment="Top"/>
-
-        <components:StatCard Title="Longest Streak"
-                         Value="21"
-                         Label="best record"
-                         Icon="{StaticResource IconAward}"
-                         AccentBrush="{DynamicResource PriorityHighBrush}"
-                         Margin="8"
-                         VerticalAlignment="Top"/>
-
-        <components:TimerControl EstimatedMinutes="2" />
-        <components:TimerControl EstimatedMinutes="5" />
-
-        <components:SessionCard StartTime="09:00 AM"
-                        Duration="1h 30m"
-                        Notes="Working on IRepository"
-                        IsRunning="True"/>
-
-
-
-    </UniformGrid>
-    
-    
-
+    </Grid>
 
 </Window>

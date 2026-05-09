@@ -194,9 +194,6 @@ namespace TaskManagerUI.Controls.Components
 
             AnimateChange();
 
-            //State = State == TimerButtonState.Play
-            //    ? TimerButtonState.Pause
-            //    : TimerButtonState.Play;
 
             UpdateVisual();
             Click?.Invoke(this, e);
