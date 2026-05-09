@@ -5,7 +5,7 @@ using Repository.Models;
 using System.Data;
 using Repository.Data;
 
-namespace TaskFlow.Repository.Repositories;
+namespace Repository.Repositories;
 
 public static class CategoryRepository
 {
