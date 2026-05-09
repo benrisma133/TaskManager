@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="TaskManagerUI.Controls.Components.SidebarToolTip"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TaskManagerUI.Controls.Components"
+             mc:Ignorable="d" 
+             IsHitTestVisible="False">
+
+    <Grid x:Name="Root">
+        <Grid.RenderTransform>
+            <TranslateTransform x:Name="Translate" X="-6" Y="0"/>
+        </Grid.RenderTransform>
+
+        <!-- Arrow pointing LEFT -->
+        <Path x:Name="Arrow"
+              Data="M 0,8 L 8,0 L 8,16 Z"
+              Fill="{DynamicResource SuccessLightBrush}"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Left"
+              Margin="0"/>
+
+        <!-- Label box -->
+        <Border x:Name="LabelBox"
+                Background="{DynamicResource SuccessLightBrush}"
+                CornerRadius="6"
+                Padding="10,6"
+                Margin="8,0,0,0">
+            <TextBlock x:Name="TipText"
+                       FontSize="13"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextPrimaryBrush}"
+                       VerticalAlignment="Center"/>
+        </Border>
+    </Grid>
+</UserControl>

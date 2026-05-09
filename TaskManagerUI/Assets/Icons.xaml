@@ -2,6 +2,26 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- ═══════════════════════════════════════════════════════════ -->
+    <!--                    WINDOW CONTROLS                        -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+
+    <!-- Minimize: single horizontal line -->
+    <Geometry x:Key="IconMinimize">
+        M4 12 H20
+    </Geometry>
+
+    <!-- Maximize: square outline -->
+    <Geometry x:Key="IconMaximize">
+        M4 4 Q4 3 5 3 H19 Q20 3 20 4 V20 Q20 21 19 21 H5 Q4 21 4 20 Z
+    </Geometry>
+
+    <!-- Restore (when maximized): two overlapping squares -->
+    <Geometry x:Key="IconRestore">
+        M8 4 Q8 3 9 3 H19 Q20 3 20 4 V14 Q20 15 19 15 H17 V17 Q17 18 16 18 H6 Q5 18 5 17 V7 Q5 6 6 6 H8 Z
+        M8 6 V4
+    </Geometry>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
     <!--                      NAVIGATION                           -->
     <!-- ═══════════════════════════════════════════════════════════ -->
 
