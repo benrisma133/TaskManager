@@ -130,7 +130,7 @@ public partial class AddEditCategory : Window
                 ? CategoryService.IsNameTakenByOther(_categoryService.CategoryId, text)
                 : CategoryService.IsNameTaken(text);
 
-            return "This category name already exists.";
+            return exists ? "This category name already exists." : null!;
         });
     }
 
@@ -221,7 +221,7 @@ public partial class AddEditCategory : Window
                 ? CategoryService.IsNameTakenByOther(_categoryService.CategoryId, text.Trim())
                 : CategoryService.IsNameTaken(text.Trim());
 
-            return "This category name already exists.";
+            return exists ? "This category name already exists." : null!;
         });
 
         if (!CategoryName.IsValid && result.FirstInvalidControl == null)
