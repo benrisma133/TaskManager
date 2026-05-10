@@ -23,7 +23,7 @@ namespace TaskManagerUI.Controls.Inputs
     {
         private bool hasInteracted = false;
 
-        private Func<string, string> _externalValidator;
+        private Func<string, string>? _externalValidator;
 
 
         public ModernInput()
@@ -282,7 +282,7 @@ namespace TaskManagerUI.Controls.Inputs
 
         #region Validation
 
-        public void Validate(bool live = false, Func<string, string> externalValidator = null)
+        public void Validate(bool live = false, Func<string, string> externalValidator = null!)
         {
             // 🔥 STORE external validator
             if (externalValidator != null)
@@ -379,7 +379,7 @@ namespace TaskManagerUI.Controls.Inputs
         /// Force validation - useful for form submission
         /// This will validate even if the user hasn't interacted with the field
         /// </summary>
-        public bool ValidateForce(Func<string, string> externalValidator = null)
+        public bool ValidateForce(Func<string, string> externalValidator = null!)
         {
             hasInteracted = true;
             Validate(live: false, externalValidator: externalValidator);
@@ -447,7 +447,7 @@ namespace TaskManagerUI.Controls.Inputs
 
         #endregion
 
-        public event TextChangedEventHandler TextChanged;
+        public event TextChangedEventHandler? TextChanged;
 
 
     }
