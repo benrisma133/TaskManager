@@ -1,223 +1,215 @@
-﻿using System.Timers;
-using System.Windows;
-using System.Windows.Threading;
+﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using TaskManagerUI.Helpers;
+using TaskManagerUI.Pages.Categories;
 
 namespace TaskManagerUI
 {
     public partial class MainWindow : Window
     {
+        public static event Action<bool>? ThemeChanged;
 
-        public static class ActiveSession
-        {
-            public static TaskItem? CurrentTask { get; set; }
-            public static bool IsRunning { get; set; }
-            public static DateTime? StartedAt { get; set; }
+        private Button? _activeButton;
+        private bool _isSidebarOpen = true;
+        private bool _isDark = false;
 
-            public static event Action? SessionChanged;
+        private const double SidebarOpenWidth = 220;
+        private const double SidebarClosedWidth = 64;
 
-            public static void Start(TaskItem task)
-            {
-                CurrentTask = task;
-                IsRunning = true;
-                StartedAt = DateTime.Now;
-                SessionChanged?.Invoke();
-            }
-
-            public static void Pause()
-            {
-                IsRunning = false;
-                SessionChanged?.Invoke();
-            }
-
-            public static void Stop()
-            {
-                CurrentTask = null;
-                IsRunning = false;
-                StartedAt = null;
-                SessionChanged?.Invoke();
-            }
-
-            public static void Resume()
-            {
-                if (CurrentTask == null) return; // Nothing to resume
-                IsRunning = true;
-                SessionChanged?.Invoke();
-            }
-        }
-
-        public class TaskItem
-        {
-            public string Title { get; set; } = null!;
-            public string Category { get; set; } = null!;
-            public DateTime DueDate { get; set; }
-            public double TotalMinutes { get; set; }
-        }
-
-        // ── Fields ────────────────────────────────────────────────────────────
-
-        private DispatcherTimer _timer;
-        private TimeSpan _elapsed;
-
-        // ── Constructor ───────────────────────────────────────────────────────
+        // Map each button to its popup
+        private Dictionary<Button, Popup> _tooltipMap = new();
 
         public MainWindow()
         {
             InitializeComponent();
+            _isDark = Properties.Settings.Default.IsDarkTheme;
+            if (!_isDark) ApplyTheme(false);
+            SetActiveMenu(BtnHome);
 
-            // Setup timer
-            _timer = new DispatcherTimer
+            // Register tooltip mapping after InitializeComponent
+            BuildTooltipMap();
+        }
+
+        // ── Build the button → popup map ──────────────────────────────
+        private void BuildTooltipMap()
+        {
+            _tooltipMap = new Dictionary<Button, Popup>
             {
-                Interval = TimeSpan.FromSeconds(1)
+                { BtnHome,       PopupHome       },
+                { BtnProjects,   PopupProjects   },
+                { BtnTasks,      PopupTasks      },
+                { BtnCategories, PopupCategories },
+                { BtnSettings,   PopupSettings   }
             };
-            _timer.Tick += OnTimerTick;
+        }
 
-            // Listen to session changes
-            ActiveSession.SessionChanged += OnSessionChanged;
+        // ── Tooltip show / hide ───────────────────────────────────────
+        private void MenuBtn_MouseEnter(object sender,
+                                        System.Windows.Input.MouseEventArgs e)
+        {
+            // Only show tooltip when sidebar is collapsed
+            if (_isSidebarOpen) return;
 
-            // Sync UI on startup
-            UpdateCard();
+            if (sender is Button btn && _tooltipMap.TryGetValue(btn, out var popup))
+                popup.IsOpen = true;
+        }
 
-            // ── Test Data ─────────────────────────────────────────
-            var task = new TaskItem
+        private void MenuBtn_MouseLeave(object sender,
+                                        System.Windows.Input.MouseEventArgs e)
+        {
+            if (sender is Button btn && _tooltipMap.TryGetValue(btn, out var popup))
+                popup.IsOpen = false;
+        }
+
+        // Close all popups (safety helper)
+        private void CloseAllPopups()
+        {
+            foreach (var popup in _tooltipMap.Values)
+                popup.IsOpen = false;
+        }
+
+        // ── Title bar drag ────────────────────────────────────────────
+        private void TitleBar_MouseLeftButtonDown(object sender,
+                                                   System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2) ToggleMaximize();
+            else DragMove();
+        }
+
+        // ── Window controls ───────────────────────────────────────────
+        private void BtnMinimize_Click(object sender, RoutedEventArgs e)
+            => WindowState = WindowState.Minimized;
+
+        private void BtnMaximize_Click(object sender, RoutedEventArgs e)
+            => ToggleMaximize();
+
+        private void BtnClose_Click(object sender, RoutedEventArgs e)
+            => Close();
+
+        private void ToggleMaximize()
+            => WindowState = WindowState == WindowState.Maximized
+                ? WindowState.Normal
+                : WindowState.Maximized;
+
+        // ── Sidebar toggle ────────────────────────────────────────────
+        private void HamburgerBtn_Click(object sender, RoutedEventArgs e)
+            => ToggleSidebar();
+
+        private void ToggleSidebar()
+        {
+            _isSidebarOpen = !_isSidebarOpen;
+            double targetWidth = _isSidebarOpen ? SidebarOpenWidth : SidebarClosedWidth;
+
+            // Close all popups when toggling
+            CloseAllPopups();
+
+            // ✅ Disable effects before animation
+            SetPageRenderingMode(true);
+
+            var anim = new GridLengthAnimation
             {
-                Title = "Write Unit Tests",
-                Category = "Development",
-                DueDate = DateTime.Now.AddDays(3),
-                TotalMinutes = 1
+                From = SidebarColumn.Width,
+                To = new GridLength(targetWidth),
+                Duration = TimeSpan.FromMilliseconds(220),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }
             };
-            ActiveSession.Start(task);
-            // ──────────────────────────────────────────────────────
-        }
 
-        // ── Session Changed ───────────────────────────────────────────────────
-
-        private void OnSessionChanged()
-        {
-            Dispatcher.Invoke(UpdateCard);
-        }
-
-        private void UpdateCard()
-        {
-            if (ActiveSession.CurrentTask == null)
+            anim.Completed += (s, e) =>
             {
-                _timer.Stop();
-                _elapsed = TimeSpan.Zero;
-                SessionCard.ElapsedTime = "00:00:00";
-                SessionCard.Progress = 0;
-                return;
-            }
+                // ✅ Re-enable effects after animation completes
+                SetPageRenderingMode(false);
+            };
 
-            var task = ActiveSession.CurrentTask;
+            SidebarColumn.BeginAnimation(ColumnDefinition.WidthProperty, anim);
 
-            SessionCard.Visibility = Visibility.Visible;
-            SessionCard.TaskTitle = task.Title;
-            SessionCard.Subtitle = $"{task.Category}  •  Due {task.DueDate:MMM dd}";
-            SessionCard.IsRunning = ActiveSession.IsRunning;
-
-            if (ActiveSession.IsRunning)
-                _timer.Start();
-            else
-                _timer.Stop();
+            // Show/hide text labels
+            var vis = _isSidebarOpen ? Visibility.Visible : Visibility.Collapsed;
+            HomeText.Visibility = vis;
+            ProjectsText.Visibility = vis;
+            TasksText.Visibility = vis;
+            CategoriesText.Visibility = vis;
+            SettingsText.Visibility = vis;
+            ProfileStack.Visibility = vis;
         }
 
-        // ── Timer Tick ────────────────────────────────────────────────────────
-
-        private void OnTimerTick(object? sender, EventArgs e)
+        private void SetPageRenderingMode(bool animating)
         {
-            if (ActiveSession.CurrentTask == null) return;
-
-            // ── Step 1: Add 1 second ──────────────────────────────────
-            _elapsed = _elapsed.Add(TimeSpan.FromSeconds(1));
-
-            // ── Step 2: Update elapsed time display ───────────────────
-            SessionCard.ElapsedTime = _elapsed.ToString(@"hh\:mm\:ss");
-
-            // ── Step 3: Calculate and update progress ─────────────────
-            double totalSeconds = ActiveSession.CurrentTask.TotalMinutes * 60;
-            double progress = (_elapsed.TotalSeconds / totalSeconds) * 100;
-            double clampedProgress = Math.Min(progress, 100);
-
-            SessionCard.Progress = clampedProgress;
-            SessionCard.ProgressText = $"{(int)clampedProgress}%"; // ← Update text
-
-            // ── Step 4: Check completion ──────────────────────────────
-            if (_elapsed.TotalSeconds >= totalSeconds)
+            if (PageContent.Content is UIElement page)
             {
-                OnSessionCompleted();
-            }
-        }
-
-        private void OnSessionCompleted()
-        {
-            string completedAt = _elapsed.ToString(@"hh\:mm\:ss");
-
-            _timer.Stop();
-
-            ActiveSession.SessionChanged -= OnSessionChanged;
-            ActiveSession.Stop();
-            ActiveSession.SessionChanged += OnSessionChanged;
-
-            SessionCard.ElapsedTime = completedAt;
-            SessionCard.Progress = 100;
-            SessionCard.ProgressText = "100%";          // ← Final text
-            SessionCard.SessionStatus = "Completed";
-            SessionCard.IsRunning = false;
-
-            SessionCard.PauseBtn.Visibility = Visibility.Collapsed;
-            SessionCard.StopBtn.Visibility = Visibility.Collapsed;
-            SessionCard.RunningDot.Visibility = Visibility.Collapsed;
-
-            _elapsed = TimeSpan.Zero;
-        }
-
-        // ── Button Handlers ───────────────────────────────────────────────────
-
-        private void OnPauseClick(object sender, RoutedEventArgs e)
-        {
-            // ✅ Now uses ActiveSession directly, no Resume() missing
-            if (ActiveSession.IsRunning)
-            {
-                ActiveSession.Pause();
-                SessionCard.SessionStatus = "Pause";
-            }
-
-            else
-            {
-                if(ActiveSession.CurrentTask != null)
+                if (animating)
                 {
-                    ActiveSession.Resume();
-                    SessionCard.SessionStatus = "InProgress";
+                    // ✅ Freeze rendering to a bitmap during animation
+                    page.CacheMode = new BitmapCache { EnableClearType = false, SnapsToDevicePixels = false };
                 }
-                
+                else
+                {
+                    // ✅ Restore normal rendering after animation
+                    page.CacheMode = null;
+                }
             }
-
         }
 
-        private void OnStopClick(object sender, RoutedEventArgs e)
+        // ── Active menu ───────────────────────────────────────────────
+        private void SetActiveMenu(Button btn)
         {
-            // Stop → Show Cancelled, keep card visible
-            ActiveSession.Stop();
-            SessionCard.SessionStatus = "Cancelled";
-            SessionCard.IsRunning = false;
-            _timer.Stop();
-            _elapsed = TimeSpan.Zero;
-            // ✅ Card stays visible showing Cancelled status
+            if (_activeButton != null)
+                _activeButton.ClearValue(TagProperty);
+            _activeButton = btn;
+            _activeButton.Tag = "Active";
         }
 
-        private void OnCloseClick(object sender, RoutedEventArgs e)
+        // ── Navigation ────────────────────────────────────────────────
+        private void BtnHome_Click(object sender, RoutedEventArgs e)
         {
-            // Close → Just hide the card
-            SessionCard.Visibility = Visibility.Collapsed;
-            // ✅ Card hidden, no status change
+            SetActiveMenu(BtnHome);
+            PageContent.Content = null;
         }
 
-        // ── Cleanup ───────────────────────────────────────────────────────────
-
-        protected override void OnClosed(EventArgs e)
+        private void BtnProjects_Click(object sender, RoutedEventArgs e)
         {
-            ActiveSession.SessionChanged -= OnSessionChanged;
-            _timer.Stop();
-            base.OnClosed(e);
+            SetActiveMenu(BtnProjects);
+            PageContent.Content = null;
+        }
+
+        private void BtnTasks_Click(object sender, RoutedEventArgs e)
+        {
+            SetActiveMenu(BtnTasks);
+            PageContent.Content = null;
+        }
+
+        private CategoriesPage _categoryPage = new CategoriesPage();
+
+        private void BtnCategories_Click(object sender, RoutedEventArgs e)
+        {
+            SetActiveMenu(BtnCategories);
+            PageContent.Content = _categoryPage;
+        }
+
+        private void BtnSettings_Click(object sender, RoutedEventArgs e)
+        {
+            SetActiveMenu(BtnSettings);
+            PageContent.Content = null;
+        }
+
+        // ── Theme ─────────────────────────────────────────────────────
+        private void ApplyTheme(bool isDark)
+        {
+            _isDark = isDark;
+            Properties.Settings.Default.IsDarkTheme = isDark;
+            Properties.Settings.Default.Save();
+
+            var source = isDark
+                ? new Uri("/Helpers/Colors.xaml", UriKind.Relative)
+                : new Uri("/Helpers/ColorsLight.xaml", UriKind.Relative);
+
+            var newDict = new ResourceDictionary { Source = source };
+            foreach (var key in newDict.Keys)
+                App.Current.Resources[key] = newDict[key];
+
+            ThemeChanged?.Invoke(isDark);
         }
     }
 }
