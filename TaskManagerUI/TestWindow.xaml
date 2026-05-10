@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         xmlns:helpers="clr-namespace:TaskManagerUI.Helpers"
         xmlns:controls="clr-namespace:TaskManagerUI.Controls.Components"
         mc:Ignorable="d"
@@ -23,9 +24,26 @@
                   Direction="315"
                   Color="#000000"
                   Opacity="0.25"/>
-    </Window.Resources>
 
-    <Border Background="{DynamicResource AppBackgroundBrush}"
+        <Style TargetType="Window">
+            <Setter Property="shell:WindowChrome.WindowChrome">
+                <Setter.Value>
+                    <shell:WindowChrome
+                    ResizeBorderThickness="6"
+                    CaptionHeight="0"
+                    CornerRadius="0"
+                    GlassFrameThickness="0"
+                    UseAeroCaptionButtons="False"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    
+    <Grid>
+
+       
+
+        <Border Background="{DynamicResource AppBackgroundBrush}"
             CornerRadius="12"
             ClipToBounds="True">
 
@@ -83,7 +101,8 @@
                         <Button x:Name="BtnNotification"
                                 Style="{DynamicResource IconButton}"
                                 Margin="0,0,4,0"
-                                ToolTip="Notifications">
+                                ToolTip="Notifications"
+                                shell:WindowChrome.IsHitTestVisibleInChrome="True">
                             <Viewbox Width="16" Height="16">
                                 <Path Data="{StaticResource IconNotification}"
                                       Stroke="{DynamicResource TextSecondaryBrush}"
@@ -100,7 +119,8 @@
                         <Button x:Name="BtnProfile"
                                 Style="{DynamicResource IconButton}"
                                 Margin="0,0,12,0"
-                                ToolTip="Profile">
+                                ToolTip="Profile"
+                                shell:WindowChrome.IsHitTestVisibleInChrome="True">
                             <Viewbox Width="16" Height="16">
                                 <Path Data="{StaticResource IconUser}"
                                       Stroke="{DynamicResource TextSecondaryBrush}"
@@ -123,7 +143,8 @@
                                 Width="32" Height="32"
                                 Margin="0,0,2,0"
                                 ToolTip="Minimize"
-                                Click="BtnMinimize_Click">
+                                Click="BtnMinimize_Click"
+                                shell:WindowChrome.IsHitTestVisibleInChrome="True">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border x:Name="Bd"
@@ -153,7 +174,8 @@
                                 Width="32" Height="32"
                                 Margin="0,0,2,0"
                                 ToolTip="Maximize"
-                                Click="BtnMaximize_Click">
+                                Click="BtnMaximize_Click"
+                                shell:WindowChrome.IsHitTestVisibleInChrome="True">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border x:Name="Bd"
@@ -182,7 +204,8 @@
                         <Button x:Name="BtnClose"
                                 Width="32" Height="32"
                                 ToolTip="Close"
-                                Click="BtnClose_Click">
+                                Click="BtnClose_Click"
+                                shell:WindowChrome.IsHitTestVisibleInChrome="True">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border x:Name="Bd"
@@ -228,7 +251,9 @@
                         Background="{DynamicResource SidebarBackgroundBrush}"
                         BorderBrush="{DynamicResource BorderDefaultBrush}"
                         BorderThickness="0,0,1,0"
-                        ClipToBounds="True">
+                        ClipToBounds="True"
+                        MouseLeftButtonDown="TitleBar_MouseLeftButtonDown"
+                        shell:WindowChrome.IsHitTestVisibleInChrome="True">
 
                     <Grid>
                         <Grid.RowDefinitions>
@@ -550,4 +575,6 @@
             </Grid>
         </Grid>
     </Border>
+        
+    </Grid>
 </Window>
