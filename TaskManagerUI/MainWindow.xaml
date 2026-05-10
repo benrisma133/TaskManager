@@ -14,7 +14,8 @@
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
-        ResizeMode="CanResizeWithGrip">
+        ResizeMode="CanResizeWithGrip"
+        Icon="Assets/TaskFlow_Icon.png">
 
     <Window.Resources>
         <!-- Add inside your existing ResourceDictionary -->

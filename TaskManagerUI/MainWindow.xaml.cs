@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 using TaskManagerUI.Helpers;
 using TaskManagerUI.Pages.Categories;
 
@@ -31,6 +32,23 @@ namespace TaskManagerUI
 
             // Register tooltip mapping after InitializeComponent
             BuildTooltipMap();
+
+            // Set icon from PNG with proper handling for .NET 8
+            try
+            {
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.UriSource = new Uri("pack://application:,,,/Assets/TaskFlow_Icon.png", UriKind.Absolute);
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.EndInit();
+                bitmap.Freeze();
+
+                this.Icon = bitmap;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Icon load error: {ex.Message}");
+            }
         }
 
         // ── Build the button → popup map ──────────────────────────────
