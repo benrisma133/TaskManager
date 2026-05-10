@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using TaskManagerUI.Helpers;
 using TaskManagerUI.Pages.Categories;
@@ -105,12 +106,21 @@ namespace TaskManagerUI
             // Close all popups when toggling
             CloseAllPopups();
 
+            // ✅ Disable effects before animation
+            SetPageRenderingMode(true);
+
             var anim = new GridLengthAnimation
             {
                 From = SidebarColumn.Width,
                 To = new GridLength(targetWidth),
-                Duration = TimeSpan.FromMilliseconds(70),
+                Duration = TimeSpan.FromMilliseconds(220),
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }
+            };
+
+            anim.Completed += (s, e) =>
+            {
+                // ✅ Re-enable effects after animation completes
+                SetPageRenderingMode(false);
             };
 
             SidebarColumn.BeginAnimation(ColumnDefinition.WidthProperty, anim);
@@ -123,6 +133,23 @@ namespace TaskManagerUI
             CategoriesText.Visibility = vis;
             SettingsText.Visibility = vis;
             ProfileStack.Visibility = vis;
+        }
+
+        private void SetPageRenderingMode(bool animating)
+        {
+            if (PageContent.Content is UIElement page)
+            {
+                if (animating)
+                {
+                    // ✅ Freeze rendering to a bitmap during animation
+                    page.CacheMode = new BitmapCache { EnableClearType = false, SnapsToDevicePixels = false };
+                }
+                else
+                {
+                    // ✅ Restore normal rendering after animation
+                    page.CacheMode = null;
+                }
+            }
         }
 
         // ── Active menu ───────────────────────────────────────────────
@@ -153,10 +180,12 @@ namespace TaskManagerUI
             PageContent.Content = null;
         }
 
+        private CategoriesPage _categoryPage = new CategoriesPage();
+
         private void BtnCategories_Click(object sender, RoutedEventArgs e)
         {
             SetActiveMenu(BtnCategories);
-            PageContent.Content = new CategoriesPage();
+            PageContent.Content = _categoryPage;
         }
 
         private void BtnSettings_Click(object sender, RoutedEventArgs e)

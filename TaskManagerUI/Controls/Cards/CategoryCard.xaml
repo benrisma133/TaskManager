@@ -46,12 +46,15 @@
         </Border.Triggers>
 
         <Border.Effect>
+            <!-- AFTER: Much cheaper -->
             <DropShadowEffect
-                    x:Name="CardShadow"
-                    Color="#C39BD3"
-                    BlurRadius="30"
-                    ShadowDepth="5"
-                    Opacity="0.4"/>
+                x:Name="CardShadow"
+                Color="#C39BD3"
+                BlurRadius="8"        
+                ShadowDepth="2"
+                Opacity="0.3"
+                RenderingBias="Performance"/>
+                
         </Border.Effect>
 
         <Grid>

@@ -11,6 +11,7 @@ namespace TaskManagerUI.Controls.Cards
         {
             InitializeComponent();
             //MainWindow.ThemeChanged += OnThemeChanged;
+            CacheMode = new BitmapCache();
         }
 
         private void OnThemeChanged(bool isDark)
