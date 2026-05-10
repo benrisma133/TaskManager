@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media.Animation;
 using TaskManagerUI.Helpers;
+using TaskManagerUI.Pages.Categories;
 
 namespace TaskManagerUI
 {
@@ -108,7 +109,7 @@ namespace TaskManagerUI
             {
                 From = SidebarColumn.Width,
                 To = new GridLength(targetWidth),
-                Duration = TimeSpan.FromMilliseconds(220),
+                Duration = TimeSpan.FromMilliseconds(70),
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }
             };
 
@@ -155,7 +156,7 @@ namespace TaskManagerUI
         private void BtnCategories_Click(object sender, RoutedEventArgs e)
         {
             SetActiveMenu(BtnCategories);
-            PageContent.Content = null;
+            PageContent.Content = new CategoriesPage();
         }
 
         private void BtnSettings_Click(object sender, RoutedEventArgs e)

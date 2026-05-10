@@ -18,6 +18,7 @@ public partial class AddEditCategory : Window
     private CategoryService.enMode _formMode = CategoryService.enMode.AddNew;
     private CategoryService _categoryService = new CategoryService();
     private bool _isLoadingForm = false;
+    public bool IsSaved { get; private set; } = false;
 
     // ============================
     // CONSTRUCTORS
@@ -169,6 +170,7 @@ public partial class AddEditCategory : Window
         {
             case enCategorySaveResult.Saved:
                 _formMode = CategoryService.enMode.Update;
+                IsSaved = true;
                 WindowTitle.Text = "Edit Category";
                 FormTitle.Text = "Edit Category";
                 FormSubtitle.Text = "Update the category information below.";
