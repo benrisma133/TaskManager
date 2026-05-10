@@ -6,9 +6,47 @@
         xmlns:local="clr-namespace:TaskManagerUI"
         xmlns:components="clr-namespace:TaskManagerUI.Controls.Components"
         mc:Ignorable="d"
-        Title="TestColorPicker" Height="450" Width="800">
-    <Grid Margin="40">
-        <components:ColorPicker x:Name="MyColorPicker"
-                                SelectedColor="#3B82F6"/>
+        Title="TestColorPicker" Height="450" Width="800"
+        Background="{DynamicResource AppBackgroundBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Top Bar -->
+            <RowDefinition Height="*"/>
+            <!-- Content -->
+            <RowDefinition Height="Auto"/>
+            <!-- Active Session Card -->
+        </Grid.RowDefinitions>
+
+        <!-- ── Top Bar ──────────────────────────────────────── -->
+        <Border Grid.Row="0" 
+            Background="{DynamicResource AppBackgroundBrush}"
+            Padding="20,12">
+            <TextBlock Text="Task Manager"
+                   Foreground="{DynamicResource TextPrimaryBrush}"
+                   FontSize="18"
+                   FontWeight="SemiBold"/>
+        </Border>
+
+        <!-- ── Main Content ─────────────────────────────────── -->
+        <Border Grid.Row="1" Padding="20">
+            <TextBlock Text="Dashboard Content Here"
+                   Foreground="{DynamicResource TextMutedBrush}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"/>
+        </Border>
+
+        <!-- ── Active Session Card (Bottom) ─────────────────── -->
+        <components:ActiveSessionCard
+            Grid.Row="2"
+            x:Name="SessionCard"
+            Visibility="Collapsed"
+            Margin="20,0,20,16"
+            PauseClick="OnPauseClick"
+            StopClick="OnStopClick"
+            CloseClick="OnCloseClick"/>
+
     </Grid>
+
 </Window>
