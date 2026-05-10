@@ -183,18 +183,21 @@ namespace TaskManagerUI
         private void BtnHome_Click(object sender, RoutedEventArgs e)
         {
             SetActiveMenu(BtnHome);
+            PageTitle.Text = "Home";
             PageContent.Content = null;
         }
 
         private void BtnProjects_Click(object sender, RoutedEventArgs e)
         {
             SetActiveMenu(BtnProjects);
+            PageTitle.Text = "Projects";
             PageContent.Content = null;
         }
 
         private void BtnTasks_Click(object sender, RoutedEventArgs e)
         {
             SetActiveMenu(BtnTasks);
+            PageTitle.Text = "Tasks";
             PageContent.Content = null;
         }
 
@@ -203,6 +206,7 @@ namespace TaskManagerUI
         private void BtnCategories_Click(object sender, RoutedEventArgs e)
         {
             SetActiveMenu(BtnCategories);
+            PageTitle.Text = "Categories";
             PageContent.Content = _categoryPage;
         }
 

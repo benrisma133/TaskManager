@@ -326,7 +326,7 @@
 
                         <Grid>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="60"/>
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
@@ -629,17 +629,41 @@
                     </Border>
 
                     <!-- ══════════════════════════════════════════ -->
-                    <!--               CONTENT AREA               -->
+                    <!--          CONTENT AREA WITH HEADER         -->
                     <!-- ══════════════════════════════════════════ -->
-                    <Border Grid.Column="1"
-                        CornerRadius="0,0,12,0"
-                        Background="{DynamicResource SidebarBackgroundBrush}"
-                        BorderBrush="{DynamicResource BorderDefaultBrush}"
-                        BorderThickness="0,0,1,0"
-                        ClipToBounds="True">
-                        <ContentPresenter x:Name="PageContent"
-                                        />
-                    </Border>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <!-- Page Header -->
+                            <RowDefinition Height="*"/>
+                            <!-- Page Content -->
+                        </Grid.RowDefinitions>
+
+                        <!-- ═══ PAGE HEADER ═══ -->
+                        <Border Grid.Row="0"
+                                Background="{DynamicResource SidebarBackgroundBrush}"
+                                BorderBrush="{DynamicResource BorderDefaultBrush}"
+                                BorderThickness="0,0,0,1"
+                                Padding="20,12"
+                                Height="60">
+                            <TextBlock x:Name="PageTitle"
+                                       Text="Categories"
+                                       VerticalAlignment="Top"
+                                       FontSize="24"
+                                       FontWeight="Bold"
+                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        </Border>
+
+                        <!-- ═══ PAGE CONTENT ═══ -->
+                        <Border Grid.Row="1"
+                                CornerRadius="0,0,12,0"
+                                Background="{DynamicResource SidebarBackgroundBrush}"
+                                BorderBrush="{DynamicResource BorderDefaultBrush}"
+                                BorderThickness="0,0,1,0"
+                                ClipToBounds="True">
+                            <ContentPresenter x:Name="PageContent"/>
+                        </Border>
+                    </Grid>
 
 
                 </Grid>
