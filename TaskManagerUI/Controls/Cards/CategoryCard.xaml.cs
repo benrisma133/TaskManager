@@ -10,7 +10,7 @@ namespace TaskManagerUI.Controls.Cards
         public CategoryCard()
         {
             InitializeComponent();
-            //MainWindow.ThemeChanged += OnThemeChanged;
+            MainWindow.ThemeChanged += OnThemeChanged;
             CacheMode = new BitmapCache();
         }
 

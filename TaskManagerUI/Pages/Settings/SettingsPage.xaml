@@ -1,0 +1,103 @@
+﻿<UserControl x:Class="TaskManagerUI.Pages.Settings.SettingsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TaskManagerUI.Pages.Settings"
+             mc:Ignorable="d">
+
+    <StackPanel Margin="30">
+
+        <!-- Settings Title -->
+        <TextBlock Text="Settings"
+                   FontSize="22"
+                   FontWeight="Bold"
+                   Foreground="{DynamicResource TextPrimaryBrush}"
+                   Margin="0,0,0,24"/>
+
+        <!-- Theme Card -->
+        <Border Background="{DynamicResource CardBackgroundBrush}"
+                BorderBrush="{DynamicResource BorderDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="12"
+                Padding="20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Label -->
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock x:Name="DarkModeTitle" 
+                               Text="Dark Mode"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextPrimaryBrush}"/>
+                    <TextBlock x:Name="DarkModeDescription" 
+                               Text="Switch between dark and light theme"
+                               FontSize="12"
+                               Foreground="{DynamicResource TextMutedBrush}"
+                               Margin="0,4,0,0"/>
+                </StackPanel>
+
+                <!-- Toggle Switch -->
+                <CheckBox x:Name="ThemeToggle"
+                          Grid.Column="1"
+                          VerticalAlignment="Center"
+                          Checked="ThemeToggle_Checked"
+                          Unchecked="ThemeToggle_Unchecked">
+                    <CheckBox.Template>
+                        <ControlTemplate TargetType="CheckBox">
+                            <Border x:Name="Track"
+                                    Width="48" Height="26"
+                                    CornerRadius="13"
+                                    Background="{DynamicResource BorderDefaultBrush}"
+                                    Cursor="Hand">
+                                <Border x:Name="Thumb"
+                                        Width="20" Height="20"
+                                        CornerRadius="10"
+                                        Background="White"
+                                        HorizontalAlignment="Left"
+                                        Margin="3,0,0,0">
+                                    <Border.RenderTransform>
+                                        <TranslateTransform x:Name="ThumbTranslate"/>
+                                    </Border.RenderTransform>
+                                </Border>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="Track" Property="Background"
+                                            Value="{DynamicResource AccentBrush}"/>
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="ThumbTranslate"
+                                                                 Storyboard.TargetProperty="X"
+                                                                 To="22"
+                                                                 Duration="0:0:0.2"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="ThumbTranslate"
+                                                                 Storyboard.TargetProperty="X"
+                                                                 To="0"
+                                                                 Duration="0:0:0.2"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </CheckBox.Template>
+                </CheckBox>
+
+            </Grid>
+        </Border>
+
+    </StackPanel>
+
+</UserControl>
