@@ -12,8 +12,12 @@
 	<ItemGroup>
 		<None Remove="Assets\Sounds\complete.wav" />
 		<None Remove="Assets\Sounds\complete2.wav" />
+		<None Remove="Assets\Sounds\error.wav" />
+		<None Remove="Assets\Sounds\success.wav" />
+		<None Remove="Assets\Sounds\tap.wav" />
 		<None Remove="Assets\Sounds\ticktock.wav" />
 		<None Remove="Assets\Sounds\ticktock_pcm.wav" />
+		<None Remove="Assets\Sounds\toggle.wav" />
 		<None Remove="Assets\TaskFlow_Icon.png" />
 	</ItemGroup>
 
@@ -25,11 +29,23 @@
 		<Resource Include="Assets\Sounds\complete2.wav">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Resource>
+		<Resource Include="Assets\Sounds\error.wav">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Assets\Sounds\success.wav">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Assets\Sounds\tap.wav">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
 		<Resource Include="Assets\Sounds\ticktock.wav">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Assets\Sounds\ticktock_pcm.wav">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Assets\Sounds\toggle.wav">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Assets\TaskFlow_Icon.png">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>

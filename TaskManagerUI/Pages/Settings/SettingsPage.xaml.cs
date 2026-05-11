@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -45,6 +46,7 @@ namespace TaskManagerUI.Pages.Settings
             if (_isInitializing) return;
             ThemeToggled?.Invoke(true);
             SwitchTitles(true);
+            PlayToggleSound();
         }
 
         private void ThemeToggle_Unchecked(object sender, RoutedEventArgs e)
@@ -52,12 +54,25 @@ namespace TaskManagerUI.Pages.Settings
             if (_isInitializing) return;
             ThemeToggled?.Invoke(false);
             SwitchTitles(false);
+            PlayToggleSound();
         }
 
         void SwitchTitles(bool isDark)
         {
             DarkModeTitle.Text = isDark ? "Dark Mode" : "Light Mode";
             DarkModeDescription.Text = isDark ? "Switch to the (Light Mode)" : "Switch to the (Dark Mode)";
+        }
+
+        private void PlayToggleSound()
+        {
+            try
+            {
+                var uri = new Uri("pack://application:,,,/TaskManagerUI;component/Assets/Sounds/toggle.wav");
+                var info = Application.GetResourceStream(uri);
+                var player = new SoundPlayer(info.Stream);
+                player.Play();
+            }
+            catch { }
         }
     }
 }

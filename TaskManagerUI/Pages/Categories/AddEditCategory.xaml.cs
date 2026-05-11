@@ -1,7 +1,6 @@
 ﻿using Service.Enums.Category;
 using Service.Services;
-using System.Collections.Generic;
-using System.Linq;
+using System.Media;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -148,6 +147,7 @@ public partial class AddEditCategory : Window
         {
             if(validation.Errors != null && validation.FirstInvalidControl != null)
             {
+                PlaySuccessSound("error.wav");
                 ShowErrorMessage(validation.Errors);
                 ScrollToFirstError(validation.FirstInvalidControl);
                 return;
@@ -155,6 +155,18 @@ public partial class AddEditCategory : Window
         }
 
         _ProcessFormData();
+    }
+
+    private void PlaySuccessSound(string soundName)
+    {
+        try
+        {
+            var uri = new Uri($"pack://application:,,,/TaskManagerUI;component/Assets/Sounds/{soundName}");
+            var info = Application.GetResourceStream(uri);
+            var player = new SoundPlayer(info.Stream);
+            player.Play();
+        }
+        catch { }
     }
 
     private void _ProcessFormData()
@@ -169,6 +181,7 @@ public partial class AddEditCategory : Window
         switch (result)
         {
             case enCategorySaveResult.Saved:
+                PlaySuccessSound("success.wav");
                 _formMode = CategoryService.enMode.Update;
                 IsSaved = true;
                 WindowTitle.Text = "Edit Category";
@@ -180,10 +193,12 @@ public partial class AddEditCategory : Window
                 break;
 
             case enCategorySaveResult.DuplicateName:
+                PlaySuccessSound("error.wav");
                 ShowErrorMessage(new List<string> { "• This category name already exists." });
                 break;
 
             case enCategorySaveResult.Failed:
+                PlaySuccessSound("error.wav");
                 ShowErrorMessage(new List<string> { "• Failed to save. Please try again." });
                 break;
         }

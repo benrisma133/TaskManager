@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Media;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
@@ -206,11 +207,26 @@ namespace TaskManagerUI
                 _activeButton.ClearValue(TagProperty);
             _activeButton = btn;
             _activeButton.Tag = "Active";
+            //PlaySuccessSound("tap.wav");
+        }
+
+        private void PlaySuccessSound(string soundName)
+        {
+            try
+            {
+                var uri = new Uri($"pack://application:,,,/TaskManagerUI;component/Assets/Sounds/{soundName}");
+                var info = Application.GetResourceStream(uri);
+                var player = new SoundPlayer(info.Stream);
+                player.Play();
+            }
+            catch { }
         }
 
         // ── Navigation ────────────────────────────────────────────────
         private void BtnHome_Click(object sender, RoutedEventArgs e)
         {
+            if (BtnHome.Tag?.ToString() == "Active") return;
+            PlaySuccessSound("tap.wav");
             SetActiveMenu(BtnHome);
             PageTitle.Text = "Home";
             PageContent.Content = null;
@@ -218,6 +234,8 @@ namespace TaskManagerUI
 
         private void BtnProjects_Click(object sender, RoutedEventArgs e)
         {
+            if (BtnProjects.Tag?.ToString() == "Active") return;
+            PlaySuccessSound("tap.wav");
             SetActiveMenu(BtnProjects);
             PageTitle.Text = "Projects";
             PageContent.Content = null;
@@ -225,6 +243,8 @@ namespace TaskManagerUI
 
         private void BtnTasks_Click(object sender, RoutedEventArgs e)
         {
+            if (BtnTasks.Tag?.ToString() == "Active") return;
+            PlaySuccessSound("tap.wav");
             SetActiveMenu(BtnTasks);
             PageTitle.Text = "Tasks";
             PageContent.Content = null;
@@ -234,6 +254,8 @@ namespace TaskManagerUI
 
         private void BtnCategories_Click(object sender, RoutedEventArgs e)
         {
+            if (BtnCategories.Tag?.ToString() == "Active") return;
+            PlaySuccessSound("tap.wav");
             SetActiveMenu(BtnCategories);
             PageTitle.Text = "Categories";
             PageContent.Content = _categoryPage;
@@ -243,6 +265,8 @@ namespace TaskManagerUI
 
         private void BtnSettings_Click(object sender, RoutedEventArgs e)
         {
+            if (BtnSettings.Tag?.ToString() == "Active") return;
+            PlaySuccessSound("tap.wav");
             SetActiveMenu(BtnSettings);
             PageTitle.Text = "Settings";
 
