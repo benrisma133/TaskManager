@@ -4,9 +4,23 @@ A modern WPF desktop application for managing tasks, projects, and categories wi
 
 ---
 
-## Screenshots
+## 📸 Screenshots
 
-> _Screenshots coming soon_
+### 🗂️ Categories — Dark
+![Categories Page Dark](https://github.com/benrisma133/TaskManager/blob/main/screenshots/dark/category/page.png?raw=true)
+![Categories Add Dark](https://github.com/benrisma133/TaskManager/blob/main/screenshots/dark/category/add.png?raw=true)
+![Categories Edit Dark](https://github.com/benrisma133/TaskManager/blob/main/screenshots/dark/category/edit.png?raw=true)
+
+### 🗂️ Categories — Light
+![Categories Page Light](https://github.com/benrisma133/TaskManager/blob/main/screenshots/Light/category/page.png?raw=true)
+![Categories Add Light](https://github.com/benrisma133/TaskManager/blob/main/screenshots/Light/category/add.png?raw=true)
+![Categories Edit Light](https://github.com/benrisma133/TaskManager/blob/main/screenshots/Light/category/edit.png?raw=true)
+
+### ⚙️ Settings — Dark
+![Settings Dark](https://github.com/benrisma133/TaskManager/blob/main/screenshots/dark/settings/page.png?raw=true)
+
+### ⚙️ Settings — Light
+![Settings Light](https://github.com/benrisma133/TaskManager/blob/main/screenshots/Light/settings/page.png?raw=true)
 
 ---
 
