@@ -7,20 +7,28 @@ A modern WPF desktop application for managing tasks, projects, and categories wi
 ## 📸 Screenshots
 
 ### 🗂️ Categories — Dark
-![Categories Page Dark](https://github.com/benrisma133/TaskManager/blob/main/screenshots/dark/category/page.png?raw=true)
-![Categories Add Dark](https://github.com/benrisma133/TaskManager/blob/main/screenshots/dark/category/add.png?raw=true)
-![Categories Edit Dark](https://github.com/benrisma133/TaskManager/blob/main/screenshots/dark/category/edit.png?raw=true)
+<p>
+  <img src="screenshots/dark/category/page.png" width="100%" alt="Categories Page Dark"/>
+</p>
+<p>
+  <img src="screenshots/dark/category/add.png" width="48%" alt="Categories Add Dark"/>
+  <img src="screenshots/dark/category/edit.png" width="48%" alt="Categories Edit Dark"/>
+</p>
 
 ### 🗂️ Categories — Light
-![Categories Page Light](https://github.com/benrisma133/TaskManager/blob/main/screenshots/Light/category/page.png?raw=true)
-![Categories Add Light](https://github.com/benrisma133/TaskManager/blob/main/screenshots/Light/category/add.png?raw=true)
-![Categories Edit Light](https://github.com/benrisma133/TaskManager/blob/main/screenshots/Light/category/edit.png?raw=true)
+<p>
+  <img src="screenshots/Light/category/page.png" width="100%" alt="Categories Page Light"/>
+</p>
+<p>
+  <img src="screenshots/Light/category/add.png" width="48%" alt="Categories Add Light"/>
+  <img src="screenshots/Light/category/edit.png" width="48%" alt="Categories Edit Light"/>
+</p>
 
-### ⚙️ Settings — Dark
-![Settings Dark](https://github.com/benrisma133/TaskManager/blob/main/screenshots/dark/settings/page.png?raw=true)
-
-### ⚙️ Settings — Light
-![Settings Light](https://github.com/benrisma133/TaskManager/blob/main/screenshots/Light/settings/page.png?raw=true)
+### ⚙️ Settings — Dark & Light
+<p>
+  <img src="screenshots/dark/settings/page.png" width="48%" alt="Settings Dark"/>
+  <img src="screenshots/Light/settings/page.png" width="48%" alt="Settings Light"/>
+</p>
 
 ---
 
