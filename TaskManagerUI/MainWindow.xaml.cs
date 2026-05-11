@@ -23,6 +23,8 @@ namespace TaskManagerUI
         // Map each button to its popup
         private Dictionary<Button, Popup> _tooltipMap = new();
 
+        private CategoriesPage _categoryPage;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -49,6 +51,19 @@ namespace TaskManagerUI
             {
                 System.Diagnostics.Debug.WriteLine($"Icon load error: {ex.Message}");
             }
+
+            _categoryPage = new CategoriesPage();
+
+            Loaded += (s, e) =>
+            {
+                if (PageContent.Content is UIElement page)
+                {
+                    // ✅ Force first render and cache it
+                    page.CacheMode = new BitmapCache();
+                    page.UpdateLayout(); // Force WPF to render once
+                    page.CacheMode = null; // Release cache
+                }
+            };
         }
 
         // ── Build the button → popup map ──────────────────────────────
@@ -201,7 +216,7 @@ namespace TaskManagerUI
             PageContent.Content = null;
         }
 
-        private CategoriesPage _categoryPage = new CategoriesPage();
+        
 
         private void BtnCategories_Click(object sender, RoutedEventArgs e)
         {
