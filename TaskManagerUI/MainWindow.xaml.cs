@@ -6,6 +6,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using TaskManagerUI.Helpers;
 using TaskManagerUI.Pages.Categories;
+using TaskManagerUI.Pages.Settings;
 
 namespace TaskManagerUI
 {
@@ -25,11 +26,24 @@ namespace TaskManagerUI
 
         private CategoriesPage _categoryPage;
 
+
         public MainWindow()
         {
             InitializeComponent();
+            // Load saved theme
             _isDark = Properties.Settings.Default.IsDarkTheme;
-            if (!_isDark) ApplyTheme(false);
+            if (!_isDark)
+            {
+                var newDict = new ResourceDictionary
+                {
+                    Source = new Uri("/Helpers/ColorsLight.xaml", UriKind.Relative)
+                };
+                foreach (var key in newDict.Keys)
+                    App.Current.Resources[key] = newDict[key];
+            }
+
+
+            //if (!_isDark) ApplyTheme(false);
             SetActiveMenu(BtnHome);
 
             // Register tooltip mapping after InitializeComponent
@@ -225,28 +239,41 @@ namespace TaskManagerUI
             PageContent.Content = _categoryPage;
         }
 
+        //private bool _isDark;
+
         private void BtnSettings_Click(object sender, RoutedEventArgs e)
         {
             SetActiveMenu(BtnSettings);
-            PageContent.Content = null;
+            PageTitle.Text = "Settings";
+
+            var settingsPage = new SettingsPage();
+
+            // 4. Subscribe to the event
+            settingsPage.ThemeToggled += OnThemeToggled;
+
+            // 5. Sync toggle with current theme state
+            settingsPage.SetThemeState(_isDark);
+
+            PageContent.Content = settingsPage;
         }
 
-        // ── Theme ─────────────────────────────────────────────────────
-        private void ApplyTheme(bool isDark)
+        // 6. This runs when SettingsPage fires ThemeToggled
+        private void OnThemeToggled(bool isDark)
         {
             _isDark = isDark;
-            Properties.Settings.Default.IsDarkTheme = isDark;
+            Properties.Settings.Default.IsDarkTheme = _isDark;
             Properties.Settings.Default.Save();
 
-            var source = isDark
+            var source = _isDark
                 ? new Uri("/Helpers/Colors.xaml", UriKind.Relative)
                 : new Uri("/Helpers/ColorsLight.xaml", UriKind.Relative);
 
             var newDict = new ResourceDictionary { Source = source };
+
             foreach (var key in newDict.Keys)
                 App.Current.Resources[key] = newDict[key];
 
-            ThemeChanged?.Invoke(isDark);
+            ThemeChanged?.Invoke(_isDark);
         }
     }
 }
