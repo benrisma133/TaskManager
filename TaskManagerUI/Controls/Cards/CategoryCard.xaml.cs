@@ -57,7 +57,7 @@ namespace TaskManagerUI.Controls.Cards
             // Row 4
             CategoryStatus.Status = category.IsCustom ? "Custom" : "System";
 
-            UpdateShadow(true);
+            //UpdateShadow(true);
         }
 
         private void UpdateShadow(bool isDark)

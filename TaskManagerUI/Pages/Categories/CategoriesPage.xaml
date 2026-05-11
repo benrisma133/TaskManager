@@ -9,70 +9,102 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- ═══════════ TOP BAR ═══════════ -->
         <Border Grid.Row="0" Padding="24,16">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
+                    <!-- Search + Filter -->
+                    <ColumnDefinition Width="*"/>
+                    <!-- Spacer -->
+                    <ColumnDefinition Width="Auto"/>
+                    <!-- Add Button -->
                 </Grid.ColumnDefinitions>
 
-                <!-- Search Box -->
-                <Border Grid.Column="0"
-                        Background="{DynamicResource InputBackgroundBrush}"
-                        BorderBrush="{DynamicResource BorderDefaultBrush}"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        Height="42"
-                        MaxWidth="360"
-                        HorizontalAlignment="Left">
-                    <Grid Margin="12,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                <!-- Search Box + Filter Combo -->
+                <StackPanel Grid.Column="0"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Left">
 
-                        <!-- Search Icon -->
-                        <Viewbox Width="16" Height="16"
-                                 Margin="0,0,8,0"
-                                 VerticalAlignment="Center">
-                            <Canvas Width="24" Height="24">
-                                <Path Data="{StaticResource IconSearch}"
-                                      Stroke="{DynamicResource TextMutedBrush}"
-                                      StrokeThickness="2"
-                                      Fill="Transparent"
-                                      StrokeStartLineCap="Round"
-                                      StrokeEndLineCap="Round"/>
-                            </Canvas>
-                        </Viewbox>
+                    <!-- Search Box -->
+                    <Border Background="{DynamicResource InputBackgroundBrush}"
+                            BorderBrush="{DynamicResource BorderDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Height="42"
+                            Margin="0,0,16,0">
+                        <Grid Margin="12,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-                        <!-- Search TextBox -->
-                        <TextBox x:Name="SearchBox"
-                                 Grid.Column="1"
-                                 MinWidth="200"
-                                 Background="Transparent"
-                                 BorderThickness="0"
-                                 Foreground="{DynamicResource TextPrimaryBrush}"
-                                 CaretBrush="{DynamicResource AccentBrush}"
-                                 FontSize="14"
-                                 VerticalAlignment="Center"
-                                 TextChanged="SearchBox_TextChanged"/>
+                            <!-- Search Icon -->
+                            <Viewbox Width="16" Height="16"
+                                     Margin="0,0,8,0"
+                                     VerticalAlignment="Center">
+                                <Canvas Width="24" Height="24">
+                                    <Path Data="{StaticResource IconSearch}"
+                                          Stroke="{DynamicResource TextMutedBrush}"
+                                          StrokeThickness="2"
+                                          Fill="Transparent"
+                                          StrokeStartLineCap="Round"
+                                          StrokeEndLineCap="Round"/>
+                                </Canvas>
+                            </Viewbox>
 
-                        <!-- Placeholder -->
-                        <TextBlock x:Name="SearchPlaceholder"
-                                   Grid.Column="1"
-                                   Text="Search categories..."
+                            <!-- Search TextBox -->
+                            <TextBox x:Name="SearchBox"
+                                     Grid.Column="1"
+                                     MinWidth="200"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     Foreground="{DynamicResource TextPrimaryBrush}"
+                                     CaretBrush="{DynamicResource AccentBrush}"
+                                     FontSize="14"
+                                     VerticalAlignment="Center"
+                                     TextChanged="SearchBox_TextChanged"/>
+
+                            <!-- Placeholder -->
+                            <TextBlock x:Name="SearchPlaceholder"
+                                       Grid.Column="1"
+                                       Text="Search categories..."
+                                       FontSize="14"
+                                       Foreground="{DynamicResource TextPlaceholderBrush}"
+                                       VerticalAlignment="Center"
+                                       IsHitTestVisible="False"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Filter Label + ComboBox -->
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Center">
+                        <TextBlock Text="Filter by:"
                                    FontSize="14"
-                                   Foreground="{DynamicResource TextPlaceholderBrush}"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"
                                    VerticalAlignment="Center"
-                                   IsHitTestVisible="False"/>
-                    </Grid>
-                </Border>
+                                   Margin="0,0,8,0"/>
+
+                        <ComboBox x:Name="TypeFilterCombo"
+                                  Width="150"
+                                  Height="42"
+                                  SelectedIndex="0"
+                                  Style="{DynamicResource ModernComboBox}"
+                                  SelectionChanged="TypeFilterCombo_SelectionChanged">
+                            <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="All Types"/>
+                            <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="Project"/>
+                            <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="Task"/>
+                            <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="Course"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                </StackPanel>
 
                 <!-- Add Button -->
-                <Button Grid.Column="1"
+                <Button Grid.Column="2"
                         x:Name="AddBtn"
                         Height="42"
                         Padding="16,0"
@@ -104,11 +136,11 @@
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter TargetName="Bd" Property="Background"
-                                            Value="{DynamicResource AccentHoverBrush}"/>
+                                    Value="{DynamicResource AccentHoverBrush}"/>
                                 </Trigger>
                                 <Trigger Property="IsPressed" Value="True">
                                     <Setter TargetName="Bd" Property="Background"
-                                            Value="{DynamicResource AccentPressedBrush}"/>
+                                    Value="{DynamicResource AccentPressedBrush}"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -140,6 +172,12 @@
                             </LinearGradientBrush>
                         </Border.OpacityMask>
                     </Border>
+                    <Border Margin="8" Height="180" CornerRadius="12"
+                            Background="{DynamicResource CardBackgroundBrush}"/>
+                    <Border Margin="8" Height="180" CornerRadius="12"
+                            Background="{DynamicResource CardBackgroundBrush}"/>
+                    <Border Margin="8" Height="180" CornerRadius="12"
+                            Background="{DynamicResource CardBackgroundBrush}"/>
                     <Border Margin="8" Height="180" CornerRadius="12"
                             Background="{DynamicResource CardBackgroundBrush}"/>
                     <Border Margin="8" Height="180" CornerRadius="12"
@@ -183,6 +221,52 @@
 
             </Grid>
         </ScrollViewer>
+
+        <!-- ═══════════ TOTAL FOOTER ═══════════ -->
+        <Border Grid.Row="2"
+            Background="{DynamicResource SidebarBackgroundBrush}"
+            BorderBrush="{DynamicResource BorderDefaultBrush}"
+            BorderThickness="0,1,0,0"
+            CornerRadius="0,0,12,12"
+            Padding="24,12"
+                Height="53">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Total Count -->
+                <StackPanel Grid.Column="0"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center">
+                    <TextBlock Text="Total:"
+                           FontSize="13"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextSecondaryBrush}"
+                           Margin="0,0,6,0"/>
+                    <TextBlock x:Name="TotalCountText"
+                           Text="0"
+                           FontSize="13"
+                           FontWeight="Bold"
+                           Foreground="{DynamicResource AccentBrush}"/>
+                    <TextBlock Text="categories"
+                           FontSize="13"
+                           Foreground="{DynamicResource TextMutedBrush}"
+                           Margin="6,0,0,0"/>
+                </StackPanel>
+
+                <!-- Showing Results (optional) -->
+                <TextBlock x:Name="FilterResultText"
+                       Grid.Column="2"
+                       Text="Showing all"
+                       FontSize="12"
+                       Foreground="{DynamicResource TextMutedBrush}"
+                       VerticalAlignment="Center"/>
+
+            </Grid>
+        </Border>
 
     </Grid>
 </UserControl>

@@ -17,6 +17,8 @@ public partial class CategoriesPage : UserControl
     // FIELDS
     // ============================
     private List<Category> _allCategories = new();
+    private List<Category>? _filtredCategories = new();
+    private bool _isInitialized = false;
 
     // ============================
     // CONSTRUCTOR
@@ -29,13 +31,17 @@ public partial class CategoriesPage : UserControl
     // ============================
     // PAGE LOADED
     // ============================
-    private void CategoriesPage_Loaded(object sender, RoutedEventArgs e)
-        => LoadCategories();
+    private async void CategoriesPage_Loaded(object sender, RoutedEventArgs e)
+    {
+        _isInitialized = true;
+        await LoadCategories();
+    }
+    
 
     // ============================
     // LOAD CATEGORIES
     // ============================
-    private async void LoadCategories()
+    private async Task LoadCategories()
     {
         ShowSkeleton();
 
@@ -50,7 +56,8 @@ public partial class CategoriesPage : UserControl
         }
 
         _allCategories = categories;
-        RenderCards(_allCategories);
+        //RenderCards(_allCategories);
+        ApplyFilters();
     }
 
     // ============================
@@ -58,8 +65,19 @@ public partial class CategoriesPage : UserControl
     // ============================
     private void RenderCards(List<Category> categories)
     {
+        if (CardsPanel == null) return;
+
         CardsPanel.Children.Clear();
         HideSkeleton();
+
+        // ✅ Update total count
+        TotalCountText.Text = categories.Count.ToString();
+
+        // ✅ Update filter result text
+        if (categories.Count == _allCategories.Count)
+            FilterResultText.Text = "Showing all";
+        else
+            FilterResultText.Text = $"Filtered from {_allCategories.Count}";
 
         if (categories.Count == 0)
         {
@@ -112,16 +130,30 @@ public partial class CategoriesPage : UserControl
     // ============================
     private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
     {
+        if (!_isInitialized) return;
+
         SearchPlaceholder.Visibility = string.IsNullOrEmpty(SearchBox.Text)
             ? Visibility.Visible
             : Visibility.Collapsed;
 
+        ApplyFilters();
+    }
+
+    private void TypeFilterCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        ApplyFilters();
+    }
+
+    private void ApplyFilters()
+    {
         var query = SearchBox.Text.Trim().ToLower();
-        var filtered = string.IsNullOrEmpty(query)
-            ? _allCategories
-            : _allCategories.Where(c =>
-                c.Name.ToLower().Contains(query) ||
-                c.Type.ToLower().Contains(query)).ToList();
+        var selectedType = (TypeFilterCombo.SelectedItem as ComboBoxItem)?.Content.ToString();
+
+        var filtered = _allCategories.Where(c =>
+            (string.IsNullOrEmpty(query) || c.Name.ToLower().Contains(query)) &&
+            (selectedType == "All Types" || c.Type == selectedType)
+        ).ToList();
+
 
         RenderCards(filtered);
     }
@@ -129,29 +161,31 @@ public partial class CategoriesPage : UserControl
     // ============================
     // ADD
     // ============================
-    private void AddBtn_Click(object sender, RoutedEventArgs e)
+    private async void AddBtn_Click(object sender, RoutedEventArgs e)
     {
         var window = new AddEditCategory();
         window.Owner = Window.GetWindow(this);
         window.ShowDialog();
-        if (window.IsSaved) LoadCategories();
+        
+        if (window.IsSaved)  await LoadCategories();
+
     }
 
     // ============================
     // EDIT
     // ============================
-    private void Card_OnEdit(int categoryId)
+    private async void Card_OnEdit(int categoryId)
     {
         var window = new AddEditCategory(categoryId);
         window.Owner = Window.GetWindow(this);
         window.ShowDialog();
-        if (window.IsSaved) LoadCategories();
+        if (window.IsSaved) await LoadCategories();
     }
 
     // ============================
     // DELETE
     // ============================
-    private void Card_OnDelete(int categoryId, string categoryName)
+    private async void Card_OnDelete(int categoryId, string categoryName)
     {
         var confirm = MessageBox.Show(
             $"Are you sure you want to delete \"{categoryName}\"?",
@@ -166,7 +200,7 @@ public partial class CategoriesPage : UserControl
         switch (result)
         {
             case enCategoryDeleteResult.Deleted:
-                LoadCategories();
+                await LoadCategories();
                 break;
 
             case enCategoryDeleteResult.NotCustom:

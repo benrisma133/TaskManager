@@ -51,7 +51,9 @@
     <SolidColorBrush x:Key="ScrollTrackBrush" Color="Transparent"/>
 
     <!-- SHADOW -->
-    <Color x:Key="ShadowColor">#C39BD3</Color>
+    <!-- <Color x:Key="ShadowColor">#C39BD3</Color> -->
+    <SolidColorBrush x:Key="CardShadowBrush" Color="#25C39BD3"/>
+    <!-- Purple glow in dark -->
 
     <!-- PRIORITY -->
     <SolidColorBrush x:Key="PriorityHighBrush"      Color="#FF6B35"/>
