@@ -236,4 +236,66 @@ public static class TaskRepository
 
         return list;
     }
+
+    // ======================== [ IS TASK NAME TAKEN ] ========================
+    public static bool IsTaskNameTaken(int projectId, string title)
+    {
+        try
+        {
+            using var conn = new SqlConnection(ConnectionString);
+            using var cmd = new SqlCommand("sp_IsTaskNameTaken", conn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            cmd.Parameters.AddWithValue("@ProjectId", projectId);
+            cmd.Parameters.AddWithValue("@Title", title);
+            conn.Open();
+
+            using var reader = cmd.ExecuteReader();
+            return reader.Read() && reader.GetInt32(reader.GetOrdinal("IsTaken")) == 1;
+        }
+        catch (SqlException ex)
+        {
+            clsLog.LogError(nameof(TaskRepository), nameof(IsTaskNameTaken), ex);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            clsLog.LogError(nameof(TaskRepository), nameof(IsTaskNameTaken), ex);
+            throw;
+        }
+    }
+
+    // ======================== [ IS TASK NAME TAKEN BY OTHER ] ========================
+    public static bool IsTaskNameTakenByOther(int taskId, int projectId, string title)
+    {
+        try
+        {
+            using var conn = new SqlConnection(ConnectionString);
+            using var cmd = new SqlCommand("sp_IsTaskNameTakenByOther", conn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            cmd.Parameters.AddWithValue("@TaskId", taskId);
+            cmd.Parameters.AddWithValue("@ProjectId", projectId);
+            cmd.Parameters.AddWithValue("@Title", title);
+            conn.Open();
+
+            using var reader = cmd.ExecuteReader();
+            return reader.Read() && reader.GetInt32(reader.GetOrdinal("IsTaken")) == 1;
+        }
+        catch (SqlException ex)
+        {
+            clsLog.LogError(nameof(TaskRepository), nameof(IsTaskNameTakenByOther), ex);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            clsLog.LogError(nameof(TaskRepository), nameof(IsTaskNameTakenByOther), ex);
+            throw;
+        }
+    }
+
 }

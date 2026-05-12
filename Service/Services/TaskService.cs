@@ -231,4 +231,31 @@ public class TaskService
             return (enTaskRetrieveResult.Failed, new List<TaskItemDetails>());
         }
     }
+
+    // ─── Static: IsNameTaken (Add) ─────────────────────────────────────────
+    public static bool IsNameTaken(int projectId, string title)
+    {
+        try
+        {
+            return TaskRepository.IsTaskNameTaken(projectId, title);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    // ─── Static: IsNameTakenByOther (Update) ───────────────────────────────
+    public static bool IsNameTakenByOther(int taskId, int projectId, string title)
+    {
+        try
+        {
+            return TaskRepository.IsTaskNameTakenByOther(taskId, projectId, title);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
 }
