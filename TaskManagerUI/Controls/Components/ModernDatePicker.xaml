@@ -1,0 +1,87 @@
+﻿<UserControl x:Class="TaskManagerUI.Controls.Components.ModernDatePicker"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Name="Root">
+
+    <StackPanel>
+
+        <!-- Label -->
+        <TextBlock x:Name="LabelText"
+                   FontSize="13"
+                   FontWeight="Medium"
+                   Foreground="{DynamicResource TextSecondaryBrush}"
+                   Margin="0,0,0,8"/>
+
+        <!-- Year / Month / Day -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Year -->
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="YYYY"
+                   FontSize="11"
+                   Foreground="{DynamicResource TextMutedBrush}"
+                   Margin="0,0,0,4"/>
+                <ComboBox x:Name="YearCombo"
+                  Style="{DynamicResource ModernComboBox}"
+                  SelectionChanged="YearCombo_SelectionChanged"/>
+            </StackPanel>
+
+            <!-- Separator -->
+            <TextBlock Grid.Column="1"
+               Text="/"
+               FontSize="16"
+               Foreground="{DynamicResource TextMutedBrush}"
+               VerticalAlignment="Bottom"
+               HorizontalAlignment="Center"
+               Margin="0,0,0,10"/>
+
+            <!-- Month -->
+            <StackPanel Grid.Column="2">
+                <TextBlock Text="MM"
+                   FontSize="11"
+                   Foreground="{DynamicResource TextMutedBrush}"
+                   Margin="0,0,0,4"/>
+                <ComboBox x:Name="MonthCombo"
+                  Style="{DynamicResource ModernComboBox}"
+                  SelectionChanged="MonthCombo_SelectionChanged"/>
+            </StackPanel>
+
+            <!-- Separator -->
+            <TextBlock Grid.Column="3"
+               Text="/"
+               FontSize="16"
+               Foreground="{DynamicResource TextMutedBrush}"
+               VerticalAlignment="Bottom"
+               HorizontalAlignment="Center"
+               Margin="0,0,0,10"/>
+
+            <!-- Day -->
+            <StackPanel Grid.Column="4">
+                <TextBlock Text="DD"
+                   FontSize="11"
+                   Foreground="{DynamicResource TextMutedBrush}"
+                   Margin="0,0,0,4"/>
+                <ComboBox x:Name="DayCombo"
+                  Style="{DynamicResource ModernComboBox}"
+                  SelectionChanged="DayCombo_SelectionChanged"/>
+            </StackPanel>
+
+        </Grid>
+
+        <!-- Validation Message -->
+        <TextBlock x:Name="ValidationMessage"
+                   Foreground="{DynamicResource ErrorBrush}"
+                   FontSize="12"
+                   Margin="0,6,0,0"
+                   TextWrapping="Wrap"
+                   Visibility="Collapsed"/>
+
+    </StackPanel>
+</UserControl>
