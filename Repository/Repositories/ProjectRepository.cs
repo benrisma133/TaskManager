@@ -329,4 +329,38 @@ public static class ProjectRepository
             throw;
         }
     }
+
+    // ======================== [ GET PROJECTS LOOKUP ] ========================
+    public static List<ProjectLookup> GetProjectsLookup()
+    {
+        var list = new List<ProjectLookup>();
+
+        try
+        {
+            using var conn = new SqlConnection(ConnectionString);
+            using var cmd = new SqlCommand("sp_GetProjectsLookup", conn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            conn.Open();
+
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+                list.Add(ProjectMapper.MapProjectLookup(reader));
+        }
+        catch (SqlException ex)
+        {
+            clsLog.LogError(nameof(ProjectRepository), nameof(GetProjectsLookup), ex);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            clsLog.LogError(nameof(ProjectRepository), nameof(GetProjectsLookup), ex);
+            throw;
+        }
+
+        return list;
+    }
+
 }

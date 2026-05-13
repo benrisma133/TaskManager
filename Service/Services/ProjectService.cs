@@ -268,5 +268,19 @@ public class ProjectService
         }
     }
 
+    // ─── Static: GetLookup ─────────────────────────────────────────────────
+    public static (enProjectRetrieveResult result, List<ProjectLookup> projects) GetLookup()
+    {
+        try
+        {
+            var list = ProjectRepository.GetProjectsLookup();
+            return (enProjectRetrieveResult.Found, list);
+        }
+        catch
+        {
+            return (enProjectRetrieveResult.Failed, new List<ProjectLookup>());
+        }
+    }
+
 
 }

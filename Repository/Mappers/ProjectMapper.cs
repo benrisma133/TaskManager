@@ -48,4 +48,11 @@ public static class ProjectMapper
             CategoryName = reader.GetString(reader.GetOrdinal("CategoryName"))
         };
 
+    public static ProjectLookup MapProjectLookup(SqlDataReader reader) =>
+    new ProjectLookup
+    {
+        ProjectId = reader.GetInt32(reader.GetOrdinal("ProjectId")),
+        Title = reader.GetString(reader.GetOrdinal("Title"))
+    };
+
 }
