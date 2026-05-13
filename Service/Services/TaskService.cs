@@ -1,5 +1,6 @@
 ﻿using Repository.Models;
 using Repository.Repositories;
+using Service.Enums.Project;
 using Service.Enums.Task;
 
 namespace Service.Services;
@@ -15,7 +16,7 @@ public class TaskService
     public string Title { get; set; } = null!;
     public string? Description { get; set; }
     public int ProjectID { get; set; }
-    // public Project Project          { get; set; } = null!;
+    public ProjectService? Project { get; set; } = null!;
     public string Priority { get; set; } = null!;
     public string Status { get; set; } = null!;
     public DateOnly? DueDate { get; set; }
@@ -76,9 +77,9 @@ public class TaskService
         _Mode = mode;
 
         // TODO: load related project when needed
-        // var (result, projectService) = ProjectService.Find(task.ProjectID);
-        // if (result == enProjectRetrieveResult.Found)
-        //     Project = projectService;
+         var (result, projectService) = ProjectService.Find(task.ProjectID);
+        if (result == enProjectRetrieveResult.Found)
+            Project = projectService;
     }
 
     // ─── Private: AddNew ───────────────────────────────────────────────────
@@ -204,17 +205,23 @@ public class TaskService
         }
     }
 
-    // ─── Static: GetAll ────────────────────────────────────────────────────
-    public static (enTaskRetrieveResult result, List<TaskItemDetails> tasks) GetAll()
+    // ─── Static: GetAll Paged ──────────────────────────────────────────────
+    public static (enTaskRetrieveResult result, List<TaskItemDetails> tasks, int totalCount) GetAll(
+    int pageNumber = 1,
+    int pageSize = 9,
+    string? search = null,
+    string? priority = null,
+    string? status = null)
     {
         try
         {
-            var list = TaskRepository.GetAllTasks();
-            return (enTaskRetrieveResult.Found, list);
+            var (tasks, totalCount) = TaskRepository.GetAllTasks(
+                pageNumber, pageSize, search, priority, status);
+            return (enTaskRetrieveResult.Found, tasks, totalCount);
         }
         catch
         {
-            return (enTaskRetrieveResult.Failed, new List<TaskItemDetails>());
+            return (enTaskRetrieveResult.Failed, new List<TaskItemDetails>(), 0);
         }
     }
 

@@ -8,6 +8,7 @@ using System.Windows.Media.Imaging;
 using TaskManagerUI.Helpers;
 using TaskManagerUI.Pages.Categories;
 using TaskManagerUI.Pages.Settings;
+using TaskManagerUI.Pages.Tasks;
 
 namespace TaskManagerUI
 {
@@ -26,6 +27,7 @@ namespace TaskManagerUI
         private Dictionary<Button, Popup> _tooltipMap = new();
 
         private CategoriesPage _categoryPage;
+        private TasksPage _taskPage;
 
 
         public MainWindow()
@@ -68,6 +70,7 @@ namespace TaskManagerUI
             }
 
             _categoryPage = new CategoriesPage();
+            _taskPage = new TasksPage();
 
             Loaded += (s, e) =>
             {
@@ -247,7 +250,7 @@ namespace TaskManagerUI
             PlaySuccessSound("tap.wav");
             SetActiveMenu(BtnTasks);
             PageTitle.Text = "Tasks";
-            PageContent.Content = null;
+            PageContent.Content = _taskPage;
         }
 
         
