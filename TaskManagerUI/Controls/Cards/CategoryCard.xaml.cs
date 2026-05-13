@@ -7,11 +7,14 @@ namespace TaskManagerUI.Controls.Cards
 {
     public partial class CategoryCard : UserControl
     {
+        bool _isDark;
         public CategoryCard()
         {
             InitializeComponent();
             MainWindow.ThemeChanged += OnThemeChanged;
             CacheMode = new BitmapCache();
+
+            _isDark = Properties.Settings.Default.IsDarkTheme;
         }
 
         private void OnThemeChanged(bool isDark)
@@ -57,15 +60,29 @@ namespace TaskManagerUI.Controls.Cards
             // Row 4
             CategoryStatus.Status = category.IsCustom ? "Custom" : "System";
 
-            //UpdateShadow(true);
+            UpdateShadow(_isDark);
         }
 
         private void UpdateShadow(bool isDark)
         {
-            CardShadow.Color = isDark ? Colors.Black : Colors.Gray;
-            CardShadow.Opacity = isDark ? 0.4 : 0.15;
+            if (isDark)
+            {
+                CardShadow.Color = Colors.Black;
+                CardShadow.Opacity = 0.55;
+                CardShadow.BlurRadius = 14;
+                CardShadow.ShadowDepth = 2;
+            }
+            else
+            {
+                // Light mode: use a LIGHT color, not dark
+                CardShadow.Color = (Color)ColorConverter.ConvertFromString("#000000");
+                CardShadow.Opacity = 0.15;
+                CardShadow.BlurRadius = 8;
+                CardShadow.ShadowDepth = 2;
+            }
+            CardShadow.Direction = 270;
         }
 
-        
+
     }
 }

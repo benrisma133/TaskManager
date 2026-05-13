@@ -47,13 +47,13 @@
 
         <Border.Effect>
             <!-- AFTER: Much cheaper -->
-            <DropShadowEffect
-                x:Name="CardShadow"
-                Color="#C39BD3"
-                BlurRadius="8"        
-                ShadowDepth="2"
-                Opacity="0.3"
-                RenderingBias="Performance"/>
+            <DropShadowEffect x:Name="CardShadow"
+                  Color="#000000"
+                  Direction="270"
+                  ShadowDepth="2"
+                  BlurRadius="8"
+                  Opacity="0.15"
+                  RenderingBias="Performance"/>
                 
         </Border.Effect>
 

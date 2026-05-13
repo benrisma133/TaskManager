@@ -46,7 +46,8 @@
 
         <Border Background="{DynamicResource AppBackgroundBrush}"
             CornerRadius="12"
-            ClipToBounds="True">
+            ClipToBounds="True"
+                Padding="4">
 
             <Grid>
                 <Grid.RowDefinitions>

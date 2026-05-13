@@ -170,10 +170,13 @@ public static class TaskRepository
         }
     }
 
-    // ======================== [ GET ALL TASKS ] ========================
-    public static List<TaskItemDetails> GetAllTasks()
+    // ======================== [ GET ALL TASKS PAGED ] ========================
+    public static (List<TaskItemDetails> tasks, int totalCount) GetAllTasks(
+            int pageNumber = 1, int pageSize = 9,
+            string? search = null, string? priority = null, string? status = null)
     {
         var list = new List<TaskItemDetails>();
+        int totalCount = 0;
 
         try
         {
@@ -183,11 +186,20 @@ public static class TaskRepository
                 CommandType = CommandType.StoredProcedure
             };
 
+            cmd.Parameters.AddWithValue("@PageNumber", pageNumber);
+            cmd.Parameters.AddWithValue("@PageSize", pageSize);
+            cmd.Parameters.AddWithValue("@Search", (object?)search ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@Priority", (object?)priority ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@Status", (object?)status ?? DBNull.Value);
+
             conn.Open();
 
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
                 list.Add(TaskMapper.MapTaskItemDetails(reader));
+
+            if (reader.NextResult() && reader.Read())
+                totalCount = reader.GetInt32(reader.GetOrdinal("TotalCount"));
         }
         catch (SqlException ex)
         {
@@ -200,7 +212,7 @@ public static class TaskRepository
             throw;
         }
 
-        return list;
+        return (list, totalCount);
     }
 
     // ======================== [ GET TASKS BY PROJECT ] ========================
