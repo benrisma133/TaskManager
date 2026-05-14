@@ -200,17 +200,27 @@ public class ProjectService
         }
     }
 
-    // ─── Static: GetAll ────────────────────────────────────────────────────
-    public static (enProjectRetrieveResult result, List<ProjectDetails> projects) GetAll()
+    // ─── Static: GetAll Paged ─────────────────────────────────────────────
+    public static (enProjectRetrieveResult result,
+                   List<ProjectDetails> projects,
+                   int totalCount) GetAll(
+        int pageNumber = 1,
+        int pageSize = 9,
+        string? search = null,
+        string? priority = null,
+        string? status = null,
+        int? categoryId = null)
     {
         try
         {
-            var list = ProjectRepository.GetAllProjects();
-            return (enProjectRetrieveResult.Found, list);
+            var (projects, totalCount) = ProjectRepository.GetAllProjects(
+                pageNumber, pageSize, search, priority, status, categoryId);
+
+            return (enProjectRetrieveResult.Found, projects, totalCount);
         }
         catch
         {
-            return (enProjectRetrieveResult.Failed, new List<ProjectDetails>());
+            return (enProjectRetrieveResult.Failed, new List<ProjectDetails>(), 0);
         }
     }
 
