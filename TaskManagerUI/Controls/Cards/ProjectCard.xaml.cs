@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using Repository.Models;
+using Service.Services;
+using System.Windows.Controls;
 using System.Windows.Media;
 using TaskManagerUI.Models;
 
@@ -6,12 +8,17 @@ namespace TaskManagerUI.Controls.Cards
 {
     public partial class ProjectCard : UserControl
     {
+        private bool _isDark;
         public ProjectCard()
         {
             InitializeComponent();
+            MainWindow.ThemeChanged += OnThemeChanged;
+            CacheMode = new BitmapCache();
+
+            _isDark = Properties.Settings.Default.IsDarkTheme;
         }
 
-        private Geometry? GetIconByName(string iconName)
+        private Geometry? GetIconByName(string? iconName)
         {
             var map = new Dictionary<string, string>
             {
@@ -28,20 +35,20 @@ namespace TaskManagerUI.Controls.Cards
                 { "briefcase",  "IconFolder"   },
             };
 
-            if (map.TryGetValue(iconName, out var key))
+            if (map.TryGetValue(iconName!, out var key))
                 return TryFindResource(key) as Geometry;
 
             return TryFindResource("IconFolder") as Geometry; // fallback
         }
 
-        public void LoadProject(Project project)
+        public void LoadProject(ProjectService project)
         {
             // Row 0 — Icon + Title + Type
             IconBg.Background = new SolidColorBrush(
-                (Color)ColorConverter.ConvertFromString(project.Category.Color));
-            IconPath.Data = GetIconByName(project.Category.Icon);
+                (Color)ColorConverter.ConvertFromString(project.Category?.Color));
+            IconPath.Data = GetIconByName(project.Category?.Icon);
             NameText.Text = project.Title;
-            TypeText.Text = project.Category.Name;
+            TypeText.Text = project.Category?.Name;
 
             // Row 2 — Priority + DueDate + DaysLeft
             PriorityBadge.Status = project.Priority;
@@ -57,7 +64,32 @@ namespace TaskManagerUI.Controls.Cards
             // Row 6 — Status badge
             CategoryStatus.Status = project.Status;
 
-            UpdateShadow(true);
+            UpdateShadow(_isDark);
+        }
+
+        public void LoadProject(ProjectDetails project)
+        {
+            // ── Row 0 : Icon + Title + Type ────────────────────────────────
+            IconBg.Background = new SolidColorBrush(
+                (Color)ColorConverter.ConvertFromString(project.CategoryColor));
+            IconPath.Data = GetIconByName(project.CategoryIcon);
+            NameText.Text = project.Title;
+            TypeText.Text = project.CategoryName;
+
+            // ── Row 2 : Priority + DueDate + DaysLeft ──────────────────────
+            PriorityBadge.Status = project.Priority;
+            DueDateText.Text = project.DueDate.HasValue
+                                   ? project.DueDate.Value.ToString("MMM dd")
+                                   : "No date";
+            DaysLeftText.Text = project.DaysLeftText;
+
+            // ── Row 4 : Progress ───────────────────────────────────────────
+            UpdateProgress(project.ProgressPercentage);
+
+            // ── Row 6 : Status Badge ───────────────────────────────────────
+            CategoryStatus.Status = project.Status;
+
+            UpdateShadow(_isDark);
         }
 
         public void UpdateProgress(double percent)
@@ -68,8 +100,22 @@ namespace TaskManagerUI.Controls.Cards
 
         private void UpdateShadow(bool isDark)
         {
-            CardShadow.Color = isDark ? Colors.Black : Colors.Gray;
-            CardShadow.Opacity = isDark ? 0.4 : 0.15;
+            if (isDark)
+            {
+                CardShadow.Color = Colors.Black;
+                CardShadow.Opacity = 0.55;
+                CardShadow.BlurRadius = 14;
+                CardShadow.ShadowDepth = 2;
+            }
+            else
+            {
+                // Light mode: use a LIGHT color, not dark
+                CardShadow.Color = (Color)ColorConverter.ConvertFromString("#000000");
+                CardShadow.Opacity = 0.15;
+                CardShadow.BlurRadius = 8;
+                CardShadow.ShadowDepth = 2;
+            }
+            CardShadow.Direction = 270;
         }
 
         private void OnThemeChanged(bool isDark)
