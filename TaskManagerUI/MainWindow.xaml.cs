@@ -7,6 +7,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using TaskManagerUI.Helpers;
 using TaskManagerUI.Pages.Categories;
+using TaskManagerUI.Pages.Projects;
 using TaskManagerUI.Pages.Settings;
 using TaskManagerUI.Pages.Tasks;
 
@@ -28,6 +29,7 @@ namespace TaskManagerUI
 
         private CategoriesPage _categoryPage;
         private TasksPage _taskPage;
+        private ProjectsPage _projectPage;
 
 
         public MainWindow()
@@ -71,6 +73,7 @@ namespace TaskManagerUI
 
             _categoryPage = new CategoriesPage();
             _taskPage = new TasksPage();
+            _projectPage = new ProjectsPage();
 
             Loaded += (s, e) =>
             {
@@ -241,7 +244,7 @@ namespace TaskManagerUI
             PlaySuccessSound("tap.wav");
             SetActiveMenu(BtnProjects);
             PageTitle.Text = "Projects";
-            PageContent.Content = null;
+            PageContent.Content = _projectPage;
         }
 
         private void BtnTasks_Click(object sender, RoutedEventArgs e)
