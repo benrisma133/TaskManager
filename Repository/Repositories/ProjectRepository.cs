@@ -170,10 +170,17 @@ public static class ProjectRepository
         }
     }
 
-    // ======================== [ GET ALL PROJECTS ] ========================
-    public static List<ProjectDetails> GetAllProjects()
+    // ======================== [ GET ALL PROJECTS PAGED ] ========================
+    public static (List<ProjectDetails> projects, int totalCount) GetAllProjects(
+        int pageNumber = 1,
+        int pageSize = 9,
+        string? search = null,
+        string? priority = null,
+        string? status = null,
+        int? categoryId = null)
     {
         var list = new List<ProjectDetails>();
+        int totalCount = 0;
 
         try
         {
@@ -183,11 +190,24 @@ public static class ProjectRepository
                 CommandType = CommandType.StoredProcedure
             };
 
+            cmd.Parameters.AddWithValue("@PageNumber", pageNumber);
+            cmd.Parameters.AddWithValue("@PageSize", pageSize);
+            cmd.Parameters.AddWithValue("@Search", (object?)search ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@Priority", (object?)priority ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@Status", (object?)status ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@CategoryId", (object?)categoryId ?? DBNull.Value);
+
             conn.Open();
 
             using var reader = cmd.ExecuteReader();
+
+            // ── First result set : paged rows ────────────────────────
             while (reader.Read())
                 list.Add(ProjectMapper.MapProjectDetails(reader));
+
+            // ── Second result set : total count ──────────────────────
+            if (reader.NextResult() && reader.Read())
+                totalCount = reader.GetInt32(reader.GetOrdinal("TotalCount"));
         }
         catch (SqlException ex)
         {
@@ -200,7 +220,7 @@ public static class ProjectRepository
             throw;
         }
 
-        return list;
+        return (list, totalCount);
     }
 
     // ======================== [ GET PROJECTS BY CATEGORY ] ========================

@@ -279,13 +279,13 @@ public partial class AddEditProject : Window
         }
 
         // Due date must be after start date
-        if (ProjectStartDate.SelectedDate.HasValue &&
-            ProjectDueDate.SelectedDate.HasValue &&
-            ProjectDueDate.SelectedDate.Value <= ProjectStartDate.SelectedDate.Value)
-        {
-            errors.Add("• Due date must be after start date.");
-            result.FirstInvalidControl ??= ProjectDueDate;
-        }
+        //if (ProjectStartDate.SelectedDate.HasValue &&
+        //    ProjectDueDate.SelectedDate.HasValue &&
+        //    ProjectDueDate.SelectedDate.Value <= ProjectStartDate.SelectedDate.Value)
+        //{
+        //    errors.Add("• Due date must be after start date.");
+        //    result.FirstInvalidControl ??= ProjectDueDate;
+        //}
 
         if (errors.Any())
         {
