@@ -76,4 +76,11 @@
     <!-- Timer brushes -->
     <SolidColorBrush x:Key="RingTrackBrush" Color="#2E2E2E"/>
 
+    <!-- Light.xaml -->
+    <SolidColorBrush x:Key="SurfaceCardBrush" Color="#FFFFFF"/>
+
+    <!-- Shimmer -->
+    <Color x:Key="ShimmerBaseColor">#E8EAED</Color>
+    <Color x:Key="ShimmerHighColor">#F8F9FA</Color>
+
 </ResourceDictionary>
