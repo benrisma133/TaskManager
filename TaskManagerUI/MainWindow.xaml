@@ -458,43 +458,70 @@
                                 <!-- ═══ TASKS ═══ -->
                                 <Grid>
                                     <Button x:Name="BtnTasks"
-                                        Style="{DynamicResource MenuButton}"
-                                        Click="BtnTasks_Click"
-                                        MouseEnter="MenuBtn_MouseEnter"
-                                        MouseLeave="MenuBtn_MouseLeave"
-                                        Tag="Tasks">
+            Style="{DynamicResource MenuButton}"
+            Click="BtnTasks_Click"
+            MouseEnter="MenuBtn_MouseEnter"
+            MouseLeave="MenuBtn_MouseLeave"
+            Tag="Tasks">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="24"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
+
                                             <Viewbox Width="18" Height="18" HorizontalAlignment="Center">
                                                 <Path Data="{StaticResource IconTasks}"
-                                                  Stroke="{Binding Foreground, 
-                                                           RelativeSource={RelativeSource AncestorType=Button}}"
-                                                  StrokeThickness="1.8"
-                                                  StrokeStartLineCap="Round"
-                                                  StrokeEndLineCap="Round"
-                                                  Fill="Transparent"
-                                                  Stretch="Uniform"/>
+                      Stroke="{Binding Foreground,
+                               RelativeSource={RelativeSource AncestorType=Button}}"
+                      StrokeThickness="1.8"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"
+                      Fill="Transparent"
+                      Stretch="Uniform"/>
                                             </Viewbox>
+
                                             <TextBlock x:Name="TasksText"
-                                                   Grid.Column="1"
-                                                   Text="Tasks"
-                                                   VerticalAlignment="Center"
-                                                   FontSize="14"
-                                                   Margin="10,0,0,0"/>
+                       Grid.Column="1"
+                       Text="Tasks"
+                       VerticalAlignment="Center"
+                       FontSize="14"
+                       Margin="10,0,0,0"/>
                                         </Grid>
                                     </Button>
 
+                                    <!-- ── Pulsing session dot ─────────────────────────────── -->
+                                    <Ellipse x:Name="SessionDot"
+             Width="10"
+             Height="10"
+             Fill="{DynamicResource SuccessBrush}"
+             HorizontalAlignment="Left"
+             VerticalAlignment="Top"
+             Margin="28,-2,0,0"
+             Visibility="Collapsed"
+             IsHitTestVisible="False">
+                                        <Ellipse.Triggers>
+                                            <EventTrigger RoutedEvent="Loaded">
+                                                <BeginStoryboard>
+                                                    <Storyboard RepeatBehavior="Forever">
+                                                        <DoubleAnimation Storyboard.TargetName="SessionDot"
+                                         Storyboard.TargetProperty="Opacity"
+                                         From="1.0" To="0.2"
+                                         Duration="0:0:0.8"
+                                         AutoReverse="True"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </EventTrigger>
+                                        </Ellipse.Triggers>
+                                    </Ellipse>
+
                                     <Popup x:Name="PopupTasks"
-                                       PlacementTarget="{Binding ElementName=BtnTasks}"
-                                       Placement="Right"
-                                       AllowsTransparency="True"
-                                       IsHitTestVisible="False"
-                                       PopupAnimation="None"
-                                       StaysOpen="True"
-                                       VerticalOffset="8">
+           PlacementTarget="{Binding ElementName=BtnTasks}"
+           Placement="Right"
+           AllowsTransparency="True"
+           IsHitTestVisible="False"
+           PopupAnimation="None"
+           StaysOpen="True"
+           VerticalOffset="8">
                                         <controls:SidebarToolTip Title="Tasks"/>
                                     </Popup>
                                 </Grid>
