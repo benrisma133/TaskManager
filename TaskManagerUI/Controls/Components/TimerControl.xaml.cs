@@ -10,18 +10,29 @@ namespace TaskManagerUI.Controls.Components
 {
     public partial class TimerControl : UserControl
     {
+        // ============================
+        // FIELDS
+        // ============================
         private readonly DispatcherTimer _timer;
         private readonly DispatcherTimer _tickDotTimer;
         private TimeSpan _remaining;
         private bool _completed;
         private bool _tickDotVisible = true;
+        internal bool _skipNextReset = false;
+        private bool _remainingSetByPage = false;
 
+        // ============================
+        // EVENTS
+        // ============================
         public event EventHandler<TimeSpan>? Ticked;
         public event EventHandler? Completed;
         public event EventHandler? Stopped;
+        public event EventHandler? Started;
+        public event EventHandler? Paused;
 
-        // ── Dependency Property ───────────────────────────────────────────
-
+        // ============================
+        // DEPENDENCY PROPERTY
+        // ============================
         public static readonly DependencyProperty EstimatedMinutesProperty =
             DependencyProperty.Register(
                 nameof(EstimatedMinutes),
@@ -35,13 +46,23 @@ namespace TaskManagerUI.Controls.Components
             set => SetValue(EstimatedMinutesProperty, value);
         }
 
-        private static void OnEstimatedMinutesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnEstimatedMinutesChanged(DependencyObject d,
+            DependencyPropertyChangedEventArgs e)
         {
-            ((TimerControl)d).Reset();
+            var control = (TimerControl)d;
+
+            if (control._skipNextReset)
+            {
+                control._skipNextReset = false;
+                return;
+            }
+
+            control.Reset();
         }
 
-        // ── Init ──────────────────────────────────────────────────────────
-
+        // ============================
+        // CONSTRUCTOR
+        // ============================
         public TimerControl()
         {
             InitializeComponent();
@@ -49,14 +70,23 @@ namespace TaskManagerUI.Controls.Components
             _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             _timer.Tick += Timer_Tick;
 
-            _tickDotTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+            _tickDotTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(500)
+            };
             _tickDotTimer.Tick += TickDot_Tick;
 
-            Loaded += (s, e) => Reset();
+            Loaded += (s, e) =>
+            {
+                // only reset if page did not set remaining externally
+                if (!_remainingSetByPage)
+                    Reset();
+            };
         }
 
-        // ── Timer logic ───────────────────────────────────────────────────
-
+        // ============================
+        // TIMER TICK
+        // ============================
         private void Timer_Tick(object? sender, EventArgs e)
         {
             _remaining = _remaining.Subtract(TimeSpan.FromSeconds(1));
@@ -67,6 +97,9 @@ namespace TaskManagerUI.Controls.Components
                 OnCompleted();
         }
 
+        // ============================
+        // TICK DOT ANIMATION
+        // ============================
         private void TickDot_Tick(object? sender, EventArgs e)
         {
             _tickDotVisible = !_tickDotVisible;
@@ -92,6 +125,9 @@ namespace TaskManagerUI.Controls.Components
             scaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnim);
         }
 
+        // ============================
+        // COMPLETED
+        // ============================
         private void OnCompleted()
         {
             _timer.Stop();
@@ -107,8 +143,9 @@ namespace TaskManagerUI.Controls.Components
             Completed?.Invoke(this, EventArgs.Empty);
         }
 
-        // ── Click handlers ────────────────────────────────────────────────
-
+        // ============================
+        // PLAY / PAUSE CLICK
+        // ============================
         private void PlayPause_Click(object sender, RoutedEventArgs e)
         {
             if (_completed) return;
@@ -122,6 +159,7 @@ namespace TaskManagerUI.Controls.Components
                 StateLabel.Foreground = TryFindResource("TextSecondaryBrush") as Brush;
 
                 PlayTickTockSound();
+                Started?.Invoke(this, EventArgs.Empty);
             }
             else
             {
@@ -130,22 +168,60 @@ namespace TaskManagerUI.Controls.Components
                 TickDot.Opacity = 1;
                 PlayPauseBtn.State = TimerButtonState.Play;
                 StateLabel.Text = "paused";
+
+                Paused?.Invoke(this, EventArgs.Empty);
             }
         }
 
+        // ============================
+        // STOP CLICK
+        // ============================
         private void Stop_Click(object sender, RoutedEventArgs e)
+        {
+            _StopInternal();
+        }
+
+        // ============================
+        // STOP EXTERNAL
+        // ============================
+        public void StopExternal()
+        {
+            _StopInternal();
+        }
+
+        private void _StopInternal()
         {
             _timer.Stop();
             _tickDotTimer.Stop();
+            _remainingSetByPage = false;
+
+            // ── reset button state to Play ────────────────────────────
+            PlayPauseBtn.State = TimerButtonState.Play;
+            StateLabel.Text = "remaining";
+            StateLabel.Foreground = TryFindResource("TextSecondaryBrush") as Brush;
+            TickDot.Opacity = 1;
+
             Stopped?.Invoke(this, EventArgs.Empty);
-            Reset();
+            // ← NO Reset() — TimerPage._InitTimer handles remaining ✅
         }
 
-        // ── Helpers ───────────────────────────────────────────────────────
+        // ============================
+        // PAUSE INTERNAL
+        // stops visual timer without firing any events
+        // ============================
+        public void PauseInternal()
+        {
+            _timer.Stop();
+            _tickDotTimer.Stop();
+        }
 
+        // ============================
+        // RESET
+        // ============================
         private void Reset()
         {
             _completed = false;
+            _remainingSetByPage = false;
             _remaining = TimeSpan.FromMinutes(EstimatedMinutes);
             PlayPauseBtn.State = TimerButtonState.Play;
 
@@ -155,28 +231,30 @@ namespace TaskManagerUI.Controls.Components
 
             StateLabel.Text = "remaining";
             StateLabel.Foreground = TryFindResource("TextSecondaryBrush") as Brush;
-
             ProgressArc.Stroke = TryFindResource("AccentBrush") as Brush;
             TickDot.Fill = TryFindResource("AccentBrush") as Brush;
 
             UpdateDisplay();
         }
 
+        // ============================
+        // SET COMPLETED VISUALS
+        // ============================
         private void SetCompletedVisuals()
         {
             TickDot.Visibility = Visibility.Collapsed;
             CheckMark.Visibility = Visibility.Visible;
-
             StateLabel.Text = "done";
             StateLabel.Foreground = TryFindResource("SuccessBrush") as Brush;
-
             ProgressArc.Stroke = TryFindResource("SuccessBrush") as Brush;
-
             TimeDisplay.Visibility = Visibility.Collapsed;
 
             DrawArc(1.0);
         }
 
+        // ============================
+        // UPDATE DISPLAY
+        // ============================
         private void UpdateDisplay()
         {
             TimeDisplay.Text = _remaining.ToString(
@@ -187,9 +265,44 @@ namespace TaskManagerUI.Controls.Components
             DrawArc(Math.Clamp(elapsed / total, 0, 1));
         }
 
-        // ── Arc drawing ───────────────────────────────────────────────────
+        // ============================
+        // SET REMAINING
+        // called by page after loading sessions
+        // ============================
+        public void SetRemaining(TimeSpan remaining)
+        {
+            if (remaining < TimeSpan.Zero)
+                remaining = TimeSpan.Zero;
 
-        private void DrawArc(double ratio)
+            _remaining = remaining;
+            _remainingSetByPage = true;
+            UpdateDisplay();
+        }
+
+        // ============================
+        // FORCE SET REMAINING
+        // called every second from OnSessionTicked
+        // does not touch any flags
+        // ============================
+        public void ForceSetRemaining(TimeSpan remaining)
+        {
+            if (remaining < TimeSpan.Zero)
+                remaining = TimeSpan.Zero;
+
+            _remaining = remaining;
+
+            TimeDisplay.Text = _remaining.ToString(
+                _remaining.TotalHours >= 1 ? @"h\:mm\:ss" : @"mm\:ss");
+
+            double total = EstimatedMinutes * 60.0;
+            double elapsed = total - _remaining.TotalSeconds;
+            DrawArc(Math.Clamp(elapsed / total, 0, 1));
+        }
+
+        // ============================
+        // DRAW ARC
+        // ============================
+        public void DrawArc(double ratio)
         {
             const double cx = 100, cy = 100, r = 82;
             const double startDeg = -90;
@@ -210,8 +323,10 @@ namespace TaskManagerUI.Controls.Components
             double startRad = startDeg * Math.PI / 180;
             double endRad = endDeg * Math.PI / 180;
 
-            var start = new Point(cx + r * Math.Cos(startRad), cy + r * Math.Sin(startRad));
-            var end = new Point(cx + r * Math.Cos(endRad), cy + r * Math.Sin(endRad));
+            var start = new Point(cx + r * Math.Cos(startRad),
+                                  cy + r * Math.Sin(startRad));
+            var end = new Point(cx + r * Math.Cos(endRad),
+                                  cy + r * Math.Sin(endRad));
 
             var fig = new PathFigure { StartPoint = start, IsClosed = false };
             fig.Segments.Add(new ArcSegment(end, new Size(r, r), 0,
@@ -220,8 +335,9 @@ namespace TaskManagerUI.Controls.Components
             ProgressArc.Data = new PathGeometry(new[] { fig });
         }
 
-        // ── Effects ───────────────────────────────────────────────────────
-
+        // ============================
+        // SOUNDS
+        // ============================
         private void PlayFlashAnimation()
         {
             var anim = new ColorAnimation
@@ -278,7 +394,10 @@ namespace TaskManagerUI.Controls.Components
                 _tickTockOutput.Play();
 
                 var elapsed = 0;
-                var fadeTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
+                var fadeTimer = new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromMilliseconds(100)
+                };
                 fadeTimer.Tick += (s, e) =>
                 {
                     elapsed += 100;
@@ -299,5 +418,22 @@ namespace TaskManagerUI.Controls.Components
             }
         }
 
+        // ============================
+        // RESUME INTERNAL
+        // restarts visual timer without firing any events
+        // called when returning to page with active session
+        // ============================
+        public void ResumeInternal()
+        {
+            if (_completed) return;
+
+            _timer.Start();
+            _tickDotTimer.Start();
+
+            // restore visual state
+            PlayPauseBtn.State = TimerButtonState.Pause;
+            StateLabel.Text = "remaining";
+            StateLabel.Foreground = TryFindResource("TextSecondaryBrush") as Brush;
+        }
     }
 }

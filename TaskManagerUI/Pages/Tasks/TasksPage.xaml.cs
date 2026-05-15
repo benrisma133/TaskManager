@@ -6,8 +6,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media;
 using TaskManagerUI.Controls.Cards;
+using TaskManagerUI.Models;
+using TaskManagerUI.Pages.Tasks.Timer;
 
 namespace TaskManagerUI.Pages.Tasks;
 
@@ -22,6 +25,7 @@ public partial class TasksPage : UserControl
     private int _totalPages = 1;
     private int _totalCount = 0;
     private const int PageSize = 9;
+    private MainWindow? _mainWindow;
 
     // ============================
     // CONSTRUCTOR
@@ -36,6 +40,7 @@ public partial class TasksPage : UserControl
     // ============================
     private async void TasksPage_Loaded(object sender, RoutedEventArgs e)
     {
+        _mainWindow = Window.GetWindow(this) as MainWindow;
         _isInitialized = true;
         await LoadTasks();
     }
@@ -320,12 +325,14 @@ public partial class TasksPage : UserControl
         }
     }
 
+
     // ============================
     // START TASK
     // ============================
     private void Card_OnStartTask(int taskId)
     {
-        // TODO: navigate to task detail page with timer
+        // ── just navigate, don't start session yet ────────────────
+        _mainWindow?.NavigateToTimer(taskId);
     }
 
     // ============================

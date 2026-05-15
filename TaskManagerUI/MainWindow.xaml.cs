@@ -1,15 +1,20 @@
-﻿using System.Media;
+﻿using Repository.Models;
+using Service.Services;
+using System.Media;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using TaskManagerUI.Helpers;
+using TaskManagerUI.Models;
 using TaskManagerUI.Pages.Categories;
 using TaskManagerUI.Pages.Projects;
 using TaskManagerUI.Pages.Settings;
 using TaskManagerUI.Pages.Tasks;
+using TaskManagerUI.Pages.Tasks.Timer;
 
 namespace TaskManagerUI
 {
@@ -30,6 +35,9 @@ namespace TaskManagerUI
         private CategoriesPage _categoryPage;
         private TasksPage _taskPage;
         private ProjectsPage _projectPage;
+
+        private DispatcherTimer _sessionTimer = new();
+        private TimeSpan _sessionElapsed = TimeSpan.Zero;
 
 
         public MainWindow()
@@ -85,6 +93,57 @@ namespace TaskManagerUI
                     page.CacheMode = null; // Release cache
                 }
             };
+
+            // ── listen to session changes ─────────────────────────────
+            ActiveSession.SessionChanged += OnActiveSessionChanged;
+
+        }
+
+        // ============================
+        // SESSION CHANGED
+        // ============================
+        private void OnActiveSessionChanged()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (ActiveSession.HasSession)
+                {
+                    SessionDot.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    SessionDot.Visibility = Visibility.Collapsed;
+                }
+            });
+        }
+
+        // ============================
+        // NAVIGATE TO TIMER
+        // ============================
+        public void NavigateToTimer(int taskId)
+        {
+            var timerPage = new TimerPage(taskId);
+
+            timerPage.BackRequested += (s, e) =>
+            {
+                PageContent.Content = _taskPage;
+                // ✅ Timer keeps running in background via ActiveSession
+            };
+
+            PageContent.Content = timerPage;
+        }
+
+        // ============================
+        // CLEANUP
+        // ============================
+        protected override void OnClosed(EventArgs e)
+        {
+            ActiveSession.SessionChanged -= OnActiveSessionChanged;
+
+            if (ActiveSession.HasSession)
+                ActiveSession.Stop();
+
+            base.OnClosed(e);
         }
 
         // ── Build the button → popup map ──────────────────────────────
@@ -256,7 +315,21 @@ namespace TaskManagerUI
             PageContent.Content = _taskPage;
         }
 
-        
+        // ============================
+        // NAVIGATE TO TIMER
+        // ============================
+        public void NavigateToTimer(TaskService task)
+        {
+            var timerPage = new TimerPage(task.TaskID);
+
+            timerPage.BackRequested += (s, e) =>
+            {
+                PageContent.Content = _taskPage;
+            };
+
+            PageContent.Content = timerPage;
+        }
+
 
         private void BtnCategories_Click(object sender, RoutedEventArgs e)
         {

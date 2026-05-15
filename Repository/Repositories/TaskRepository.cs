@@ -310,4 +310,33 @@ public static class TaskRepository
         }
     }
 
+    // ======================== [ COMPLETE TASK ] ========================
+    public static bool CompleteTask(int taskId)
+    {
+        try
+        {
+            using var conn = new SqlConnection(ConnectionString);
+            using var cmd = new SqlCommand("sp_CompleteTask", conn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            cmd.Parameters.AddWithValue("@TaskId", taskId);
+            conn.Open();
+
+            cmd.ExecuteNonQuery();
+            return true;
+        }
+        catch (SqlException ex)
+        {
+            clsLog.LogError(nameof(TaskRepository), nameof(CompleteTask), ex);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            clsLog.LogError(nameof(TaskRepository), nameof(CompleteTask), ex);
+            throw;
+        }
+    }
+
 }

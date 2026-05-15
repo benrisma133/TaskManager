@@ -7,6 +7,9 @@ namespace Service.Services;
 
 public class TaskService
 {
+    // ─── Fields ────────────────────────────────────────────────────────────
+    private TaskItem _task = null!;
+
     // ─── enMode ────────────────────────────────────────────────────────────
     public enum enMode { AddNew, Update }
     private enMode _Mode;
@@ -53,6 +56,8 @@ public class TaskService
         }
         : "No due date";
 
+    public TaskItem Task => _task;  // ← This already exists
+
     // ─── Constructors ──────────────────────────────────────────────────────
     public TaskService()
     {
@@ -62,6 +67,7 @@ public class TaskService
 
     public TaskService(TaskItem task, enMode mode = enMode.AddNew)
     {
+        _task = task;
         TaskID = task.TaskID;
         Title = task.Title;
         Description = task.Description;
@@ -75,6 +81,7 @@ public class TaskService
         CreatedAt = task.CreatedAt;
         UpdatedAt = task.UpdatedAt;
         _Mode = mode;
+
 
         // TODO: load related project when needed
          var (result, projectService) = ProjectService.Find(task.ProjectID);
@@ -262,6 +269,20 @@ public class TaskService
         catch
         {
             return false;
+        }
+    }
+
+    // ─── Static: Complete Task ─────────────────────────────────────────
+    public static enTaskCompleteResult Complete(int taskId)
+    {
+        try
+        {
+            bool completed = TaskRepository.CompleteTask(taskId);
+            return completed ? enTaskCompleteResult.Completed : enTaskCompleteResult.Failed;
+        }
+        catch
+        {
+            return enTaskCompleteResult.Failed;
         }
     }
 
