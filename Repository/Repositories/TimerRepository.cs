@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Repository.Data;
 using Repository.Loggers;
+using Repository.Mappers;
 using Repository.Models;
 using System.Data;
 
@@ -47,7 +48,7 @@ namespace Repository.Repositories
         }
 
         // ======================== [ END SESSION ] ========================
-        public static bool EndSession(int sessionId)
+        public static bool EndSession(int sessionId, int totalPausedSeconds)
         {
             try
             {
@@ -58,6 +59,7 @@ namespace Repository.Repositories
                 };
 
                 cmd.Parameters.AddWithValue("@SessionId", sessionId);
+                cmd.Parameters.AddWithValue("@TotalPausedSeconds", totalPausedSeconds);
 
                 conn.Open();
                 cmd.ExecuteNonQuery();
@@ -77,10 +79,11 @@ namespace Repository.Repositories
         }
 
         // ======================== [ GET TODAY SESSIONS ] ========================
-        public static (List<TimerSession> sessions, int totalMinutesToday) GetTodaySessionsByTask(int taskId)
+        public static (List<TimerSession> sessions, int totalSecondsToday, int totalMinutesToday) GetTodaySessionsByTask(int taskId)
         {
             var list = new List<TimerSession>();
-            int totalMinutes = 0;
+            int totalSecondsToday = 0;
+            int totalMinutesToday = 0;
 
             try
             {
@@ -99,25 +102,15 @@ namespace Repository.Repositories
                 // ── First result set : sessions ───────────────────────
                 while (reader.Read())
                 {
-                    list.Add(new TimerSession
-                    {
-                        SessionId = reader.GetInt32(reader.GetOrdinal("SessionId")),
-                        TaskId = reader.GetInt32(reader.GetOrdinal("TaskId")),
-                        StartTime = reader.GetDateTime(reader.GetOrdinal("StartTime")),
-                        EndTime = reader.IsDBNull(reader.GetOrdinal("EndTime"))
-                                            ? null
-                                            : reader.GetDateTime(reader.GetOrdinal("EndTime")),
-                        DurationMinutes = reader.IsDBNull(reader.GetOrdinal("DurationMinutes"))
-                                            ? null
-                                            : reader.GetInt32(reader.GetOrdinal("DurationMinutes")),
-                        SessionDate = DateOnly.FromDateTime(
-                                            reader.GetDateTime(reader.GetOrdinal("SessionDate")))
-                    });
+                    list.Add(TimerSessionMapper.MapTimerSession(reader));
                 }
 
-                // ── Second result set : total minutes ─────────────────
+                // ── Second result set : totals ────────────────────────
                 if (reader.NextResult() && reader.Read())
-                    totalMinutes = reader.GetInt32(reader.GetOrdinal("TotalMinutesToday"));
+                {
+                    totalSecondsToday = reader.GetInt32(reader.GetOrdinal("TotalSecondsToday"));
+                    totalMinutesToday = reader.GetInt32(reader.GetOrdinal("TotalMinutesToday"));
+                }
             }
             catch (SqlException ex)
             {
@@ -130,18 +123,16 @@ namespace Repository.Repositories
                 throw;
             }
 
-            return (list, totalMinutes);
+            return (list, totalSecondsToday, totalMinutesToday);
         }
 
+        // ======================== [ GET TASK TIMER SUMMARY ] ========================
         public static (int totalSecondsAllTime, int totalSecondsToday,
-                int totalMinutesAllTime, int totalMinutesToday,
-                List<TimerSession> todaySessions) GetTaskTimerSummary(int taskId)
+       List<TimerSession> pastSessions) GetTaskTimerSummary(int taskId)
         {
-            int totalSecsAllTime = 0;
-            int totalSecsToday = 0;
-            int totalMinsAllTime = 0;
-            int totalMinsToday = 0;
-            var sessions = new List<TimerSession>();
+            int totalSecondsAllTime = 0;
+            int totalSecondsToday = 0;
+            var pastSessions = new List<TimerSession>();
 
             try
             {
@@ -156,36 +147,17 @@ namespace Repository.Repositories
 
                 using var reader = cmd.ExecuteReader();
 
-                if (reader.Read())
+                // ── FIRST result set: past sessions ──────────────
+                while (reader.Read())
                 {
-                    totalSecsAllTime = reader.GetInt32(reader.GetOrdinal("TotalSecondsAllTime"));
-                    totalMinsAllTime = reader.GetInt32(reader.GetOrdinal("TotalMinutesAllTime"));
-                    totalSecsToday = reader.GetInt32(reader.GetOrdinal("TotalSecondsToday"));
-                    totalMinsToday = reader.GetInt32(reader.GetOrdinal("TotalMinutesToday"));
+                    pastSessions.Add(TimerSessionMapper.MapTimerSession(reader));
                 }
 
-                if (reader.NextResult())
+                // ── SECOND result set: totals ───────────────────
+                if (reader.NextResult() && reader.Read())
                 {
-                    while (reader.Read())
-                    {
-                        sessions.Add(new TimerSession
-                        {
-                            SessionId = reader.GetInt32(reader.GetOrdinal("SessionId")),
-                            TaskId = reader.GetInt32(reader.GetOrdinal("TaskId")),
-                            StartTime = reader.GetDateTime(reader.GetOrdinal("StartTime")),
-                            EndTime = reader.IsDBNull(reader.GetOrdinal("EndTime"))
-                                                ? null
-                                                : reader.GetDateTime(reader.GetOrdinal("EndTime")),
-                            DurationMinutes = reader.IsDBNull(reader.GetOrdinal("DurationMinutes"))
-                                                ? null
-                                                : reader.GetInt32(reader.GetOrdinal("DurationMinutes")),
-                            DurationSeconds = reader.IsDBNull(reader.GetOrdinal("DurationSeconds"))
-                                                ? null
-                                                : reader.GetInt32(reader.GetOrdinal("DurationSeconds")),
-                            SessionDate = DateOnly.FromDateTime(
-                                                reader.GetDateTime(reader.GetOrdinal("SessionDate")))
-                        });
-                    }
+                    totalSecondsAllTime = reader.GetInt32(reader.GetOrdinal("TotalSecondsAllTime"));
+                    totalSecondsToday = reader.GetInt32(reader.GetOrdinal("TotalSecondsToday"));
                 }
             }
             catch (SqlException ex)
@@ -193,14 +165,8 @@ namespace Repository.Repositories
                 clsLog.LogError(nameof(TimerRepository), nameof(GetTaskTimerSummary), ex);
                 throw;
             }
-            catch (Exception ex)
-            {
-                clsLog.LogError(nameof(TimerRepository), nameof(GetTaskTimerSummary), ex);
-                throw;
-            }
 
-            return (totalSecsAllTime, totalSecsToday,
-                    totalMinsAllTime, totalMinsToday, sessions);
+            return (totalSecondsAllTime, totalSecondsToday, pastSessions);
         }
     }
 }
