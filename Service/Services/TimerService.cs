@@ -13,6 +13,7 @@ namespace Service.Services
         private enTimerMode _mode = enTimerMode.Start;
         private int _sessionId = 0;
         private int _taskId = 0;
+        private int _totalPausedSeconds = 0;
 
         // ============================
         // PROPERTIES
@@ -46,13 +47,16 @@ namespace Service.Services
         // ============================
         // FORCE END  (Stop button)
         // ============================
-        public enTimerSaveResult ForceEnd()
+        public enTimerSaveResult ForceEnd(int totalPausedSeconds)
         {
+            _totalPausedSeconds = totalPausedSeconds;
+
             if (_mode == enTimerMode.End && _sessionId > 0)
                 return _End();
 
             _mode = enTimerMode.Start;
             _sessionId = 0;
+            _totalPausedSeconds = 0;
             return enTimerSaveResult.Ended;
         }
 
@@ -88,13 +92,14 @@ namespace Service.Services
                 if (_sessionId <= 0)
                     return enTimerSaveResult.Failed;
 
-                bool ok = TimerRepository.EndSession(_sessionId);
+                bool ok = TimerRepository.EndSession(_sessionId, _totalPausedSeconds);
 
                 if (!ok)
                     return enTimerSaveResult.Failed;
 
                 _sessionId = 0;
                 _mode = enTimerMode.Start;
+                _totalPausedSeconds = 0;
                 return enTimerSaveResult.Ended;
             }
             catch
@@ -106,7 +111,7 @@ namespace Service.Services
         // ============================
         // GET TODAY SESSIONS
         // ============================
-        public (List<TimerSession> sessions, int totalMinutesToday) GetTodaySessions()
+        public (List<TimerSession> sessions, int totalSecondsToday, int totalMinutesToday) GetTodaySessions()
         {
             try
             {
@@ -114,7 +119,7 @@ namespace Service.Services
             }
             catch
             {
-                return (new List<TimerSession>(), 0);
+                return (new List<TimerSession>(), 0, 0);
             }
         }
 
@@ -122,8 +127,7 @@ namespace Service.Services
         // GET TASK TIMER SUMMARY
         // ============================
         public (int totalSecondsAllTime, int totalSecondsToday,
-        int totalMinutesAllTime, int totalMinutesToday,
-        List<TimerSession> todaySessions) GetTaskTimerSummary()
+        List<TimerSession> pastSessions) GetTaskTimerSummary()
         {
             try
             {
@@ -131,7 +135,7 @@ namespace Service.Services
             }
             catch
             {
-                return (0, 0, 0, 0, new List<TimerSession>());
+                return (0, 0, new List<TimerSession>());
             }
         }
     }

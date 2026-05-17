@@ -185,6 +185,8 @@ namespace TaskManagerUI.Controls.Components
 
         private void Btn_Click(object sender, RoutedEventArgs e)
         {
+            e.Handled = true;
+
             if (State == TimerButtonState.Stop)
             {
                 Stop();

@@ -1,13 +1,10 @@
 ﻿using Repository.Models;
 using Service.Enums.Task;
 using Service.Services;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using TaskManagerUI.Controls.Components;
-using TaskManagerUI.Models;
 
 namespace TaskManagerUI.Pages.Tasks.Timer
 {
@@ -21,7 +18,6 @@ namespace TaskManagerUI.Pages.Tasks.Timer
         private bool _sessionStarted = false;
         private int _totalSecondsAllTime = 0;  // ← seconds not minutes
         private int _totalSecondsToday = 0;  // ← seconds not minutes
-        private int _totalMinutesToday = 0;  // ← for display only
 
         // ============================
         // EVENTS
@@ -83,7 +79,7 @@ namespace TaskManagerUI.Pages.Tasks.Timer
             {
                 Timer.Visibility = Visibility.Collapsed;  // gray out entire timer control
                 StatusLabel.Visibility = Visibility.Visible;
-                StatusText.Text = "completed";
+                StatusText.Status = "Done";
             }
 
             // ── Step 5: restart TimerControl internal timer if running ─
@@ -112,8 +108,8 @@ namespace TaskManagerUI.Pages.Tasks.Timer
 
             TaskTitleText.Text = task.Title;
             ProjectTitleText.Text = _taskService.Project?.Title ?? "No Project";
-            PriorityText.Text = task.Priority;
-            StatusText.Text = task.Status;
+            PriorityText.Status = task.Priority;
+            StatusText.Status = task.Status;
 
             if (!string.IsNullOrWhiteSpace(task.Description))
             {
@@ -140,13 +136,11 @@ namespace TaskManagerUI.Pages.Tasks.Timer
                 var timerService = ActiveSession.Timer
                                    ?? new TimerService(_taskId);
 
-                var (secsAllTime, secsToday,
-                     minsAllTime, minsToday, sessions) =
+                var (secsAllTime, secsToday, sessions) =
                     timerService.GetTaskTimerSummary();
 
                 _totalSecondsAllTime = secsAllTime;
                 _totalSecondsToday = secsToday;
-                _totalMinutesToday = minsToday;
 
                 _RenderSessions(sessions);
             }
@@ -154,7 +148,6 @@ namespace TaskManagerUI.Pages.Tasks.Timer
             {
                 _totalSecondsAllTime = 0;
                 _totalSecondsToday = 0;
-                _totalMinutesToday = 0;
                 _RenderSessions(new List<TimerSession>());
             }
         }
@@ -167,7 +160,6 @@ namespace TaskManagerUI.Pages.Tasks.Timer
             var task = _taskService.Task;
             int est = task.EstimatedMinutes ?? 25;
 
-            // ── live seconds from active session ──────────────────────
             int liveSeconds = _sessionStarted &&
                               ActiveSession.HasSession &&
                               ActiveSession.CurrentTask?.Task.TaskID == _taskId
@@ -176,7 +168,7 @@ namespace TaskManagerUI.Pages.Tasks.Timer
 
             double totalLoggedSecs = _totalSecondsAllTime + liveSeconds;
             double estimatedSecs = est * 60.0;
-            double remainingSecs = Math.Max(estimatedSecs - totalLoggedSecs, 0);
+            double remainingSecs = Math.Max(estimatedSecs - totalLoggedSecs, 0);  // ← PUT BACK Math.Max
 
             Timer._skipNextReset = true;
             Timer.EstimatedMinutes = est;
@@ -192,22 +184,48 @@ namespace TaskManagerUI.Pages.Tasks.Timer
         private void _RenderSessions(List<TimerSession> pastSessions)
         {
             SessionsPanel.Children.Clear();
+            PastSessionsPanel.Children.Clear();
 
-            foreach (var session in pastSessions)
+            var today = DateTime.Today;
+
+            var todaySessions = pastSessions
+                .Where(s => s.StartTime.Date == today).ToList();
+            var previousSessions = pastSessions
+                .Where(s => s.StartTime.Date < today).ToList();
+
+            // ── past (previous days) ──────────────────────────────────
+            foreach (var session in previousSessions)
             {
-                // ── use seconds if available else fallback to minutes ──
                 string duration = session.DurationSeconds.HasValue
-                    ? _FormatSeconds(session.DurationSeconds.Value)
-                    : _FormatMinutes(session.DurationMinutes ?? 0);
+                    ? _FormatSeconds(session.DurationSeconds.Value) : "0s";
 
-                var card = new SessionCard
+                PastSessionsPanel.Children.Add(new SessionCard
+                {
+                    StartTime = session.StartTime.ToString("MMM dd hh:mm tt"),
+                    Duration = duration,
+                    IsRunning = false,
+                    Notes = session.Notes!,
+                    Margin = new Thickness(0, 0, 10, 0)
+                });
+            }
+
+            NoPastSessionsText.Visibility = previousSessions.Count == 0
+                ? Visibility.Visible : Visibility.Collapsed;
+
+            // ── today sessions ────────────────────────────────────────
+            foreach (var session in todaySessions)
+            {
+                string duration = session.DurationSeconds.HasValue
+                    ? _FormatSeconds(session.DurationSeconds.Value) : "0s";
+
+                SessionsPanel.Children.Add(new SessionCard
                 {
                     StartTime = session.StartTime.ToString("hh:mm tt"),
                     Duration = duration,
                     IsRunning = false,
+                    Notes = session.Notes!,
                     Margin = new Thickness(0, 0, 10, 0)
-                };
-                SessionsPanel.Children.Add(card);
+                });
             }
 
             // ── live card ─────────────────────────────────────────────
@@ -215,23 +233,19 @@ namespace TaskManagerUI.Pages.Tasks.Timer
                 ActiveSession.HasSession &&
                 ActiveSession.CurrentTask?.Task.TaskID == _taskId)
             {
-                var liveCard = new SessionCard
+                SessionsPanel.Children.Add(new SessionCard
                 {
                     StartTime = ActiveSession.StartedAt?.ToString("hh:mm tt") ?? "—",
                     Duration = _FormatSeconds(ActiveSession.ElapsedSeconds),
                     IsRunning = true,
                     Margin = new Thickness(0, 0, 10, 0)
-                };
-                SessionsPanel.Children.Add(liveCard);
+                });
                 NoSessionsText.Visibility = Visibility.Collapsed;
-            }
-            else if (pastSessions.Count == 0)
-            {
-                NoSessionsText.Visibility = Visibility.Visible;
             }
             else
             {
-                NoSessionsText.Visibility = Visibility.Collapsed;
+                NoSessionsText.Visibility = todaySessions.Count == 0
+                    ? Visibility.Visible : Visibility.Collapsed;
             }
 
             _UpdateTotalToday();
@@ -325,12 +339,12 @@ namespace TaskManagerUI.Pages.Tasks.Timer
         // ============================
         private void Timer_Started(object? sender, EventArgs e)
         {
-            if(ActiveSession.CurrentTask?.Task.Status == "Done")
+            if (ActiveSession.CurrentTask?.Task.Status == "Done")
             {
                 MessageBox.Show("Already Done Start a New Task.", "Message", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
-                
+
             // ── if session exists but paused — just resume ────────────
             if (_sessionStarted && ActiveSession.HasSession &&
                 ActiveSession.CurrentTask?.Task.TaskID == _taskId)
@@ -355,6 +369,9 @@ namespace TaskManagerUI.Pages.Tasks.Timer
             _sessionStarted = true;
             ActiveSession.Ticked -= OnSessionTicked;
             ActiveSession.Ticked += OnSessionTicked;
+
+            _taskService = ActiveSession.CurrentTask!;
+            _LoadUIText();
 
             _LoadSummary();
             _UpdateProgress();
@@ -385,12 +402,26 @@ namespace TaskManagerUI.Pages.Tasks.Timer
             ActiveSession.Ticked -= OnSessionTicked;
 
             if (ActiveSession.HasSession)
-                ActiveSession.Stop();
-
-            _sessionStarted = false;
-            _LoadSummary();
-            _InitTimer();
-            _UpdateProgress();
+            {
+                Task.Delay(500).ContinueWith(_ =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        ActiveSession.Stop();
+                        _sessionStarted = false;
+                        _LoadSummary();
+                        _InitTimer();
+                        _UpdateProgress();
+                    });
+                });
+            }
+            else
+            {
+                _sessionStarted = false;
+                _LoadSummary();
+                _InitTimer();
+                _UpdateProgress();
+            }
         }
 
         // ============================
@@ -451,14 +482,31 @@ namespace TaskManagerUI.Pages.Tasks.Timer
 
         private void DoneBtn_Click(object sender, RoutedEventArgs e)
         {
+            var (isFound, service) = TaskService.Find(_taskId);
+            if (isFound != enTaskRetrieveResult.Found)
+                return;
+
+            if (service!.Status == "Done")
+            {
+                MessageBox.Show($"Task: \"{service!.Title}\" Already completed!","Completed" ,MessageBoxButton.OK , MessageBoxImage.Information);
+                return;
+            }
+
             var result = TaskService.Complete(_taskId);
 
             if (result == enTaskCompleteResult.Completed)
             {
+                
+
+
+
+                _taskService = service!;
+                _LoadUIText();
                 Timer.Visibility = Visibility.Collapsed;  // gray out entire timer control
                 StatusLabel.Visibility = Visibility.Visible;
-                StatusText.Text = "completed";
-                StatusText.Text = _taskService.Status;
+                StatusText.Status = "completed";
+                StatusText.Status = _taskService.Status;
+
             }
             else
             {

@@ -93,8 +93,13 @@ namespace TaskManagerUI.Controls.Components
             UpdateDisplay();
             Ticked?.Invoke(this, _remaining);
 
+            // ← Only complete when remaining is EXACTLY zero or less
             if (_remaining <= TimeSpan.Zero)
+            {
+                _remaining = TimeSpan.Zero;
+                UpdateDisplay();
                 OnCompleted();
+            }
         }
 
         // ============================
@@ -257,8 +262,17 @@ namespace TaskManagerUI.Controls.Components
         // ============================
         private void UpdateDisplay()
         {
-            TimeDisplay.Text = _remaining.ToString(
-                _remaining.TotalHours >= 1 ? @"h\:mm\:ss" : @"mm\:ss");
+            // Handle negative time (overtime)
+            if (_remaining.TotalSeconds < 0)
+            {
+                TimeDisplay.Text = "-" + _remaining.Negate().ToString(
+                    _remaining.Negate().TotalHours >= 1 ? @"h\:mm\:ss" : @"mm\:ss");
+            }
+            else
+            {
+                TimeDisplay.Text = _remaining.ToString(
+                    _remaining.TotalHours >= 1 ? @"h\:mm\:ss" : @"mm\:ss");
+            }
 
             double total = EstimatedMinutes * 60.0;
             double elapsed = total - _remaining.TotalSeconds;
