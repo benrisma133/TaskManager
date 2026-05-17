@@ -44,11 +44,13 @@
                                 <StackPanel Orientation="Horizontal"
                                             VerticalAlignment="Center">
                                     <fa:IconImage Icon="ArrowLeft"
+                                                  x:Name="BackIcon"
                                                   Width="14"
                                                   Height="14"
                                                   Foreground="{DynamicResource TextSecondaryBrush}"
                                                   Margin="0,0,8,0"/>
                                     <TextBlock Text="Back to Tasks"
+                                               x:Name="BackText"
                                                FontSize="14"
                                                Foreground="{DynamicResource TextSecondaryBrush}"
                                                VerticalAlignment="Center"/>
@@ -59,6 +61,12 @@
                                     <Setter TargetName="Bd"
                                             Property="Background"
                                             Value="{DynamicResource AccentHoverBrush}"/>
+                                    <Setter TargetName="BackIcon"
+                                            Property="Foreground"
+                                            Value="White"/>
+                                    <Setter TargetName="BackText"
+                                            Property="Foreground"
+                                            Value="White"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -80,11 +88,13 @@
                                 <StackPanel Orientation="Horizontal"
                                             VerticalAlignment="Center">
                                     <fa:IconImage Icon="Check"
+                                                  x:Name="CheckIcon"
                                                   Width="14"
                                                   Height="14"
                                                   Foreground="{DynamicResource TextSecondaryBrush}"
                                                   Margin="0,0,8,0"/>
                                     <TextBlock Text="Mark as Done"
+                                               x:Name="MarkAsDoneText"
                                                FontSize="14"
                                                Foreground="{DynamicResource TextSecondaryBrush}"
                                                VerticalAlignment="Center"/>
@@ -95,6 +105,12 @@
                                     <Setter TargetName="Bd"
                                             Property="Background"
                                             Value="{DynamicResource SuccessBrush}"/>
+                                    <Setter TargetName="CheckIcon"
+                                            Property="Foreground"
+                                            Value="White"/>
+                                    <Setter TargetName="MarkAsDoneText"
+                                            Property="Foreground"
+                                            Value="White"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -121,46 +137,56 @@
 
                     <!-- Task Info -->
                     <StackPanel Grid.Column="0"
-                                VerticalAlignment="Center">
+            VerticalAlignment="Center">
 
                         <TextBlock x:Name="TaskTitleText"
-                                   FontSize="22"
-                                   FontWeight="Bold"
-                                   Foreground="{DynamicResource TextPrimaryBrush}"
-                                   TextWrapping="Wrap"/>
+               FontSize="22"
+               FontWeight="Bold"
+               Foreground="{DynamicResource TextPrimaryBrush}"
+               TextWrapping="Wrap"/>
 
                         <StackPanel Orientation="Horizontal"
-                                    Margin="0,8,0,0">
+                Margin="0,8,0,0">
 
                             <TextBlock x:Name="ProjectTitleText"
-                                       FontSize="13"
-                                       Foreground="{DynamicResource TextSecondaryBrush}"
-                                       VerticalAlignment="Center"/>
+                   FontSize="13"
+                   Foreground="{DynamicResource TextSecondaryBrush}"
+                   VerticalAlignment="Center"/>
 
-                            <!-- Dot separator -->
                             <Ellipse Width="4" Height="4"
-                                     Fill="{DynamicResource TextMutedBrush}"
-                                     Margin="8,0"
-                                     VerticalAlignment="Center"/>
+                 Fill="{DynamicResource TextMutedBrush}"
+                 Margin="8,0"
+                 VerticalAlignment="Center"/>
 
-                            <TextBlock x:Name="PriorityText"
-                                       FontSize="13"
-                                       FontWeight="SemiBold"
-                                       Foreground="{DynamicResource AccentBrush}"
-                                       VerticalAlignment="Center"/>
+                            <components:PriorityBadge x:Name="PriorityText" 
+                                  Margin="0,3,0,0" 
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Center"
+                                  Status="Critical"/>
 
-                            <!-- Dot separator -->
                             <Ellipse Width="4" Height="4"
-                                     Fill="{DynamicResource TextMutedBrush}"
-                                     Margin="8,0"
-                                     VerticalAlignment="Center"/>
+                 Fill="{DynamicResource TextMutedBrush}"
+                 Margin="8,0"
+                 VerticalAlignment="Center"/>
 
-                            <TextBlock x:Name="StatusText"
-                                       FontSize="13"
-                                       Foreground="{DynamicResource TextSecondaryBrush}"
-                                       VerticalAlignment="Center"/>
-
+                            <components:StatusBadge x:Name="StatusText"
+                                Margin="0,3,0,0"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Left"
+                                Status="Active"/>
                         </StackPanel>
+
+                        <!-- ── Description moved here ── -->
+                        <StackPanel x:Name="DescriptionPanel"
+                Margin="0,12,0,0"
+                Visibility="Collapsed">
+                            <TextBlock x:Name="DescriptionText"
+                   FontSize="13"
+                   Foreground="{DynamicResource TextSecondaryBrush}"
+                   TextWrapping="Wrap"
+                   LineHeight="20"/>
+                        </StackPanel>
+
                     </StackPanel>
 
                     <!-- Timer Control -->
@@ -202,37 +228,6 @@
                         Background="{DynamicResource BorderDefaultBrush}"
                         Margin="0,0,0,24"/>
 
-                <!-- ── DESCRIPTION ────────────────────────────────── -->
-                <StackPanel x:Name="DescriptionPanel"
-                            Margin="0,0,0,24"
-                            Visibility="Collapsed">
-
-                    <StackPanel Orientation="Horizontal"
-                                Margin="0,0,0,10">
-                        <fa:IconImage Icon="AlignLeft"
-                                      Width="14"
-                                      Height="14"
-                                      Foreground="{DynamicResource TextSecondaryBrush}"
-                                      Margin="0,0,8,0"/>
-                        <TextBlock Text="Description"
-                                   FontSize="14"
-                                   FontWeight="SemiBold"
-                                   Foreground="{DynamicResource TextSecondaryBrush}"
-                                   VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <TextBlock x:Name="DescriptionText"
-                               FontSize="14"
-                               Foreground="{DynamicResource TextPrimaryBrush}"
-                               TextWrapping="Wrap"
-                               LineHeight="22"/>
-
-                    <!-- ── DIVIDER ───────────────────────────────── -->
-                    <Border Height="1"
-                            Background="{DynamicResource BorderDefaultBrush}"
-                            Margin="0,24,0,0"/>
-
-                </StackPanel>
 
                 <!-- ── STATS ROW ──────────────────────────────────── -->
                 <Grid Margin="0,0,0,24">
@@ -346,47 +341,78 @@
                 <!-- ── TODAY'S SESSIONS ───────────────────────────── -->
                 <StackPanel>
 
+                    <!-- Today header -->
                     <StackPanel Orientation="Horizontal"
-                                Margin="0,0,0,16">
+                Margin="0,0,0,16">
                         <fa:IconImage Icon="Stopwatch"
-                                      Width="14"
-                                      Height="14"
-                                      Foreground="{DynamicResource TextSecondaryBrush}"
-                                      Margin="0,0,8,0"/>
-                        <TextBlock Text="Time Logged Today"
-                                   FontSize="14"
-                                   FontWeight="SemiBold"
-                                   Foreground="{DynamicResource TextSecondaryBrush}"
-                                   VerticalAlignment="Center"/>
-
-                        <!-- Total today badge -->
+                      Width="14" Height="14"
+                      Foreground="{DynamicResource TextSecondaryBrush}"
+                      Margin="0,0,8,0"/>
+                        <TextBlock Text="Today"
+                   FontSize="14"
+                   FontWeight="SemiBold"
+                   Foreground="{DynamicResource TextSecondaryBrush}"
+                   VerticalAlignment="Center"/>
                         <Border Background="{DynamicResource AccentBrush}"
-                                CornerRadius="8"
-                                Padding="8,3"
-                                Margin="12,0,0,0"
-                                VerticalAlignment="Center">
+                CornerRadius="8"
+                Padding="8,3"
+                Margin="12,0,0,0"
+                VerticalAlignment="Center">
                             <TextBlock x:Name="TotalTodayText"
-                                       Text="0 min"
-                                       FontSize="11"
-                                       FontWeight="SemiBold"
-                                       Foreground="{DynamicResource TextOnAccentBrush}"/>
+                       Text="0 min"
+                       FontSize="11"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextOnAccentBrush}"/>
                         </Border>
                     </StackPanel>
 
-                    <!-- Session Cards -->
+                    <!-- Today session cards -->
                     <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                                  VerticalScrollBarVisibility="Disabled">
+                  VerticalScrollBarVisibility="Disabled"
+                  Margin="0,0,0,8">
                         <StackPanel x:Name="SessionsPanel"
-                                    Orientation="Horizontal"/>
+                    Orientation="Horizontal"/>
                     </ScrollViewer>
 
-                    <!-- Empty Sessions -->
                     <TextBlock x:Name="NoSessionsText"
-                               Text="No sessions logged today. Start the timer!"
-                               FontSize="13"
-                               Foreground="{DynamicResource TextMutedBrush}"
-                               Margin="0,8,0,0"
-                               Visibility="Visible"/>
+               Text="No sessions logged today. Start the timer!"
+               FontSize="13"
+               Foreground="{DynamicResource TextMutedBrush}"
+               Margin="0,0,0,8"
+               Visibility="Visible"/>
+
+                    <!-- Divider -->
+                    <Border Height="1"
+            Background="{DynamicResource BorderDefaultBrush}"
+            Margin="0,16,0,16"/>
+
+                    <!-- Past sessions header -->
+                    <StackPanel Orientation="Horizontal"
+                Margin="0,0,0,16">
+                        <fa:IconImage Icon="History"
+                      Width="14" Height="14"
+                      Foreground="{DynamicResource TextSecondaryBrush}"
+                      Margin="0,0,8,0"/>
+                        <TextBlock Text="Past Sessions"
+                   FontSize="14"
+                   FontWeight="SemiBold"
+                   Foreground="{DynamicResource TextSecondaryBrush}"
+                   VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- Past session cards -->
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                  VerticalScrollBarVisibility="Disabled">
+                        <StackPanel x:Name="PastSessionsPanel"
+                    Orientation="Horizontal"/>
+                    </ScrollViewer>
+
+                    <TextBlock x:Name="NoPastSessionsText"
+               Text="No past sessions."
+               FontSize="13"
+               Foreground="{DynamicResource TextMutedBrush}"
+               Margin="0,8,0,0"
+               Visibility="Visible"/>
 
                 </StackPanel>
 
