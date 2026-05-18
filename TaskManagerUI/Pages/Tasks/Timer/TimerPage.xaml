@@ -11,6 +11,8 @@
             <RowDefinition Height="Auto"/>
             <!-- Back Button -->
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <!-- Content -->
         </Grid.RowDefinitions>
 
@@ -116,6 +118,52 @@
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
+
+                <!-- ← ADD THIS right after DoneBtn -->
+                <Button x:Name="AddExtraTimeBtn" Grid.Column="2"
+                        Cursor="Hand"
+                        BorderThickness="0"
+                        Background="Transparent"
+                        HorizontalAlignment="Right"
+                        Visibility="Collapsed"
+                        Click="AddExtraTimeBtn_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Bd"
+                                    Background="Transparent"
+                                    CornerRadius="8"
+                                    Padding="10,6">
+                                <StackPanel Orientation="Horizontal"
+                                            VerticalAlignment="Center">
+                                    <fa:IconImage Icon="PlusCircle"
+                                                  x:Name="PlusIcon"
+                                                  Width="14"
+                                                  Height="14"
+                                                  Foreground="{DynamicResource TextSecondaryBrush}"
+                                                  Margin="0,0,8,0"/>
+                                    <TextBlock Text="Add Extra Time"
+                                               x:Name="AddExtraTimeText"
+                                               FontSize="14"
+                                               Foreground="{DynamicResource TextSecondaryBrush}"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd"
+                                            Property="Background"
+                                            Value="{DynamicResource AccentHoverBrush}"/>
+                                    <Setter TargetName="PlusIcon"
+                                            Property="Foreground"
+                                            Value="White"/>
+                                    <Setter TargetName="AddExtraTimeText"
+                                            Property="Foreground"
+                                            Value="White"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
             </Grid>
             
         </Border>
@@ -198,12 +246,7 @@
                             Padding="20">
 
                         <Grid>
-                            <components:TimerControl x:Name="Timer"
-                                                     Started="Timer_Started"
-                                                     Paused="Timer_Paused"
-                                                     Ticked="Timer_Ticked"
-                                                     Completed="Timer_Completed"
-                                                     Stopped="Timer_Stopped"/>
+                            <components:TimerControl x:Name="Timer"/>
 
                             <TextBlock x:Name="StatusLabel" 
                                        Text="Completed" 
