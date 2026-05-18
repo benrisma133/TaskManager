@@ -10,6 +10,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Remove="Assets\Fonts\JetBrainsMono-Bold.ttf" />
+		<None Remove="Assets\Fonts\JetBrainsMono-Medium.ttf" />
+		<None Remove="Assets\Fonts\JetBrainsMono-Regular.ttf" />
 		<None Remove="Assets\Sounds\complete.wav" />
 		<None Remove="Assets\Sounds\complete2.wav" />
 		<None Remove="Assets\Sounds\error.wav" />
@@ -23,6 +26,15 @@
 
 	<ItemGroup>
 		<!-- REMOVE logo.ico - it's causing the conflict -->
+		<Resource Include="Assets\Fonts\JetBrainsMono-Bold.ttf">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Assets\Fonts\JetBrainsMono-Medium.ttf">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Assets\Fonts\JetBrainsMono-Regular.ttf">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
 		<Resource Include="Assets\Sounds\complete.wav">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Resource>
