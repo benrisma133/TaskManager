@@ -101,9 +101,8 @@ public static class ActiveSession
     // ============================
     // STOP
     // ============================
-    public static void Stop()
+    public static void Stop(int exactDurationSeconds = -1)
     {
-        // If stopped while paused, finalize that pause
         if (!IsRunning && _pausedAt.HasValue)
         {
             TimeSpan pauseDuration = DateTime.Now - _pausedAt.Value;
@@ -111,7 +110,7 @@ public static class ActiveSession
         }
 
         if (Timer is not null)
-            Timer.ForceEnd(TotalPausedSeconds);
+            Timer.ForceEnd(TotalPausedSeconds, exactDurationSeconds);
 
         _timer?.Stop();
 

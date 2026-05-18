@@ -12,9 +12,11 @@
         public bool IsCompleted { get; set; }
         public DateTime? CompletedAt { get; set; }
         public int? EstimatedMinutes { get; set; }
+        public int ExtraMinutes { get; set; } = 0;
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public string ProjectTitle { get; set; } = null!;
+        public string? Color { get; set; }   // ← ADD THIS
 
         // ─── Computed Properties ───────────────────────────────────────────────
         public string EstimatedText => EstimatedMinutes.HasValue
@@ -42,5 +44,8 @@
                 _ => $"{DaysLeft}d left"
             }
             : "No due date";
+
+        public int TotalEstimatedMinutes =>
+            (EstimatedMinutes ?? 0) + ExtraMinutes;
     }
 }

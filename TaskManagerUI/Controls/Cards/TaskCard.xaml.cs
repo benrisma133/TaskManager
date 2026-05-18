@@ -25,6 +25,8 @@ namespace TaskManagerUI.Controls.Cards
             if(task.Project != null)
                 SubtitleText.Text = task.Project.Title;
 
+            ApplyCategoryColor(task.Project!.Category!.Color);
+
             // Row 2 — Priority + Status + DueDate
             PriorityBadgeControl.Status = task.Priority;
             StatusBadgeControl.Status = task.Status;
@@ -32,8 +34,23 @@ namespace TaskManagerUI.Controls.Cards
                                           ? task.DueDate.Value.ToString("MMM dd")
                                           : "No date";
 
+            
+
             // Row 4 — Estimated + DaysLeft
             EstimatedTimeText.Text = task.EstimatedText;
+
+            if (task.ExtraMinutes > 0)
+            {
+                ExtraTimeText.Text = $"+{_FormatMinutes(task.ExtraMinutes)} extra";
+                TotalTimeText.Text = $"Total: {_FormatMinutes(task.TotalEstimatedMinutes)}";
+                ExtraTimePanel.Visibility = System.Windows.Visibility.Visible;
+            }
+            else
+            {
+                ExtraTimePanel.Visibility = System.Windows.Visibility.Collapsed;
+            }
+
+
             DaysLeftText.Text = task.DaysLeftText;
 
             // Row 4 — DaysLeft color
@@ -56,6 +73,8 @@ namespace TaskManagerUI.Controls.Cards
             TitleText.Text = task.Title;
             SubtitleText.Text = task.ProjectTitle;
 
+            ApplyCategoryColor(task.Color);
+
             // Row 2 — Priority + Status + DueDate
             PriorityBadgeControl.Status = task.Priority;
             StatusBadgeControl.Status = task.Status;
@@ -63,8 +82,21 @@ namespace TaskManagerUI.Controls.Cards
                                             ? task.DueDate.Value.ToString("MMM dd")
                                             : "No date";
 
-            // Row 4 — Estimated + DaysLeft
             EstimatedTimeText.Text = task.EstimatedText;
+
+            if (task.ExtraMinutes > 0)
+            {
+                ExtraTimeText.Text = $"+{_FormatMinutes(task.ExtraMinutes)} extra";
+                TotalTimeText.Text = $"Total: {_FormatMinutes(task.TotalEstimatedMinutes)}";
+                ExtraTimePanel.Visibility = System.Windows.Visibility.Visible;
+            }
+            else
+            {
+                ExtraTimePanel.Visibility = System.Windows.Visibility.Collapsed;
+            }
+
+
+
             DaysLeftText.Text = task.DaysLeftText;
 
             // Row 4 — DaysLeft color
@@ -103,6 +135,39 @@ namespace TaskManagerUI.Controls.Cards
         private void OnThemeChanged(bool isDark)
         {
             UpdateShadow(isDark);
+        }
+
+        private string _FormatMinutes(int minutes)
+        {
+            if (minutes <= 0) return "0 min";
+            if (minutes < 60) return $"{minutes} min";
+
+            int h = minutes / 60;
+            int m = minutes % 60;
+            return m == 0 ? $"{h}h" : $"{h}h {m}m";
+        }
+
+        private void ApplyCategoryColor(string? color)
+        {
+            if (!string.IsNullOrWhiteSpace(color))
+            {
+                try
+                {
+                    var brush = new SolidColorBrush(
+                        (Color)ColorConverter.ConvertFromString(color));
+                    ColorAccentBorder.Background = brush;
+                }
+                catch
+                {
+                    ColorAccentBorder.SetResourceReference(
+                        Border.BackgroundProperty, "AccentBrush");
+                }
+            }
+            else
+            {
+                ColorAccentBorder.SetResourceReference(
+                    Border.BackgroundProperty, "AccentBrush");
+            }
         }
     }
 }

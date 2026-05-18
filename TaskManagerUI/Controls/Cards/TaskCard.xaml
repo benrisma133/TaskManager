@@ -7,15 +7,11 @@
              mc:Ignorable="d" 
              x:Name="Root">
 
-    <Border x:Name="CardBorder"
-            Background="{DynamicResource CardBackgroundBrush}"
-            BorderBrush="{DynamicResource BorderDefaultBrush}"
-            BorderThickness="1"
-            CornerRadius="12"
-            Padding="20"
-            HorizontalAlignment="Stretch"
-            Margin="0"
-            RenderTransformOrigin="0.5,0.5">
+    <Border x:Name="ColorAccentBorder" 
+            CornerRadius="12" 
+            Background="{DynamicResource AccentBrush}"
+        Padding="0,4,0,0"
+        RenderTransformOrigin="0.5,0.5">
 
         <Border.RenderTransform>
             <TranslateTransform x:Name="CardTranslate"/>
@@ -26,9 +22,9 @@
                 <BeginStoryboard>
                     <Storyboard>
                         <DoubleAnimation Storyboard.TargetName="CardTranslate"
-                                         Storyboard.TargetProperty="Y"
-                                         To="-2"
-                                         Duration="0:0:0.2"/>
+                                     Storyboard.TargetProperty="Y"
+                                     To="-4"
+                                     Duration="0:0:0.2"/>
                     </Storyboard>
                 </BeginStoryboard>
             </EventTrigger>
@@ -36,292 +32,320 @@
                 <BeginStoryboard>
                     <Storyboard>
                         <DoubleAnimation Storyboard.TargetName="CardTranslate"
-                                         Storyboard.TargetProperty="Y"
-                                         To="0"
-                                         Duration="0:0:0.2"/>
+                                     Storyboard.TargetProperty="Y"
+                                     To="0"
+                                     Duration="0:0:0.2"/>
                     </Storyboard>
                 </BeginStoryboard>
             </EventTrigger>
         </Border.Triggers>
+        <Border x:Name="CardBorder"
+            Background="{DynamicResource CardBackgroundBrush}"
+            BorderBrush="{DynamicResource BorderDefaultBrush}"
+            BorderThickness="0"
+            CornerRadius="11"
+            Padding="20"
+                Margin="-0.5,0,-0.5,-0.5"
+            HorizontalAlignment="Stretch">
 
-        <Border.Effect>
-            <DropShadowEffect x:Name="CardShadow"
+            
+
+            <Border.Effect>
+                <DropShadowEffect x:Name="CardShadow"
                               Color="#000000"
                               Direction="270"
                               ShadowDepth="2"
                               BlurRadius="8"
                               Opacity="0.15"
                               RenderingBias="Performance"/>
-        </Border.Effect>
+            </Border.Effect>
 
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <!-- Title + Subtitle -->
-                <RowDefinition Height="12"/>
-                <!-- Divider -->
-                <RowDefinition Height="Auto"/>
-                <!-- Priority + Status + Due Date -->
-                <RowDefinition Height="12"/>
-                <!-- Divider -->
-                <RowDefinition Height="Auto"/>
-                <!-- Estimated + Days Left -->
-                <RowDefinition Height="12"/>
-                <!-- Divider -->
-                <RowDefinition Height="Auto"/>
-                <!-- Buttons: Start Task | Edit/Delete -->
-            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <!-- Title + Subtitle -->
+                    <RowDefinition Height="12"/>
+                    <!-- Divider -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Priority + Status + Due Date -->
+                    <RowDefinition Height="12"/>
+                    <RowDefinition Height="*"/>
+                    <!-- Divider -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Estimated + Days Left -->
+                    <RowDefinition Height="12"/>
+                    <!-- Divider -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Buttons: Start Task | Edit/Delete -->
+                </Grid.RowDefinitions>
 
-            <!-- Row 0: Title and Subtitle -->
-            <StackPanel Grid.Row="0">
-                <TextBlock x:Name="TitleText"
+                <!-- Row 0: Title and Subtitle -->
+                <StackPanel Grid.Row="0">
+                    <TextBlock x:Name="TitleText"
                            Text="Build Login Page"
                            FontSize="16"
                            FontWeight="SemiBold"
                            Foreground="{DynamicResource TextPrimaryBrush}"
                            TextWrapping="Wrap"/>
-                <TextBlock x:Name="SubtitleText"
+                    <TextBlock x:Name="SubtitleText"
                            Text="TaskFlow App"
                            FontSize="13"
                            Foreground="{DynamicResource TextMutedBrush}"
                            Margin="0,6,0,0"
                            TextWrapping="Wrap"/>
-            </StackPanel>
+                </StackPanel>
 
-            <!-- Row 1: Divider -->
-            <Border Grid.Row="1"
+                <!-- Row 1: Divider -->
+                <Border Grid.Row="1"
                     Height="1"
                     Background="{DynamicResource BorderDefaultBrush}"
                     VerticalAlignment="Center"/>
 
-            <!-- Row 2: Priority, Status, Due Date -->
-            <Grid Grid.Row="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="40"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="40"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+                <!-- Row 2: Priority, Status, Due Date -->
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                <!-- Priority -->
-                <StackPanel Grid.Column="0" Margin="0,0,12,0">
-                    <TextBlock Text="Priority"
+                    <!-- Priority -->
+                    <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                        <TextBlock Text="Priority"
                                FontSize="11"
                                Foreground="{DynamicResource TextMutedBrush}"/>
-                    <Border Height="4"/>
-                    <components:PriorityBadge x:Name="PriorityBadgeControl"
+                        <Border Height="4"/>
+                        <components:PriorityBadge x:Name="PriorityBadgeControl"
                                               Margin="0,3,0,0"
                                               VerticalAlignment="Center"
                                               HorizontalAlignment="Left"
                                               Status="Critical"/>
-                </StackPanel>
+                    </StackPanel>
 
-                <!-- Spacer -->
-                <Border Grid.Column="1"/>
+                    <!-- Spacer -->
+                    <Border Grid.Column="1"/>
 
-                <!-- Status -->
-                <StackPanel Grid.Column="2" Margin="0,0,12,0">
-                    <TextBlock Text="Status"
+                    <!-- Status -->
+                    <StackPanel Grid.Column="2" Margin="0,0,12,0">
+                        <TextBlock Text="Status"
                                FontSize="11"
                                Foreground="{DynamicResource TextMutedBrush}"/>
-                    <Border Height="4"/>
-                    <components:StatusBadge x:Name="StatusBadgeControl"
+                        <Border Height="4"/>
+                        <components:StatusBadge x:Name="StatusBadgeControl"
                                             Margin="0,3,0,0"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Left"
                                             Status="Active"/>
-                </StackPanel>
+                    </StackPanel>
 
-                <!-- Spacer -->
-                <Border Grid.Column="3"/>
+                    <!-- Spacer -->
+                    <Border Grid.Column="3"/>
 
-                <!-- Due Date -->
-                <StackPanel Grid.Column="4">
-                    <TextBlock Text="Due Date"
+                    <!-- Due Date -->
+                    <StackPanel Grid.Column="4">
+                        <TextBlock Text="Due Date"
                                FontSize="11"
                                Foreground="{DynamicResource TextMutedBrush}"/>
-                    <Border Height="4"/>
-                    <TextBlock x:Name="DueDateText"
+                        <Border Height="4"/>
+                        <TextBlock x:Name="DueDateText"
                                Text="May 15"
                                FontSize="13"
                                Foreground="{DynamicResource TextSecondaryBrush}"
                                Margin="0,6,0,0"
                                TextTrimming="CharacterEllipsis"/>
-                </StackPanel>
-            </Grid>
+                    </StackPanel>
+                </Grid>
 
-            <!-- Row 3: Divider -->
-            <Border Grid.Row="3"
+                <!-- Row 3: Divider -->
+                <Border Grid.Row="3"
                     Height="1"
                     Background="{DynamicResource BorderDefaultBrush}"
                     VerticalAlignment="Center"/>
 
-            <!-- Row 4: Estimated Time + Days Left -->
-            <Grid Grid.Row="4">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="10"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+                <!-- Row 4: Estimated Time + Days Left -->
+                <Grid Grid.Row="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                <!-- Estimated Time -->
-                <StackPanel Grid.Column="0" Margin="0,0,12,0">
-                    <TextBlock Text="Estimated"
+                    <!-- Estimated Time -->
+                    <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                        <TextBlock Text="Estimated"
                                FontSize="11"
                                Foreground="{DynamicResource TextMutedBrush}"/>
-                    <Border Height="4"/>
-                    <TextBlock x:Name="EstimatedTimeText"
+                        <Border Height="4"/>
+                        <TextBlock x:Name="EstimatedTimeText"
                                Text="Not set"
                                FontSize="13"
                                Foreground="{DynamicResource TextSecondaryBrush}"
                                Margin="0,6,0,0"/>
-                </StackPanel>
 
-                <Border Grid.Column="1"/>
+                        <!-- ← single wrapper, Collapsed when no extra time -->
+                        <StackPanel x:Name="ExtraTimePanel"
+                                Margin="0,4,0,0"
+                                Visibility="Collapsed">
+                            <TextBlock x:Name="ExtraTimeText"
+                                   FontSize="11"
+                                   Foreground="{DynamicResource ErrorBrush}"/>
+                            <TextBlock x:Name="TotalTimeText"
+                                   FontSize="11"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource AccentBrush}"
+                                   Margin="0,2,0,0"/>
+                        </StackPanel>
 
-                <!-- Days Left -->
-                <StackPanel Grid.Column="2">
-                    <TextBlock Text="Days Left"
+                    </StackPanel>
+
+                    <Border Grid.Column="1"/>
+
+                    <!-- Days Left -->
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Days Left"
                                FontSize="11"
                                Foreground="{DynamicResource TextMutedBrush}"/>
-                    <Border Height="4"/>
-                    <TextBlock x:Name="DaysLeftText"
+                        <Border Height="4"/>
+                        <TextBlock x:Name="DaysLeftText"
                                Text="--"
                                FontSize="13"
                                Foreground="{DynamicResource TextSecondaryBrush}"
                                Margin="0,6,0,0"/>
-                </StackPanel>
-            </Grid>
+                    </StackPanel>
+                </Grid>
 
-            <!-- Row 5: Divider -->
-            <Border Grid.Row="5"
+                <!-- Row 5: Divider -->
+                <Border Grid.Row="6"
                     Height="1"
                     Background="{DynamicResource BorderDefaultBrush}"
                     VerticalAlignment="Center"/>
 
-            <!-- Row 6: Buttons (Start Task | Edit/Delete) -->
-            <Grid Grid.Row="6">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+                <!-- Row 6: Buttons (Start Task | Edit/Delete) -->
+                <Grid Grid.Row="7">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                <!-- Start Task Button -->
-                <Button x:Name="StartTaskBtn"
+                    <!-- Start Task Button -->
+                    <Button x:Name="StartTaskBtn"
                         BorderThickness="0"
                         Foreground="{DynamicResource AccentBrush}"
                         Cursor="Hand">
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <Border x:Name="Bd"
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="Bd"
                                     Background="{DynamicResource AccentLightBrush}"
                                     CornerRadius="8"
                                     Padding="14,10">
 
-                                <TextBlock x:Name="StartTaskText"
+                                    <TextBlock x:Name="StartTaskText"
                                            Text="▶ Start Task"
                                            FontSize="12"
                                            FontWeight="Medium"
                                            Foreground="{DynamicResource AccentBrush}"/>
 
 
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentBrush}"/>
-                                    <Setter TargetName="StartTaskText" Property="Foreground" Value="White"/>
-                                </Trigger>
-                                <Trigger Property="IsPressed" Value="True">
-                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentPressedBrush}"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                        <Setter TargetName="StartTaskText" Property="Foreground" Value="White"/>
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentPressedBrush}"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
 
-                <!-- Edit / Delete Buttons -->
-                <StackPanel Grid.Column="1"
+                    <!-- Edit / Delete Buttons -->
+                    <StackPanel Grid.Column="1"
                             Orientation="Horizontal"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
 
-                    <!-- Edit Button -->
-                    <Button x:Name="EditBtn"
+                        <!-- Edit Button -->
+                        <Button x:Name="EditBtn"
                             Width="32" Height="32"
                             BorderThickness="0"
                             Cursor="Hand"
                             Margin="0,0,6,0"
                             ToolTip="Edit Task">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border x:Name="Bd"
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="Bd"
                                         Background="{DynamicResource AccentLightBrush}"
                                         CornerRadius="8">
-                                    <Viewbox Width="14" Height="14">
-                                        <Canvas Width="24" Height="24">
-                                            <Path x:Name="EditIcon1"
+                                        <Viewbox Width="14" Height="14">
+                                            <Canvas Width="24" Height="24">
+                                                <Path x:Name="EditIcon1"
                                                   Data="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13"
                                                   Stroke="{DynamicResource AccentBrush}"
                                                   StrokeThickness="2" Fill="Transparent"
                                                   StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
-                                            <Path x:Name="EditIcon2"
+                                                <Path x:Name="EditIcon2"
                                                   Data="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.43741 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z"
                                                   Stroke="{DynamicResource AccentBrush}"
                                                   StrokeThickness="2" Fill="Transparent"
                                                   StrokeLineJoin="Round"/>
-                                        </Canvas>
-                                    </Viewbox>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="Bd"        Property="Background" Value="{DynamicResource AccentBrush}"/>
-                                        <Setter TargetName="EditIcon1" Property="Stroke"     Value="White"/>
-                                        <Setter TargetName="EditIcon2" Property="Stroke"     Value="White"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
+                                            </Canvas>
+                                        </Viewbox>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="Bd"        Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                            <Setter TargetName="EditIcon1" Property="Stroke"     Value="White"/>
+                                            <Setter TargetName="EditIcon2" Property="Stroke"     Value="White"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
 
-                    <!-- Delete Button -->
-                    <Button x:Name="DeleteBtn"
+                        <!-- Delete Button -->
+                        <Button x:Name="DeleteBtn"
                             Width="32" Height="32"
                             BorderThickness="0"
                             Cursor="Hand"
                             ToolTip="Delete Task">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border x:Name="Bd"
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="Bd"
                                         Background="{DynamicResource ErrorLightBrush}"
                                         CornerRadius="8">
-                                    <Viewbox Width="14" Height="14">
-                                        <Canvas Width="24" Height="24">
-                                            <Path x:Name="DeleteIcon1"
+                                        <Viewbox Width="14" Height="14">
+                                            <Canvas Width="24" Height="24">
+                                                <Path x:Name="DeleteIcon1"
                                                   Data="M3 6H5H21"
                                                   Stroke="{DynamicResource ErrorBrush}"
                                                   StrokeThickness="2" Fill="Transparent"
                                                   StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
-                                            <Path x:Name="DeleteIcon2"
+                                                <Path x:Name="DeleteIcon2"
                                                   Data="M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6"
                                                   Stroke="{DynamicResource ErrorBrush}"
                                                   StrokeThickness="2" Fill="Transparent"
                                                   StrokeLineJoin="Round"/>
-                                        </Canvas>
-                                    </Viewbox>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="Bd"          Property="Background" Value="{DynamicResource ErrorBrush}"/>
-                                        <Setter TargetName="DeleteIcon1" Property="Stroke"     Value="White"/>
-                                        <Setter TargetName="DeleteIcon2" Property="Stroke"     Value="White"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
-                </StackPanel>
+                                            </Canvas>
+                                        </Viewbox>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="Bd"          Property="Background" Value="{DynamicResource ErrorBrush}"/>
+                                            <Setter TargetName="DeleteIcon1" Property="Stroke"     Value="White"/>
+                                            <Setter TargetName="DeleteIcon2" Property="Stroke"     Value="White"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </StackPanel>
+                </Grid>
             </Grid>
-        </Grid>
+        </Border>
     </Border>
+
 </UserControl>

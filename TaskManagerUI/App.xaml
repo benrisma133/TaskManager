@@ -12,7 +12,12 @@
                 <ResourceDictionary Source="/Helpers/ModernComboBoxItem.xaml"/>
                 <ResourceDictionary Source="/Assets/Icons.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="TextBlock">
+                <Setter Property="FontFamily"
+                Value="/Assets/Fonts/#JetBrains Mono"/>
+            </Style>
         </ResourceDictionary>
+        
     </Application.Resources>
 
 </Application>

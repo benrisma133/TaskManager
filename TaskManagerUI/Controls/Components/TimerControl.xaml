@@ -55,7 +55,7 @@
             <!-- Time display -->
             <TextBlock x:Name="TimeDisplay"
                        Text="00:00"
-                       FontSize="36"
+                       FontSize="30"
                        FontWeight="Medium"
                        Foreground="{DynamicResource TextPrimaryBrush}"
                        HorizontalAlignment="Center"

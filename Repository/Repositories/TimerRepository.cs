@@ -48,7 +48,7 @@ namespace Repository.Repositories
         }
 
         // ======================== [ END SESSION ] ========================
-        public static bool EndSession(int sessionId, int totalPausedSeconds)
+        public static bool EndSession(int sessionId, int totalPausedSeconds, int actualDurationSeconds = -1)
         {
             try
             {
@@ -60,10 +60,10 @@ namespace Repository.Repositories
 
                 cmd.Parameters.AddWithValue("@SessionId", sessionId);
                 cmd.Parameters.AddWithValue("@TotalPausedSeconds", totalPausedSeconds);
+                cmd.Parameters.AddWithValue("@ActualDurationSeconds", actualDurationSeconds);
 
                 conn.Open();
                 cmd.ExecuteNonQuery();
-
                 return true;
             }
             catch (SqlException ex)

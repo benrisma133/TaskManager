@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Media;
 using TaskManagerUI.Controls.Cards;
 using TaskManagerUI.Models;
@@ -20,6 +19,7 @@ public partial class TasksPage : UserControl
     // FIELDS
     // ============================
     private List<TaskItemDetails> _allTasks = new();
+    private List<ProjectDetails> _allProjects = new();
     private bool _isInitialized = false;
     private int _currentPage = 1;
     private int _totalPages = 1;
@@ -33,6 +33,7 @@ public partial class TasksPage : UserControl
     public TasksPage()
     {
         InitializeComponent();
+        _LoadProjects();
     }
 
     // ============================
@@ -46,6 +47,59 @@ public partial class TasksPage : UserControl
     }
 
     // ============================
+    // LOAD PROJECTS (for filter combo)
+    // ============================
+    private void _LoadProjects()
+    {
+        var (result, projects, _) = ProjectService.GetAll(1, int.MaxValue);
+
+        ProjectFilterCombo.Items.Clear();
+
+        // "All" option
+        var allItem = new ComboBoxItem
+        {
+            Content = "All",
+            Tag = null
+        };
+        allItem.Style = (Style)FindResource("ModernComboBoxItem");
+        ProjectFilterCombo.Items.Add(allItem);
+
+        if (result != Service.Enums.Project.enProjectRetrieveResult.Found || projects.Count == 0)
+        {
+            ProjectFilterCombo.SelectedIndex = 0;
+            return;
+        }
+
+        _allProjects = projects;
+
+        foreach (var project in projects)
+        {
+            var item = new ComboBoxItem
+            {
+                Content = project.Title,
+                Tag = project.ProjectID
+            };
+            item.Style = (Style)FindResource("ModernComboBoxItem");
+            ProjectFilterCombo.Items.Add(item);
+        }
+
+        ProjectFilterCombo.SelectedIndex = 0;
+    }
+
+    // ============================
+    // GET SELECTED PROJECT ID
+    // ============================
+    private int? _GetSelectedProjectId()
+    {
+        if (ProjectFilterCombo.SelectedItem is ComboBoxItem item)
+        {
+            if (item.Tag == null) return null; // "All"
+            if (item.Tag is int id) return id;
+        }
+        return null;
+    }
+
+    // ============================
     // LOAD TASKS
     // ============================
     private async Task LoadTasks()
@@ -55,13 +109,13 @@ public partial class TasksPage : UserControl
         var search = string.IsNullOrWhiteSpace(SearchBox.Text) ? null : SearchBox.Text.Trim();
         var priority = (PriorityFilterCombo.SelectedItem as ComboBoxItem)?.Content?.ToString();
         var status = (StatusFilterCombo.SelectedItem as ComboBoxItem)?.Content?.ToString();
+        int? projectId = _GetSelectedProjectId();
 
-        // pass null for "All" — SP treats NULL as no filter
         if (priority == "All") priority = null;
         if (status == "All") status = null;
 
         var (result, tasks, totalCount) = await Task.Run(()
-            => TaskService.GetAll(_currentPage, PageSize, search, priority, status));
+            => TaskService.GetAll(_currentPage, PageSize, search, priority, status, projectId));
 
         if (result == enTaskRetrieveResult.Failed)
         {
@@ -90,7 +144,7 @@ public partial class TasksPage : UserControl
             ? Visibility.Visible
             : Visibility.Collapsed;
 
-        _currentPage = 1; // reset to page 1 on new search
+        _currentPage = 1;
         _ = LoadTasks();
     }
 
@@ -104,6 +158,34 @@ public partial class TasksPage : UserControl
     private void StatusFilterCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (!_isInitialized) return;
+        _currentPage = 1;
+        _ = LoadTasks();
+    }
+
+    private void ProjectFilterCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (!_isInitialized) return;
+        _currentPage = 1;
+        _ = LoadTasks();
+    }
+
+    private void FilterBtn_Click(object sender, RoutedEventArgs e)
+    {
+        FilterPopup.IsOpen = !FilterPopup.IsOpen;
+    }
+
+    private void CloseFilterPopupBtn_Click(object sender, RoutedEventArgs e)
+    {
+        FilterPopup.IsOpen = false;
+    }
+
+    private void ClearFiltersBtn_Click(object sender, RoutedEventArgs e)
+    {
+        PriorityFilterCombo.SelectedIndex = 0;  // "All"
+        StatusFilterCombo.SelectedIndex = 0;  // "All"
+        ProjectFilterCombo.SelectedIndex = 0;  // "All"
+        SearchBox.Text = string.Empty;
+
         _currentPage = 1;
         _ = LoadTasks();
     }
@@ -177,19 +259,17 @@ public partial class TasksPage : UserControl
                 BorderThickness = new Thickness(1),
                 Margin = new Thickness(3, 0, 3, 0),
                 FontSize = 13,
-                FontWeight = isCurrent ? FontWeights.Bold : FontWeights.Normal
+                FontWeight = isCurrent ? FontWeights.Bold : FontWeights.Normal,
+                Background = isCurrent
+                                    ? (Brush)FindResource("AccentBrush")
+                                    : (Brush)FindResource("InputBackgroundBrush"),
+                Foreground = isCurrent
+                                    ? (Brush)FindResource("TextOnAccentBrush")
+                                    : (Brush)FindResource("TextSecondaryBrush"),
+                BorderBrush = isCurrent
+                                    ? (Brush)FindResource("AccentBrush")
+                                    : (Brush)FindResource("BorderDefaultBrush")
             };
-
-            // style
-            btn.Background = isCurrent
-                ? (Brush)FindResource("AccentBrush")
-                : (Brush)FindResource("InputBackgroundBrush");
-            btn.Foreground = isCurrent
-                ? (Brush)FindResource("TextOnAccentBrush")
-                : (Brush)FindResource("TextSecondaryBrush");
-            btn.BorderBrush = isCurrent
-                ? (Brush)FindResource("AccentBrush")
-                : (Brush)FindResource("BorderDefaultBrush");
 
             var template = new ControlTemplate(typeof(Button));
             var border = new FrameworkElementFactory(typeof(Border));
@@ -300,38 +380,27 @@ public partial class TasksPage : UserControl
                 break;
 
             case enTaskDeleteResult.AlreadyCompleted:
-                MessageBox.Show(
-                    "Completed tasks cannot be deleted.",
-                    "Not Allowed",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
+                MessageBox.Show("Completed tasks cannot be deleted.",
+                    "Not Allowed", MessageBoxButton.OK, MessageBoxImage.Warning);
                 break;
 
             case enTaskDeleteResult.HasSessions:
-                MessageBox.Show(
-                    $"\"{taskTitle}\" has timer sessions and cannot be deleted.",
-                    "Not Allowed",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
+                MessageBox.Show($"\"{taskTitle}\" has timer sessions and cannot be deleted.",
+                    "Not Allowed", MessageBoxButton.OK, MessageBoxImage.Warning);
                 break;
 
             case enTaskDeleteResult.Failed:
-                MessageBox.Show(
-                    "Failed to delete task. Please try again.",
-                    "Error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                MessageBox.Show("Failed to delete task. Please try again.",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 break;
         }
     }
-
 
     // ============================
     // START TASK
     // ============================
     private void Card_OnStartTask(int taskId)
     {
-        // ── just navigate, don't start session yet ────────────────
         _mainWindow?.NavigateToTimer(taskId);
     }
 

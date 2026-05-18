@@ -77,9 +77,11 @@ namespace TaskManagerUI.Pages.Tasks.Timer
             // ── disable timer if task is done ─────────────────────────
             if (_taskService.Task.Status == "Done")
             {
-                Timer.Visibility = Visibility.Collapsed;  // gray out entire timer control
+                Timer.Visibility = Visibility.Collapsed;
                 StatusLabel.Visibility = Visibility.Visible;
                 StatusText.Status = "Done";
+                AddExtraTimeBtn.Visibility = Visibility.Visible;  // ← ADD
+                DoneBtn.Visibility = Visibility.Collapsed;         // ← ADD
             }
 
             // ── Step 5: restart TimerControl internal timer if running ─
@@ -117,8 +119,8 @@ namespace TaskManagerUI.Pages.Tasks.Timer
                 DescriptionPanel.Visibility = Visibility.Visible;
             }
 
-            EstimatedText.Text = task.EstimatedMinutes.HasValue
-                ? _FormatMinutes(task.EstimatedMinutes.Value)
+            EstimatedText.Text = _taskService.TotalEstimatedMinutes > 0
+                ? _FormatMinutes(_taskService.TotalEstimatedMinutes)
                 : "—";
 
             DueDateText.Text = task.DueDate.HasValue
@@ -157,8 +159,9 @@ namespace TaskManagerUI.Pages.Tasks.Timer
         // ============================
         private void _InitTimer()
         {
-            var task = _taskService.Task;
-            int est = task.EstimatedMinutes ?? 25;
+            int est = _taskService.TotalEstimatedMinutes > 0
+                ? _taskService.TotalEstimatedMinutes
+                : 25;
 
             int liveSeconds = _sessionStarted &&
                               ActiveSession.HasSession &&
@@ -168,7 +171,7 @@ namespace TaskManagerUI.Pages.Tasks.Timer
 
             double totalLoggedSecs = _totalSecondsAllTime + liveSeconds;
             double estimatedSecs = est * 60.0;
-            double remainingSecs = Math.Max(estimatedSecs - totalLoggedSecs, 0);  // ← PUT BACK Math.Max
+            double remainingSecs = Math.Max(estimatedSecs - totalLoggedSecs, 0);
 
             Timer._skipNextReset = true;
             Timer.EstimatedMinutes = est;
@@ -284,9 +287,9 @@ namespace TaskManagerUI.Pages.Tasks.Timer
         // ============================
         private void _UpdateProgress()
         {
-            var task = _taskService?.Task;
+            int est = _taskService.TotalEstimatedMinutes;
 
-            if (task?.EstimatedMinutes is not int est || est == 0)
+            if (est == 0)
             {
                 ProgressText.Text = "0";
                 ProgressBarControl.ProgressWidth = 0;
@@ -303,7 +306,7 @@ namespace TaskManagerUI.Pages.Tasks.Timer
             double estimatedSecs = est * 60.0;
             double progress = Math.Min(totalLogged / estimatedSecs * 100, 100);
 
-            ProgressText.Text = (progress).ToString("F2");
+            ProgressText.Text = progress.ToString("F2");
             ProgressBarControl.ProgressWidth = progress;
 
             _UpdateTotalToday();
@@ -318,15 +321,15 @@ namespace TaskManagerUI.Pages.Tasks.Timer
             {
                 if (!ActiveSession.HasSession) return;
 
-                var task = _taskService.Task;
-                int est = task.EstimatedMinutes ?? 25;
+                int est = _taskService.TotalEstimatedMinutes > 0
+                    ? _taskService.TotalEstimatedMinutes
+                    : 25;
 
                 int liveSeconds = ActiveSession.ElapsedSeconds;
                 double totalLoggedSecs = _totalSecondsAllTime + liveSeconds;
                 double estimatedSecs = est * 60.0;
                 double remainingSecs = Math.Max(estimatedSecs - totalLoggedSecs, 0);
 
-                // ── sync TimerControl display ─────────────────────────
                 Timer.ForceSetRemaining(TimeSpan.FromSeconds(remainingSecs));
 
                 _UpdateLiveSessionCard();
@@ -403,25 +406,112 @@ namespace TaskManagerUI.Pages.Tasks.Timer
 
             if (ActiveSession.HasSession)
             {
-                Task.Delay(500).ContinueWith(_ =>
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        ActiveSession.Stop();
-                        _sessionStarted = false;
-                        _LoadSummary();
-                        _InitTimer();
-                        _UpdateProgress();
-                    });
-                });
+                int estimatedSeconds = _taskService.TotalEstimatedMinutes * 60;
+                int alreadyLogged = _totalSecondsAllTime;
+                int exactSeconds = Math.Max(estimatedSeconds - alreadyLogged, 0);
+
+                ActiveSession.Stop(exactSeconds);
             }
-            else
+
+            _sessionStarted = false;
+
+            var delayTimer = new System.Windows.Threading.DispatcherTimer
             {
-                _sessionStarted = false;
+                Interval = TimeSpan.FromMilliseconds(800)  // ← give animations time to finish
+            };
+            delayTimer.Tick += (s, args) =>
+            {
+                delayTimer.Stop();
+
                 _LoadSummary();
                 _InitTimer();
                 _UpdateProgress();
+                _ShowCompleteDialog();
+            };
+            delayTimer.Start();
+        }
+
+        // ============================
+        // SHOW COMPLETE DIALOG
+        // ============================
+        private void _ShowCompleteDialog()
+        {
+            var dialog = new Dialog.TimerCompleteDialog(_taskService.Title);
+            dialog.Owner = Window.GetWindow(this);  // ← attach to parent window
+            dialog.ShowDialog();
+
+            switch (dialog.Result)
+            {
+                case Dialog.TimerCompleteDialog.enDialogResult.MarkDone:
+                    _MarkTaskDone();
+                    break;
+
+                case Dialog.TimerCompleteDialog.enDialogResult.AddTime:
+                    _AddExtraTime(dialog.ExtraMinutes);
+                    break;
+
+                case Dialog.TimerCompleteDialog.enDialogResult.Cancel:
+                    break;
             }
+        }
+
+        // ============================
+        // MARK TASK DONE
+        // ============================
+        private void _MarkTaskDone()
+        {
+            var result = TaskService.Complete(_taskId);
+
+            if (result == enTaskCompleteResult.Completed)
+            {
+                var (isFound, service) = TaskService.Find(_taskId);
+                if (isFound != enTaskRetrieveResult.Found) return;
+
+                _taskService = service!;
+                _LoadUIText();
+
+                Timer.Visibility = Visibility.Collapsed;
+                StatusLabel.Visibility = Visibility.Visible;
+                AddExtraTimeBtn.Visibility = Visibility.Visible;   // ← show button
+                DoneBtn.Visibility = Visibility.Collapsed;         // ← hide done button
+            }
+        }
+
+        // ============================
+        // ADD EXTRA TIME
+        // ============================
+        private void _AddExtraTime(int minutes)
+        {
+            bool saved = TaskService.AddExtraMinutes(_taskId, minutes);
+
+            if (!saved)
+            {
+                MessageBox.Show("Failed to save extra time.", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            // ← reopen task back to InProgress
+            TaskService.Reopen(_taskId);
+
+            // reload task to get updated TotalEstimatedMinutes and InProgress status
+            var (isFound, service) = TaskService.Find(_taskId);
+            if (isFound != enTaskRetrieveResult.Found) return;
+
+            _taskService = service!;
+            _LoadUIText();
+            _LoadSummary();
+            _InitTimer();
+            _UpdateProgress();
+
+            // ← show timer again, hide extra time button, show done button
+            Timer.Visibility = Visibility.Visible;
+            StatusLabel.Visibility = Visibility.Collapsed;
+            AddExtraTimeBtn.Visibility = Visibility.Collapsed;
+            DoneBtn.Visibility = Visibility.Visible;
+
+            // ← reset completed state so Play button works again
+            Timer.ResetFromExternal();
         }
 
         // ============================
@@ -483,35 +573,28 @@ namespace TaskManagerUI.Pages.Tasks.Timer
         private void DoneBtn_Click(object sender, RoutedEventArgs e)
         {
             var (isFound, service) = TaskService.Find(_taskId);
-            if (isFound != enTaskRetrieveResult.Found)
-                return;
+            if (isFound != enTaskRetrieveResult.Found) return;
 
             if (service!.Status == "Done")
             {
-                MessageBox.Show($"Task: \"{service!.Title}\" Already completed!","Completed" ,MessageBoxButton.OK , MessageBoxImage.Information);
+                MessageBox.Show($"Task \"{service.Title}\" is already completed.",
+                    "Completed", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
-            var result = TaskService.Complete(_taskId);
-
-            if (result == enTaskCompleteResult.Completed)
-            {
-                
-
-
-
-                _taskService = service!;
-                _LoadUIText();
-                Timer.Visibility = Visibility.Collapsed;  // gray out entire timer control
-                StatusLabel.Visibility = Visibility.Visible;
-                StatusText.Status = "completed";
-                StatusText.Status = _taskService.Status;
-
-            }
-            else
-            {
-                // Handle failure
-            }
+            _MarkTaskDone();
         }
+
+        private void AddExtraTimeBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new Dialog.TimerCompleteDialog(_taskService.Title);
+            dialog.Owner = Window.GetWindow(this);
+            dialog.ShowDialog();
+
+            if (dialog.Result == Dialog.TimerCompleteDialog.enDialogResult.AddTime)
+                _AddExtraTime(dialog.ExtraMinutes);
+        }
+
+
     }
 }
