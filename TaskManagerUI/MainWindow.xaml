@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="TaskFlow"
         Height="700" Width="1200"
-        MinHeight="600" MinWidth="900"
+        MinHeight="600" MinWidth="952"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         AllowsTransparency="True"
