@@ -172,8 +172,9 @@ public static class TaskRepository
 
     // ======================== [ GET ALL TASKS PAGED ] ========================
     public static (List<TaskItemDetails> tasks, int totalCount) GetAllTasks(
-            int pageNumber = 1, int pageSize = 9,
-            string? search = null, string? priority = null, string? status = null)
+    int pageNumber = 1, int pageSize = 9,
+    string? search = null, string? priority = null, string? status = null,
+    int? projectId = null)
     {
         var list = new List<TaskItemDetails>();
         int totalCount = 0;
@@ -191,6 +192,7 @@ public static class TaskRepository
             cmd.Parameters.AddWithValue("@Search", (object?)search ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@Priority", (object?)priority ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@Status", (object?)status ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@ProjectId", (object?)projectId ?? DBNull.Value);
 
             conn.Open();
 
@@ -335,6 +337,62 @@ public static class TaskRepository
         catch (Exception ex)
         {
             clsLog.LogError(nameof(TaskRepository), nameof(CompleteTask), ex);
+            throw;
+        }
+    }
+
+    public static bool AddExtraMinutes(int taskId, int minutesToAdd)
+    {
+        try
+        {
+            using var conn = new SqlConnection(ConnectionString);
+            using var cmd = new SqlCommand("sp_AddExtraMinutes", conn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            cmd.Parameters.AddWithValue("@TaskId", taskId);
+            cmd.Parameters.AddWithValue("@MinutesToAdd", minutesToAdd);
+
+            conn.Open();
+            cmd.ExecuteNonQuery();
+            return true;
+        }
+        catch (SqlException ex)
+        {
+            clsLog.LogError(nameof(TaskRepository), nameof(AddExtraMinutes), ex);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            clsLog.LogError(nameof(TaskRepository), nameof(AddExtraMinutes), ex);
+            throw;
+        }
+    }
+
+    public static bool ReopenTask(int taskId)
+    {
+        try
+        {
+            using var conn = new SqlConnection(ConnectionString);
+            using var cmd = new SqlCommand("sp_ReopenTask", conn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            cmd.Parameters.AddWithValue("@TaskId", taskId);
+            conn.Open();
+            cmd.ExecuteNonQuery();
+            return true;
+        }
+        catch (SqlException ex)
+        {
+            clsLog.LogError(nameof(TaskRepository), nameof(ReopenTask), ex);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            clsLog.LogError(nameof(TaskRepository), nameof(ReopenTask), ex);
             throw;
         }
     }
