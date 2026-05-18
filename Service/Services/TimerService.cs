@@ -47,12 +47,28 @@ namespace Service.Services
         // ============================
         // FORCE END  (Stop button)
         // ============================
-        public enTimerSaveResult ForceEnd(int totalPausedSeconds)
+        public enTimerSaveResult ForceEnd(int totalPausedSeconds, int actualDurationSeconds = -1)
         {
             _totalPausedSeconds = totalPausedSeconds;
 
             if (_mode == enTimerMode.End && _sessionId > 0)
-                return _End();
+            {
+                try
+                {
+                    bool ok = TimerRepository.EndSession(_sessionId, _totalPausedSeconds, actualDurationSeconds);
+
+                    if (!ok) return enTimerSaveResult.Failed;
+
+                    _sessionId = 0;
+                    _mode = enTimerMode.Start;
+                    _totalPausedSeconds = 0;
+                    return enTimerSaveResult.Ended;
+                }
+                catch
+                {
+                    return enTimerSaveResult.Failed;
+                }
+            }
 
             _mode = enTimerMode.Start;
             _sessionId = 0;

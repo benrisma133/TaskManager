@@ -26,6 +26,7 @@ public class TaskService
     public bool IsCompleted { get; private set; }
     public DateTime? CompletedAt { get; private set; }
     public int? EstimatedMinutes { get; set; }
+    public int ExtraMinutes { get; set; } = 0;
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
 
@@ -56,6 +57,8 @@ public class TaskService
         }
         : "No due date";
 
+    public int TotalEstimatedMinutes => (EstimatedMinutes ?? 0) + ExtraMinutes;
+
     public TaskItem Task => _task;  // ← This already exists
 
     // ─── Constructors ──────────────────────────────────────────────────────
@@ -78,6 +81,7 @@ public class TaskService
         IsCompleted = task.IsCompleted;
         CompletedAt = task.CompletedAt;
         EstimatedMinutes = task.EstimatedMinutes;
+        ExtraMinutes = task.ExtraMinutes;
         CreatedAt = task.CreatedAt;
         UpdatedAt = task.UpdatedAt;
         _Mode = mode;
@@ -214,16 +218,17 @@ public class TaskService
 
     // ─── Static: GetAll Paged ──────────────────────────────────────────────
     public static (enTaskRetrieveResult result, List<TaskItemDetails> tasks, int totalCount) GetAll(
-    int pageNumber = 1,
-    int pageSize = 9,
-    string? search = null,
-    string? priority = null,
-    string? status = null)
+                        int pageNumber = 1,
+                        int pageSize = 9,
+                        string? search = null,
+                        string? priority = null,
+                        string? status = null,
+                        int? projectId = null)
     {
         try
         {
             var (tasks, totalCount) = TaskRepository.GetAllTasks(
-                pageNumber, pageSize, search, priority, status);
+                pageNumber, pageSize, search, priority, status, projectId);
             return (enTaskRetrieveResult.Found, tasks, totalCount);
         }
         catch
@@ -283,6 +288,29 @@ public class TaskService
         catch
         {
             return enTaskCompleteResult.Failed;
+        }
+    }
+    public static bool AddExtraMinutes(int taskId, int minutesToAdd)
+    {
+        try
+        {
+            return TaskRepository.AddExtraMinutes(taskId, minutesToAdd);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public static bool Reopen(int taskId)
+    {
+        try
+        {
+            return TaskRepository.ReopenTask(taskId);
+        }
+        catch
+        {
+            return false;
         }
     }
 
