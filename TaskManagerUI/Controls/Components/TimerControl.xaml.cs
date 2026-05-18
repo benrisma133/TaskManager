@@ -449,5 +449,20 @@ namespace TaskManagerUI.Controls.Components
             StateLabel.Text = "remaining";
             StateLabel.Foreground = TryFindResource("TextSecondaryBrush") as Brush;
         }
+
+
+        public void ResetFromExternal()
+        {
+            _completed = false;
+            _remainingSetByPage = false;
+            TickDot.Visibility = Visibility.Visible;
+            CheckMark.Visibility = Visibility.Collapsed;
+            TimeDisplay.Visibility = Visibility.Visible;
+            StateLabel.Text = "remaining";
+            StateLabel.Foreground = TryFindResource("TextSecondaryBrush") as Brush;
+            ProgressArc.Stroke = TryFindResource("AccentBrush") as Brush;
+            TickDot.Fill = TryFindResource("AccentBrush") as Brush;
+            PlayPauseBtn.State = TimerButtonState.Play;
+        }
     }
 }
