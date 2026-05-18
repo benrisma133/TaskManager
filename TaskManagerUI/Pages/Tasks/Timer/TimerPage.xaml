@@ -343,61 +343,72 @@
 
                     <!-- Today header -->
                     <StackPanel Orientation="Horizontal"
-                Margin="0,0,0,16">
-                        <fa:IconImage Icon="Stopwatch"
-                      Width="14" Height="14"
-                      Foreground="{DynamicResource TextSecondaryBrush}"
-                      Margin="0,0,8,0"/>
+                                Margin="0,0,0,16">
+                        <fa:IconImage Icon="Clock"
+                                      Width="14" Height="14"
+                                      Foreground="{DynamicResource TextSecondaryBrush}"
+                                      Margin="0,0,8,0"/>
                         <TextBlock Text="Today"
-                   FontSize="14"
-                   FontWeight="SemiBold"
-                   Foreground="{DynamicResource TextSecondaryBrush}"
-                   VerticalAlignment="Center"/>
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                   VerticalAlignment="Center"/>
                         <Border Background="{DynamicResource AccentBrush}"
-                CornerRadius="8"
-                Padding="8,3"
-                Margin="12,0,0,0"
-                VerticalAlignment="Center">
+                                CornerRadius="8"
+                                Padding="8,3"
+                                Margin="12,0,0,0"
+                                VerticalAlignment="Center">
                             <TextBlock x:Name="TotalTodayText"
-                       Text="0 min"
-                       FontSize="11"
-                       FontWeight="SemiBold"
-                       Foreground="{DynamicResource TextOnAccentBrush}"/>
+                                       Text="0 s"
+                                       FontSize="11"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextOnAccentBrush}"/>
                         </Border>
                     </StackPanel>
 
                     <!-- Today session cards -->
                     <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                  VerticalScrollBarVisibility="Disabled"
-                  Margin="0,0,0,8">
+                                  VerticalScrollBarVisibility="Disabled"
+                                  Margin="0,0,0,8">
                         <StackPanel x:Name="SessionsPanel"
-                    Orientation="Horizontal"/>
+                                    Orientation="Horizontal"/>
                     </ScrollViewer>
 
                     <TextBlock x:Name="NoSessionsText"
-               Text="No sessions logged today. Start the timer!"
-               FontSize="13"
-               Foreground="{DynamicResource TextMutedBrush}"
-               Margin="0,0,0,8"
-               Visibility="Visible"/>
+                               Text="No sessions logged today. Start the timer!"
+                               FontSize="13"
+                               Foreground="{DynamicResource TextMutedBrush}"
+                               Margin="0,0,0,8"
+                               Visibility="Visible"/>
 
                     <!-- Divider -->
                     <Border Height="1"
-            Background="{DynamicResource BorderDefaultBrush}"
-            Margin="0,16,0,16"/>
+                            Background="{DynamicResource BorderDefaultBrush}"
+                            Margin="0,16,0,16"/>
 
                     <!-- Past sessions header -->
                     <StackPanel Orientation="Horizontal"
-                Margin="0,0,0,16">
+                                Margin="0,0,0,16">
                         <fa:IconImage Icon="History"
-                      Width="14" Height="14"
-                      Foreground="{DynamicResource TextSecondaryBrush}"
-                      Margin="0,0,8,0"/>
+                                      Width="14" Height="14"
+                                      Foreground="{DynamicResource TextSecondaryBrush}"
+                                      Margin="0,0,8,0"/>
                         <TextBlock Text="Past Sessions"
-                   FontSize="14"
-                   FontWeight="SemiBold"
-                   Foreground="{DynamicResource TextSecondaryBrush}"
-                   VerticalAlignment="Center"/>
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                   VerticalAlignment="Center"/>
+                        <Border Background="{DynamicResource AccentBrush}"
+                                CornerRadius="8"
+                                Padding="8,3"
+                                Margin="12,0,0,0"
+                                VerticalAlignment="Center">
+                            <TextBlock x:Name="TotalPastText"
+                                       Text="0 s"
+                                       FontSize="11"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextOnAccentBrush}"/>
+                        </Border>
                     </StackPanel>
 
                     <!-- Past session cards -->
