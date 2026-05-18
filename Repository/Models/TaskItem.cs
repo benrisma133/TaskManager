@@ -12,6 +12,7 @@
         public bool IsCompleted { get; set; }
         public DateTime? CompletedAt { get; set; }
         public int? EstimatedMinutes { get; set; }
+        public int ExtraMinutes { get; set; } = 0;
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
