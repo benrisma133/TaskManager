@@ -1,0 +1,508 @@
+﻿<UserControl x:Class="TaskManagerUI.Pages.Dashboard.DashboardPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:fa="clr-namespace:FontAwesome.Sharp;assembly=FontAwesome.Sharp"
+             xmlns:components="clr-namespace:TaskManagerUI.Controls.Components"
+             Background="{DynamicResource AppBackgroundBrush}">
+
+    <UserControl.Resources>
+        <!-- Purple for Month stat card (not in theme) -->
+        <SolidColorBrush x:Key="PurpleBrush" Color="#A855F7"/>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+
+        <StackPanel Margin="32,28,32,32">
+
+            <!-- ══════════════════════════════════════════════════════════════ -->
+            <!--  HEADER ROW                                                    -->
+            <!-- ══════════════════════════════════════════════════════════════ -->
+            <Grid Margin="0,0,0,24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Left: Greeting + Date -->
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <fa:IconImage x:Name="GreetingIcon"
+                                      Icon="Sun"
+                                      Width="24"
+                                      Height="24"
+                                      Foreground="{DynamicResource WarningBrush}"
+                                      Margin="0,0,8,0"/>
+                        <TextBlock x:Name="GreetingText"
+                                   Text="Good morning"
+                                   FontSize="26"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock x:Name="TodayText"
+                               FontSize="13"
+                               Foreground="{DynamicResource TextMutedBrush}"
+                               Margin="0,5,0,0"/>
+                </StackPanel>
+
+                <!-- Right: Level Badge -->
+                <Border Grid.Column="1"
+                        Background="{DynamicResource CardBackgroundBrush}"
+                        BorderBrush="{DynamicResource BorderDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Padding="14,10">
+                    <StackPanel Orientation="Horizontal">
+                        <!-- LevelIcon replaces the emoji -->
+                        <components:LevelIcon x:Name="LevelBadgeIcon"
+                                              VerticalAlignment="Center"
+                                              Margin="0,0,10,0"/>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock x:Name="LevelNameText"
+                                       FontSize="13"
+                                       FontWeight="Bold"
+                                       Foreground="{DynamicResource AccentBrush}"/>
+                            <!-- Progress bar -->
+                            <Border Height="4"
+                                    Width="120"
+                                    CornerRadius="2"
+                                    Background="{DynamicResource CardHoverBackgroundBrush}"
+                                    Margin="0,4,0,4">
+                                <Border x:Name="LevelProgressBar"
+                                        HorizontalAlignment="Left"
+                                        Height="4"
+                                        CornerRadius="2">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                            <GradientStop Color="#3B82F6" Offset="0"/>
+                                            <GradientStop Color="#A855F7" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+                            </Border>
+                            <TextBlock x:Name="LevelPointsText"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- ══════════════════════════════════════════════════════════════ -->
+            <!--  STAT CARDS (4 columns)                                        -->
+            <!-- ══════════════════════════════════════════════════════════════ -->
+            <UniformGrid Columns="4" Margin="0,0,0,16">
+
+                <components:StatCard x:Name="CardToday"
+                                     Title="Completed Today"
+                                     AccentBrush="{DynamicResource SuccessBrush}"
+                                     Margin="0,0,7,0"/>
+
+                <components:StatCard x:Name="CardWeek"
+                                     Title="This Week"
+                                     AccentBrush="{DynamicResource AccentBrush}"
+                                     Margin="7,0,7,0"/>
+
+                <components:StatCard x:Name="CardMonth"
+                                     Title="This Month"
+                                     AccentBrush="{StaticResource PurpleBrush}"
+                                     Margin="7,0,7,0"/>
+
+                <components:StatCard x:Name="CardPoints"
+                                     Title="Total Points"
+                                     AccentBrush="{DynamicResource WarningBrush}"
+                                     Margin="7,0,0,0"/>
+            </UniformGrid>
+
+            <!-- ══════════════════════════════════════════════════════════════ -->
+            <!--  MIDDLE ROW (Streaks | Hours | Session)                       -->
+            <!-- ══════════════════════════════════════════════════════════════ -->
+            <Grid Margin="0,0,0,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="14"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="14"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ────────────────────────────────────────────────────────── -->
+                <!--  STREAKS CARD                                              -->
+                <!-- ────────────────────────────────────────────────────────── -->
+                <Border Grid.Column="0"
+                        Background="{DynamicResource CardBackgroundBrush}"
+                        BorderBrush="{DynamicResource BorderDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Padding="20">
+                    <StackPanel>
+                        <TextBlock Text="STREAKS"
+                                   FontSize="11"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextMutedBrush}"
+                                   Margin="0,0,0,14"/>
+
+                        <!-- Current + Longest -->
+                        <Grid Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Current -->
+                            <Border Grid.Column="0"
+                                    Background="{DynamicResource CardHoverBackgroundBrush}"
+                                    CornerRadius="8"
+                                    Padding="12">
+                                <StackPanel>
+                                    <TextBlock x:Name="CurrentStreakText"
+                                               FontSize="32"
+                                               FontWeight="Bold"
+                                               Foreground="{DynamicResource WarningBrush}"/>
+                                    <TextBlock Text="🔥 Current"
+                                               FontSize="11"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextMutedBrush}"
+                                               Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Longest -->
+                            <Border Grid.Column="2"
+                                    Background="{DynamicResource CardHoverBackgroundBrush}"
+                                    CornerRadius="8"
+                                    Padding="12">
+                                <StackPanel>
+                                    <TextBlock x:Name="LongestStreakText"
+                                               FontSize="32"
+                                               FontWeight="Bold"
+                                               Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                    <TextBlock Text="🏆 Longest"
+                                               FontSize="11"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextMutedBrush}"
+                                               Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <!-- Streak dots (last 14 days) -->
+                        <WrapPanel x:Name="StreakDots" Orientation="Horizontal"/>
+
+                    </StackPanel>
+                </Border>
+
+                <!-- ────────────────────────────────────────────────────────── -->
+                <!--  HOURS TRACKED CARD                                        -->
+                <!-- ────────────────────────────────────────────────────────── -->
+                <Border Grid.Column="2"
+                        Background="{DynamicResource CardBackgroundBrush}"
+                        BorderBrush="{DynamicResource BorderDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Padding="20">
+                    <StackPanel>
+                        <TextBlock Text="HOURS TRACKED"
+                                   FontSize="11"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextMutedBrush}"
+                                   Margin="0,0,0,14"/>
+
+                        <TextBlock x:Name="MinutesTodayText"
+                                   FontSize="36"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource SuccessBrush}"/>
+
+                        <TextBlock x:Name="SessionCountText"
+                                   FontSize="12"
+                                   Foreground="{DynamicResource TextMutedBrush}"
+                                   Margin="0,4,0,14"/>
+
+                        <!-- Weekly bar chart -->
+                        <ItemsControl x:Name="WeeklyBarsControl">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,3">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="40"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding DayLabel}"
+                                                   FontSize="11"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{Binding LabelColor}"/>
+                                        <Border Grid.Column="1"
+                                                Height="6"
+                                                CornerRadius="3"
+                                                Background="{DynamicResource CardHoverBackgroundBrush}"
+                                                VerticalAlignment="Center">
+                                            <Border HorizontalAlignment="Left"
+                                                    Height="6"
+                                                    CornerRadius="3"
+                                                    Width="{Binding BarWidth}"
+                                                    Background="{Binding BarColor}"/>
+                                        </Border>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                    </StackPanel>
+                </Border>
+
+                <!-- ────────────────────────────────────────────────────────── -->
+                <!--  ACTIVE SESSION PLACEHOLDER                                -->
+                <!-- ────────────────────────────────────────────────────────── -->
+                <Border Grid.Column="4"
+                        Background="{DynamicResource CardBackgroundBrush}"
+                        BorderBrush="{DynamicResource BorderDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Padding="12,8">
+                    <Grid>
+                        <StackPanel VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
+                            <fa:IconImage Icon="Clock"
+                                          Width="32"
+                                          Height="32"
+                                          Foreground="{DynamicResource TextMutedBrush}"
+                                          HorizontalAlignment="Center"/>
+                            <TextBlock Text="No active session"
+                                       FontSize="13"
+                                       Foreground="{DynamicResource TextMutedBrush}"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,8,0,0"/>
+                            <TextBlock Text="Start a timer from Tasks"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource TextMutedBrush}"
+                                       HorizontalAlignment="Center"
+                                       TextAlignment="Center"
+                                       TextWrapping="Wrap"
+                                       Margin="0,4,0,0"/>
+                        </StackPanel>
+
+                        <components:ActiveSessionCard Visibility="Collapsed"/>
+                    </Grid>
+                </Border>
+
+            </Grid>
+
+            <!-- ══════════════════════════════════════════════════════════════ -->
+            <!--  BOTTOM ROW (Active Tasks | Today Sessions)                   -->
+            <!-- ══════════════════════════════════════════════════════════════ -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="14"/>
+                    <ColumnDefinition Width="340"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ────────────────────────────────────────────────────────── -->
+                <!--  ACTIVE TASKS                                              -->
+                <!-- ────────────────────────────────────────────────────────── -->
+                <Border Grid.Column="0"
+                        Background="{DynamicResource CardBackgroundBrush}"
+                        BorderBrush="{DynamicResource BorderDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Padding="20">
+                    <StackPanel>
+
+                        <!-- Header -->
+                        <Grid Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="ACTIVE TASKS"
+                                       FontSize="11"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextMutedBrush}"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1"
+                                       Text="See all →"
+                                       FontSize="12"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource AccentBrush}"
+                                       Cursor="Hand"
+                                       VerticalAlignment="Center"
+                                       MouseLeftButtonDown="SeeAllTasks_Click"/>
+                        </Grid>
+
+                        <!-- Empty state -->
+                        <TextBlock x:Name="NoTasksText"
+                                   Text="No active tasks"
+                                   FontSize="13"
+                                   Foreground="{DynamicResource TextMutedBrush}"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,20,0,0"
+                                   Visibility="Collapsed"/>
+
+                        <!-- Task list -->
+                        <ItemsControl x:Name="ActiveTasksControl">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="{DynamicResource CardHoverBackgroundBrush}"
+                                            BorderBrush="{DynamicResource BorderDefaultBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="8"
+                                            Padding="12,10"
+                                            Margin="0,0,0,7"
+                                            Cursor="Hand">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Colour dot -->
+                                            <Ellipse Grid.Column="0"
+                                                     Width="8"
+                                                     Height="8"
+                                                     Fill="{Binding DotColor}"
+                                                     VerticalAlignment="Center"
+                                                     Margin="0,0,10,0"/>
+
+                                            <!-- Title + meta -->
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Title}"
+                                                           FontSize="13"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource TextPrimaryBrush}"
+                                                           TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock FontSize="11"
+                                                           Foreground="{DynamicResource TextMutedBrush}"
+                                                           Margin="0,2,0,0">
+                                                    <Run Text="{Binding ProjectTitle}"/>
+                                                    <Run Text=" · "/>
+                                                    <Run Text="{Binding DueDateLabel}"/>
+                                                </TextBlock>
+                                            </StackPanel>
+
+                                            <!-- Priority badge -->
+                                            <Border Grid.Column="2"
+                                                    Background="{Binding PriorityBackground}"
+                                                    CornerRadius="4"
+                                                    Padding="7,3"
+                                                    Margin="8,0"
+                                                    VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Priority}"
+                                                           FontSize="10"
+                                                           FontWeight="Bold"
+                                                           Foreground="{Binding PriorityForeground}"/>
+                                            </Border>
+
+                                            <!-- Timer button -->
+                                            <Border Grid.Column="3"
+                                                    Width="28"
+                                                    Height="28"
+                                                    CornerRadius="6"
+                                                    Background="{DynamicResource CardBackgroundBrush}"
+                                                    BorderBrush="{DynamicResource BorderDefaultBrush}"
+                                                    BorderThickness="1"
+                                                    VerticalAlignment="Center"
+                                                    Cursor="Hand">
+                                                <fa:IconImage Icon="Play"
+                                                              Width="10"
+                                                              Height="10"
+                                                              Foreground="{DynamicResource TextMutedBrush}"/>
+                                            </Border>
+
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                    </StackPanel>
+                </Border>
+
+                <!-- ────────────────────────────────────────────────────────── -->
+                <!--  TODAY'S SESSIONS                                          -->
+                <!-- ────────────────────────────────────────────────────────── -->
+                <Border Grid.Column="2"
+                        Background="{DynamicResource CardBackgroundBrush}"
+                        BorderBrush="{DynamicResource BorderDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Padding="20">
+                    <StackPanel>
+
+                        <TextBlock Text="TODAY'S SESSIONS"
+                                   FontSize="11"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextMutedBrush}"
+                                   Margin="0,0,0,14"/>
+
+                        <!-- Empty state -->
+                        <TextBlock x:Name="NoSessionsText"
+                                   Text="No sessions today"
+                                   FontSize="13"
+                                   Foreground="{DynamicResource TextMutedBrush}"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,20,0,0"
+                                   Visibility="Collapsed"/>
+
+                        <!-- Session list -->
+                        <ItemsControl x:Name="TodaySessionsControl">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="{DynamicResource CardHoverBackgroundBrush}"
+                                            BorderBrush="{DynamicResource BorderDefaultBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="8"
+                                            Padding="10,8"
+                                            Margin="0,0,0,7">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Colour dot -->
+                                            <Ellipse Grid.Column="0"
+                                                     Width="8"
+                                                     Height="8"
+                                                     Fill="{Binding DotColor}"
+                                                     VerticalAlignment="Center"
+                                                     Margin="0,0,8,0"/>
+
+                                            <!-- Task + time -->
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding TaskTitle}"
+                                                           FontSize="12"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource TextPrimaryBrush}"
+                                                           TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Text="{Binding TimeRange}"
+                                                           FontSize="11"
+                                                           Foreground="{DynamicResource TextMutedBrush}"
+                                                           Margin="0,2,0,0"/>
+                                            </StackPanel>
+
+                                            <!-- Duration -->
+                                            <TextBlock Grid.Column="2"
+                                                       Text="{Binding DurationLabel}"
+                                                       FontSize="12"
+                                                       FontWeight="Bold"
+                                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                                       VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                    </StackPanel>
+                </Border>
+
+            </Grid>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
