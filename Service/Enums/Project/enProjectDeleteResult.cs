@@ -5,5 +5,6 @@ public enum enProjectDeleteResult
     Deleted,
     HasActiveTasks,
     HasCompletedTasks,
+    Completed,
     Failed
 }

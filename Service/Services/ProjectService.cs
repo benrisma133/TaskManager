@@ -173,6 +173,7 @@ public class ProjectService
                 "DELETED" => enProjectDeleteResult.Deleted,
                 "HAS_ACTIVE_TASKS" => enProjectDeleteResult.HasActiveTasks,
                 "HAS_COMPLETED_TASKS" => enProjectDeleteResult.HasCompletedTasks,
+                "PROJECT_COMPLETED" => enProjectDeleteResult.Completed,
                 _ => enProjectDeleteResult.Failed
             };
         }
