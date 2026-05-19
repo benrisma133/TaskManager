@@ -1,0 +1,515 @@
+﻿<UserControl x:Class="TaskManagerUI.Controls.Components.LevelIcon"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:fa="clr-namespace:FontAwesome.Sharp;assembly=FontAwesome.Sharp"
+             x:Name="Root">
+
+    <!-- Root Grid — size controlled by Level -->
+    <Grid x:Name="RootGrid" Visibility="Collapsed">
+
+        <!-- ════════════════════════════════════════════════════════ -->
+        <!--  BEGINNER                                                -->
+        <!-- ════════════════════════════════════════════════════════ -->
+        <StackPanel x:Name="BeginnerBadge" Visibility="Collapsed">
+            <Border Width="58" Height="58"
+                    CornerRadius="29"
+                    Background="{DynamicResource Level.Beginner.Background}"
+                    BorderBrush="{DynamicResource Level.Beginner.Border}"
+                    BorderThickness="1.5">
+                <Border.Effect>
+                    <DropShadowEffect Color="#8BC34A" BlurRadius="8" ShadowDepth="0" Opacity="0.3"/>
+                </Border.Effect>
+                <fa:IconImage Icon="Seedling"
+                              Width="24" Height="24"
+                              Foreground="{DynamicResource Level.Beginner.Icon}"/>
+            </Border>
+        </StackPanel>
+
+        <!-- ════════════════════════════════════════════════════════ -->
+        <!--  EXPLORER                                                -->
+        <!-- ════════════════════════════════════════════════════════ -->
+        <StackPanel x:Name="ExplorerBadge" Visibility="Collapsed">
+            <Border Width="64" Height="64"
+                    CornerRadius="32"
+                    Background="{DynamicResource Level.Explorer.Background}"
+                    BorderBrush="{DynamicResource Level.Explorer.Border}"
+                    BorderThickness="2">
+                <Border.Effect>
+                    <DropShadowEffect Color="#2196F3" BlurRadius="14" ShadowDepth="0" Opacity="0.4"/>
+                </Border.Effect>
+                <Grid>
+                    <Ellipse Width="52" Height="52"
+                             Stroke="{DynamicResource Level.Explorer.Ring}"
+                             StrokeThickness="1"/>
+                    <fa:IconImage Icon="Compass"
+                                  Width="26" Height="26"
+                                  Foreground="{DynamicResource Level.Explorer.Icon}"/>
+                </Grid>
+            </Border>
+        </StackPanel>
+
+        <!-- ════════════════════════════════════════════════════════ -->
+        <!--  BUILDER                                                 -->
+        <!-- ════════════════════════════════════════════════════════ -->
+        <StackPanel x:Name="BuilderBadge" Visibility="Collapsed">
+            <Border Width="70" Height="70"
+                    CornerRadius="35"
+                    Background="{DynamicResource Level.Builder.Background}"
+                    BorderBrush="{DynamicResource Level.Builder.Border}"
+                    BorderThickness="2.5">
+                <Border.Effect>
+                    <DropShadowEffect Color="#FF9800" BlurRadius="18" ShadowDepth="0" Opacity="0.5"/>
+                </Border.Effect>
+                <Grid>
+                    <Ellipse Width="58" Height="58"
+                             Stroke="{DynamicResource Level.Builder.Ring1}"
+                             StrokeThickness="1.5"/>
+                    <Ellipse Width="46" Height="46"
+                             Stroke="{DynamicResource Level.Builder.Ring2}"
+                             StrokeThickness="1"/>
+                    <fa:IconImage Icon="Tools"
+                                  Width="27" Height="27"
+                                  Foreground="{DynamicResource Level.Builder.Icon}"/>
+                </Grid>
+            </Border>
+        </StackPanel>
+
+        <!-- ════════════════════════════════════════════════════════ -->
+        <!--  ACHIEVER                                                -->
+        <!-- ════════════════════════════════════════════════════════ -->
+        <StackPanel x:Name="AchieverBadge" Visibility="Collapsed">
+            <Grid Width="76" Height="76">
+                <Ellipse Width="76" Height="76">
+                    <Ellipse.Fill>
+                        <RadialGradientBrush>
+                            <GradientStop Color="#FFF9C4" Offset="0.6"/>
+                            <GradientStop Color="#FFFFFF" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Ellipse.Fill>
+                    <Ellipse.Effect>
+                        <DropShadowEffect Color="#FFC107" BlurRadius="22" ShadowDepth="0" Opacity="0.65"/>
+                    </Ellipse.Effect>
+                </Ellipse>
+                <Border Width="66" Height="66"
+                        CornerRadius="33"
+                        BorderThickness="2.5">
+                    <Border.Background>
+                        <RadialGradientBrush>
+                            <GradientStop Color="#FFFDE7" Offset="0"/>
+                            <GradientStop Color="#FFF9C4" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Border.Background>
+                    <Border.BorderBrush>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#FFD54F" Offset="0"/>
+                            <GradientStop Color="#FFA000" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.BorderBrush>
+                    <Grid>
+                        <Ellipse Width="54" Height="54"
+                                 Stroke="{DynamicResource Level.Achiever.Ring}"
+                                 StrokeThickness="1"/>
+                        <fa:IconImage Icon="Medal"
+                                      Width="28" Height="28"
+                                      Foreground="{DynamicResource Level.Achiever.Icon}"/>
+                    </Grid>
+                </Border>
+            </Grid>
+        </StackPanel>
+
+        <!-- ════════════════════════════════════════════════════════ -->
+        <!--  EXPERT                                                  -->
+        <!-- ════════════════════════════════════════════════════════ -->
+        <StackPanel x:Name="ExpertBadge" Visibility="Collapsed">
+            <Grid Width="82" Height="96">
+                <!-- Crown -->
+                <Canvas HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
+                        Width="22" Height="26">
+                    <Border Canvas.Left="0" Canvas.Top="-4"
+                            Width="22" Height="22"
+                            CornerRadius="11"
+                            BorderThickness="1.5">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#E8EAF6" Offset="0"/>
+                                <GradientStop Color="#C5CAE9" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.BorderBrush>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#7986CB" Offset="0"/>
+                                <GradientStop Color="#283593" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.BorderBrush>
+                        <Border.Effect>
+                            <DropShadowEffect Color="#3F51B5" BlurRadius="10" ShadowDepth="0" Opacity="0.7"/>
+                        </Border.Effect>
+                        <fa:IconImage Icon="Crown" Width="11" Height="11">
+                            <fa:IconImage.Foreground>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#7986CB" Offset="0"/>
+                                    <GradientStop Color="#283593" Offset="1"/>
+                                </LinearGradientBrush>
+                            </fa:IconImage.Foreground>
+                        </fa:IconImage>
+                    </Border>
+                </Canvas>
+                <!-- Badge -->
+                <Grid Width="82" Height="82" VerticalAlignment="Bottom">
+                    <Ellipse Width="82" Height="82">
+                        <Ellipse.Fill>
+                            <RadialGradientBrush>
+                                <GradientStop Color="#C5CAE9" Offset="0.5"/>
+                                <GradientStop Color="#FFFFFF" Offset="1"/>
+                            </RadialGradientBrush>
+                        </Ellipse.Fill>
+                        <Ellipse.Effect>
+                            <DropShadowEffect Color="#3F51B5" BlurRadius="26" ShadowDepth="0" Opacity="0.6"/>
+                        </Ellipse.Effect>
+                    </Ellipse>
+                    <Border Width="70" Height="70"
+                            CornerRadius="35"
+                            BorderThickness="3">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#E8EAF6" Offset="0"/>
+                                <GradientStop Color="#C5CAE9" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.BorderBrush>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#7986CB" Offset="0"/>
+                                <GradientStop Color="#283593" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.BorderBrush>
+                        <Grid>
+                            <Ellipse Width="58" Height="58">
+                                <Ellipse.Stroke>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#9FA8DA" Offset="0"/>
+                                        <GradientStop Color="#5C6BC0" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Ellipse.Stroke>
+                                <Ellipse.StrokeThickness>1.5</Ellipse.StrokeThickness>
+                            </Ellipse>
+                            <fa:IconImage Icon="ChessKnight" Width="30" Height="30">
+                                <fa:IconImage.Foreground>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="#3949AB" Offset="0"/>
+                                        <GradientStop Color="#1A237E" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </fa:IconImage.Foreground>
+                            </fa:IconImage>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+        </StackPanel>
+
+        <!-- ════════════════════════════════════════════════════════ -->
+        <!--  MASTER                                                  -->
+        <!-- ════════════════════════════════════════════════════════ -->
+        <StackPanel x:Name="MasterBadge" Visibility="Collapsed">
+            <Grid Width="88" Height="104">
+                <!-- 2 Crowns -->
+                <Canvas HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
+                        Width="60" Height="28">
+                    <!-- Left Crown -->
+                    <Border Canvas.Left="0" Canvas.Top="2"
+                            Width="22" Height="22"
+                            CornerRadius="11"
+                            BorderThickness="1.5"
+                            RenderTransformOrigin="0.5,0.5">
+                        <Border.RenderTransform>
+                            <RotateTransform Angle="-25"/>
+                        </Border.RenderTransform>
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#FBE9E7" Offset="0"/>
+                                <GradientStop Color="#FFCCBC" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.BorderBrush>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#FF7043" Offset="0"/>
+                                <GradientStop Color="#BF360C" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.BorderBrush>
+                        <Border.Effect>
+                            <DropShadowEffect Color="#FF5722" BlurRadius="10" ShadowDepth="0" Opacity="0.7"/>
+                        </Border.Effect>
+                        <fa:IconImage Icon="Crown" Width="11" Height="11">
+                            <fa:IconImage.Foreground>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#FF7043" Offset="0"/>
+                                    <GradientStop Color="#BF360C" Offset="1"/>
+                                </LinearGradientBrush>
+                            </fa:IconImage.Foreground>
+                        </fa:IconImage>
+                    </Border>
+                    <!-- Right Crown -->
+                    <Border Canvas.Left="38" Canvas.Top="2"
+                            Width="22" Height="22"
+                            CornerRadius="11"
+                            BorderThickness="1.5"
+                            RenderTransformOrigin="0.5,0.5">
+                        <Border.RenderTransform>
+                            <RotateTransform Angle="25"/>
+                        </Border.RenderTransform>
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#FBE9E7" Offset="0"/>
+                                <GradientStop Color="#FFCCBC" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.BorderBrush>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#FF7043" Offset="0"/>
+                                <GradientStop Color="#BF360C" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.BorderBrush>
+                        <Border.Effect>
+                            <DropShadowEffect Color="#FF5722" BlurRadius="10" ShadowDepth="0" Opacity="0.7"/>
+                        </Border.Effect>
+                        <fa:IconImage Icon="Crown" Width="11" Height="11">
+                            <fa:IconImage.Foreground>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#FF7043" Offset="0"/>
+                                    <GradientStop Color="#BF360C" Offset="1"/>
+                                </LinearGradientBrush>
+                            </fa:IconImage.Foreground>
+                        </fa:IconImage>
+                    </Border>
+                </Canvas>
+                <!-- Badge -->
+                <Grid Width="88" Height="88" VerticalAlignment="Bottom">
+                    <Ellipse Width="88" Height="88">
+                        <Ellipse.Fill>
+                            <RadialGradientBrush>
+                                <GradientStop Color="#FFCCBC" Offset="0.4"/>
+                                <GradientStop Color="#FFFFFF" Offset="1"/>
+                            </RadialGradientBrush>
+                        </Ellipse.Fill>
+                        <Ellipse.Effect>
+                            <DropShadowEffect Color="#FF5722" BlurRadius="30" ShadowDepth="0" Opacity="0.7"/>
+                        </Ellipse.Effect>
+                    </Ellipse>
+                    <Border Width="74" Height="74"
+                            CornerRadius="37"
+                            BorderThickness="3">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#FBE9E7" Offset="0"/>
+                                <GradientStop Color="#FFCCBC" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.BorderBrush>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#FF7043" Offset="0"/>
+                                <GradientStop Color="#BF360C" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.BorderBrush>
+                        <Grid>
+                            <Ellipse Width="62" Height="62">
+                                <Ellipse.Stroke>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#FF8A65" Offset="0"/>
+                                        <GradientStop Color="#E64A19" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Ellipse.Stroke>
+                                <Ellipse.StrokeThickness>1.5</Ellipse.StrokeThickness>
+                            </Ellipse>
+                            <Ellipse Width="48" Height="48"
+                                     Stroke="#FFAB91"
+                                     StrokeThickness="1"/>
+                            <fa:IconImage Icon="Gem" Width="32" Height="32">
+                                <fa:IconImage.Foreground>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="#FF5722" Offset="0"/>
+                                        <GradientStop Color="#BF360C" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </fa:IconImage.Foreground>
+                            </fa:IconImage>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+        </StackPanel>
+
+        <!-- ════════════════════════════════════════════════════════ -->
+        <!--  LEGEND                                                  -->
+        <!-- ════════════════════════════════════════════════════════ -->
+        <StackPanel x:Name="LegendBadge" Visibility="Collapsed">
+            <Grid Width="96" Height="114">
+                <!-- 3 Crowns -->
+                <Grid HorizontalAlignment="Center"
+                      VerticalAlignment="Top"
+                      Width="80" Height="28">
+                    <Canvas Width="80" Height="32" Margin="0">
+                        <!-- Left Crown -->
+                        <Border Canvas.Left="0" Canvas.Top="8"
+                                Width="22" Height="22"
+                                CornerRadius="11"
+                                BorderThickness="1.5"
+                                RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform>
+                                <RotateTransform Angle="-28"/>
+                            </Border.RenderTransform>
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#F3E5F5" Offset="0"/>
+                                    <GradientStop Color="#E1BEE7" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Border.BorderBrush>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#CE93D8" Offset="0"/>
+                                    <GradientStop Color="#7B1FA2" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.BorderBrush>
+                            <Border.Effect>
+                                <DropShadowEffect Color="#9C27B0" BlurRadius="10" ShadowDepth="0" Opacity="0.7"/>
+                            </Border.Effect>
+                            <fa:IconImage Icon="Crown" Width="11" Height="11">
+                                <fa:IconImage.Foreground>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#CE93D8" Offset="0"/>
+                                        <GradientStop Color="#7B1FA2" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </fa:IconImage.Foreground>
+                            </fa:IconImage>
+                        </Border>
+                        <!-- Middle Crown -->
+                        <Border Canvas.Left="27" Canvas.Top="-3"
+                                Width="26" Height="26"
+                                CornerRadius="13"
+                                BorderThickness="2">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#F3E5F5" Offset="0"/>
+                                    <GradientStop Color="#CE93D8" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Border.BorderBrush>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#AB47BC" Offset="0"/>
+                                    <GradientStop Color="#4A148C" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.BorderBrush>
+                            <Border.Effect>
+                                <DropShadowEffect Color="#9C27B0" BlurRadius="16" ShadowDepth="0" Opacity="0.95"/>
+                            </Border.Effect>
+                            <fa:IconImage Icon="Crown" Width="13" Height="13">
+                                <fa:IconImage.Foreground>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#AB47BC" Offset="0"/>
+                                        <GradientStop Color="#4A148C" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </fa:IconImage.Foreground>
+                            </fa:IconImage>
+                        </Border>
+                        <!-- Right Crown -->
+                        <Border Canvas.Left="58" Canvas.Top="8"
+                                Width="22" Height="22"
+                                CornerRadius="11"
+                                BorderThickness="1.5"
+                                RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform>
+                                <RotateTransform Angle="28"/>
+                            </Border.RenderTransform>
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#F3E5F5" Offset="0"/>
+                                    <GradientStop Color="#E1BEE7" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Border.BorderBrush>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#CE93D8" Offset="0"/>
+                                    <GradientStop Color="#7B1FA2" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.BorderBrush>
+                            <Border.Effect>
+                                <DropShadowEffect Color="#9C27B0" BlurRadius="10" ShadowDepth="0" Opacity="0.7"/>
+                            </Border.Effect>
+                            <fa:IconImage Icon="Crown" Width="11" Height="11">
+                                <fa:IconImage.Foreground>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#CE93D8" Offset="0"/>
+                                        <GradientStop Color="#7B1FA2" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </fa:IconImage.Foreground>
+                            </fa:IconImage>
+                        </Border>
+                    </Canvas>
+                </Grid>
+                <!-- Badge -->
+                <Grid Width="96" Height="96" VerticalAlignment="Bottom">
+                    <Ellipse Width="96" Height="96">
+                        <Ellipse.Fill>
+                            <RadialGradientBrush>
+                                <GradientStop Color="#E1BEE7" Offset="0.3"/>
+                                <GradientStop Color="#FFFFFF" Offset="1"/>
+                            </RadialGradientBrush>
+                        </Ellipse.Fill>
+                        <Ellipse.Effect>
+                            <DropShadowEffect Color="#9C27B0" BlurRadius="36" ShadowDepth="0" Opacity="0.8"/>
+                        </Ellipse.Effect>
+                    </Ellipse>
+                    <Ellipse Width="84" Height="84" Opacity="0.3">
+                        <Ellipse.Fill>
+                            <RadialGradientBrush>
+                                <GradientStop Color="#CE93D8" Offset="0"/>
+                                <GradientStop Color="#FFFFFF" Offset="1"/>
+                            </RadialGradientBrush>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                    <Border Width="78" Height="78"
+                            CornerRadius="39"
+                            BorderThickness="3">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#F3E5F5" Offset="0"/>
+                                <GradientStop Color="#EDE7F6" Offset="0.5"/>
+                                <GradientStop Color="#E8EAF6" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.BorderBrush>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#CE93D8" Offset="0"/>
+                                <GradientStop Color="#7B1FA2" Offset="0.5"/>
+                                <GradientStop Color="#4A148C" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.BorderBrush>
+                        <Grid>
+                            <Ellipse Width="66" Height="66">
+                                <Ellipse.Stroke>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#CE93D8" Offset="0"/>
+                                        <GradientStop Color="#6A1B9A" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Ellipse.Stroke>
+                                <Ellipse.StrokeThickness>2</Ellipse.StrokeThickness>
+                            </Ellipse>
+                            <Ellipse Width="50" Height="50"
+                                     Stroke="#BA68C8"
+                                     StrokeThickness="1"
+                                     Opacity="0.5"/>
+                            <fa:IconImage Icon="Dragon" Width="34" Height="34">
+                                <fa:IconImage.Foreground>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#AB47BC" Offset="0"/>
+                                        <GradientStop Color="#4A148C" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </fa:IconImage.Foreground>
+                            </fa:IconImage>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+        </StackPanel>
+
+    </Grid>
+</UserControl>
