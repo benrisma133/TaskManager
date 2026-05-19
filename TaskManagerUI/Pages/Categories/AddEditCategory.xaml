@@ -274,6 +274,7 @@
                             <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="tag"/>
                             <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="rocket"/>
                             <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="star"/>
+                            <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="database"/>
                         </ComboBox>
 
                         <!-- Color -->

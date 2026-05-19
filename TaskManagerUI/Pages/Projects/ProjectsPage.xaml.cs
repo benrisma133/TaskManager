@@ -389,12 +389,29 @@ public partial class ProjectsPage : UserControl
                 await LoadProjects();
                 break;
 
+            case enProjectDeleteResult.Completed:
+                MessageBox.Show(
+                    $"\"{projectTitle}\" completed and cannot be deleted.",
+                    "Not Allowed",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                break;
+
             case enProjectDeleteResult.HasActiveTasks:
                 MessageBox.Show(
                     $"\"{projectTitle}\" has active tasks and cannot be deleted.",
                     "Not Allowed",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
+                break;
+
+            case enProjectDeleteResult.HasCompletedTasks:
+                MessageBox.Show(
+                    $"\"{projectTitle}\" has completed task and cannot be deleted.",
+                    "Not Allowed",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning
+                    );
                 break;
 
             case enProjectDeleteResult.Failed:
