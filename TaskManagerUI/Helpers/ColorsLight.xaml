@@ -83,4 +83,73 @@
     <Color x:Key="ShimmerBaseColor">#E8EAED</Color>
     <Color x:Key="ShimmerHighColor">#F8F9FA</Color>
 
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!--  LEVEL BADGE COLORS                                         -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+
+    <!-- Beginner (Green) -->
+    <SolidColorBrush x:Key="Level.Beginner.Background" Color="#F1F8E9"/>
+    <SolidColorBrush x:Key="Level.Beginner.Border"     Color="#AED581"/>
+    <SolidColorBrush x:Key="Level.Beginner.Shadow"     Color="#8BC34A"/>
+    <SolidColorBrush x:Key="Level.Beginner.Icon"       Color="#558B2F"/>
+
+    <!-- Explorer (Blue) -->
+    <SolidColorBrush x:Key="Level.Explorer.Background" Color="#E3F2FD"/>
+    <SolidColorBrush x:Key="Level.Explorer.Border"     Color="#64B5F6"/>
+    <SolidColorBrush x:Key="Level.Explorer.Shadow"     Color="#2196F3"/>
+    <SolidColorBrush x:Key="Level.Explorer.Ring"       Color="#BBDEFB"/>
+    <SolidColorBrush x:Key="Level.Explorer.Icon"       Color="#1565C0"/>
+
+    <!-- Builder (Orange) -->
+    <SolidColorBrush x:Key="Level.Builder.Background" Color="#FFF3E0"/>
+    <SolidColorBrush x:Key="Level.Builder.Border"     Color="#FFB74D"/>
+    <SolidColorBrush x:Key="Level.Builder.Shadow"     Color="#FF9800"/>
+    <SolidColorBrush x:Key="Level.Builder.Ring1"      Color="#FFE0B2"/>
+    <SolidColorBrush x:Key="Level.Builder.Ring2"      Color="#FFCC80"/>
+    <SolidColorBrush x:Key="Level.Builder.Icon"       Color="#E65100"/>
+
+    <!-- Achiever (Gold) -->
+    <SolidColorBrush x:Key="Level.Achiever.Background" Color="#FFFDE7"/>
+    <SolidColorBrush x:Key="Level.Achiever.Glow"       Color="#FFF9C4"/>
+    <SolidColorBrush x:Key="Level.Achiever.Border1"    Color="#FFD54F"/>
+    <SolidColorBrush x:Key="Level.Achiever.Border2"    Color="#FFA000"/>
+    <SolidColorBrush x:Key="Level.Achiever.Shadow"     Color="#FFC107"/>
+    <SolidColorBrush x:Key="Level.Achiever.Ring"       Color="#FFE082"/>
+    <SolidColorBrush x:Key="Level.Achiever.Icon"       Color="#F9A825"/>
+
+    <!-- Expert (Indigo) -->
+    <SolidColorBrush x:Key="Level.Expert.Background" Color="#E8EAF6"/>
+    <SolidColorBrush x:Key="Level.Expert.Glow"       Color="#C5CAE9"/>
+    <SolidColorBrush x:Key="Level.Expert.Border1"    Color="#7986CB"/>
+    <SolidColorBrush x:Key="Level.Expert.Border2"    Color="#283593"/>
+    <SolidColorBrush x:Key="Level.Expert.Shadow"     Color="#3F51B5"/>
+    <SolidColorBrush x:Key="Level.Expert.Ring1"      Color="#9FA8DA"/>
+    <SolidColorBrush x:Key="Level.Expert.Ring2"      Color="#5C6BC0"/>
+    <SolidColorBrush x:Key="Level.Expert.Icon1"      Color="#3949AB"/>
+    <SolidColorBrush x:Key="Level.Expert.Icon2"      Color="#1A237E"/>
+
+    <!-- Master (Deep Orange) -->
+    <SolidColorBrush x:Key="Level.Master.Background" Color="#FBE9E7"/>
+    <SolidColorBrush x:Key="Level.Master.Glow"       Color="#FFCCBC"/>
+    <SolidColorBrush x:Key="Level.Master.Border1"    Color="#FF7043"/>
+    <SolidColorBrush x:Key="Level.Master.Border2"    Color="#BF360C"/>
+    <SolidColorBrush x:Key="Level.Master.Shadow"     Color="#FF5722"/>
+    <SolidColorBrush x:Key="Level.Master.Ring1"      Color="#FF8A65"/>
+    <SolidColorBrush x:Key="Level.Master.Ring2"      Color="#E64A19"/>
+    <SolidColorBrush x:Key="Level.Master.Ring3"      Color="#FFAB91"/>
+
+    <!-- Legend (Purple) -->
+    <SolidColorBrush x:Key="Level.Legend.Background" Color="#F3E5F5"/>
+    <SolidColorBrush x:Key="Level.Legend.Glow"       Color="#E1BEE7"/>
+    <SolidColorBrush x:Key="Level.Legend.Border1"    Color="#CE93D8"/>
+    <SolidColorBrush x:Key="Level.Legend.Border2"    Color="#7B1FA2"/>
+    <SolidColorBrush x:Key="Level.Legend.Border3"    Color="#AB47BC"/>
+    <SolidColorBrush x:Key="Level.Legend.Border4"    Color="#4A148C"/>
+    <SolidColorBrush x:Key="Level.Legend.Shadow"     Color="#9C27B0"/>
+    <SolidColorBrush x:Key="Level.Legend.Ring1"      Color="#CE93D8"/>
+    <SolidColorBrush x:Key="Level.Legend.Ring2"      Color="#6A1B9A"/>
+    <SolidColorBrush x:Key="Level.Legend.Ring3"      Color="#BA68C8"/>
+    <SolidColorBrush x:Key="Level.Legend.Accent"     Color="#EDE7F6"/>
+
 </ResourceDictionary>
