@@ -11,6 +11,7 @@ using System.Windows.Threading;
 using TaskManagerUI.Helpers;
 using TaskManagerUI.Models;
 using TaskManagerUI.Pages.Categories;
+using TaskManagerUI.Pages.Dashboard;
 using TaskManagerUI.Pages.Projects;
 using TaskManagerUI.Pages.Settings;
 using TaskManagerUI.Pages.Tasks;
@@ -35,6 +36,7 @@ namespace TaskManagerUI
         private CategoriesPage _categoryPage;
         private TasksPage _taskPage;
         private ProjectsPage _projectPage;
+        private DashboardPage _dashboardPage;
 
         private DispatcherTimer _sessionTimer = new();
         private TimeSpan _sessionElapsed = TimeSpan.Zero;
@@ -82,8 +84,11 @@ namespace TaskManagerUI
             _categoryPage = new CategoriesPage();
             _taskPage = new TasksPage();
             _projectPage = new ProjectsPage();
+            _dashboardPage = new DashboardPage(this);
 
-            Loaded += (s, e) =>
+
+
+            Loaded += async (s, e) =>
             {
                 if (PageContent.Content is UIElement page)
                 {
@@ -91,7 +96,16 @@ namespace TaskManagerUI
                     page.CacheMode = new BitmapCache();
                     page.UpdateLayout(); // Force WPF to render once
                     page.CacheMode = null; // Release cache
+
+                    
                 }
+
+                SetActiveMenu(BtnHome);
+                PageTitle.Text = "Dashboard";
+                PageContent.Content = _dashboardPage;
+
+                // ✅ Force dashboard to load data after it's been added to visual tree
+                await _dashboardPage.RefreshAsync();
             };
 
             // ── listen to session changes ─────────────────────────────
@@ -131,6 +145,17 @@ namespace TaskManagerUI
             };
 
             PageContent.Content = timerPage;
+        }
+
+        // ============================
+        // PUBLIC NAVIGATION METHODS
+        // ============================
+        public void NavigateToTasksPage()
+        {
+            PlaySuccessSound("tap.wav");
+            SetActiveMenu(BtnTasks);
+            PageTitle.Text = "Tasks";
+            PageContent.Content = _taskPage;
         }
 
         // ============================
@@ -288,13 +313,16 @@ namespace TaskManagerUI
         }
 
         // ── Navigation ────────────────────────────────────────────────
-        private void BtnHome_Click(object sender, RoutedEventArgs e)
+        private async void BtnHome_Click(object sender, RoutedEventArgs e)
         {
             if (BtnHome.Tag?.ToString() == "Active") return;
             PlaySuccessSound("tap.wav");
             SetActiveMenu(BtnHome);
-            PageTitle.Text = "Home";
-            PageContent.Content = null;
+            PageTitle.Text = "Dashboard";
+            PageContent.Content = _dashboardPage;
+
+            // ✅ Refresh dashboard data when navigating back
+            await _dashboardPage.RefreshAsync();
         }
 
         private void BtnProjects_Click(object sender, RoutedEventArgs e)
