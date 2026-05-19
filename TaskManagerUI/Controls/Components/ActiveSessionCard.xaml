@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:components="clr-namespace:TaskManagerUI.Controls.Components"
+             xmlns:fa="clr-namespace:FontAwesome.Sharp;assembly=FontAwesome.Sharp"
              mc:Ignorable="d"
              x:Name="Root">
 
@@ -46,10 +47,10 @@
                 <!-- Left: Title -->
                 <StackPanel Grid.Column="0"
                             Orientation="Horizontal">
-                    <TextBlock Text="⚡"
-                               FontSize="14"
-                               VerticalAlignment="Center"
-                               Margin="0,0,6,0"/>
+                    <fa:IconImage Icon="Bolt"
+                                  Width="14" Height="14"
+                                  Foreground="{DynamicResource WarningBrush}"
+                                  Margin="0,0,8,0"/>
                     <TextBlock Text="Active Session"
                                FontSize="13"
                                FontWeight="SemiBold"
