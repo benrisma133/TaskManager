@@ -61,4 +61,31 @@ public static class ProjectMapper
         Title = reader.GetString(reader.GetOrdinal("Title"))
     };
 
+    public static ProjectPointsLog MapProjectPointsLog(SqlDataReader reader) =>
+        new ProjectPointsLog
+        {
+            PointsLogId = reader.GetInt32(reader.GetOrdinal("PointsLogId")),
+            Points = reader.GetInt32(reader.GetOrdinal("Points")),
+            Reason = reader.GetString(reader.GetOrdinal("Reason")),
+            TaskId = reader.IsDBNull(reader.GetOrdinal("TaskId"))
+                              ? null
+                              : reader.GetInt32(reader.GetOrdinal("TaskId")),
+            ProjectId = reader.GetInt32(reader.GetOrdinal("ProjectId")),
+            EarnedAt = reader.GetDateTime(reader.GetOrdinal("EarnedAt")),
+            LogDate = DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("LogDate"))),
+            TaskTitle = reader.IsDBNull(reader.GetOrdinal("TaskTitle"))
+                              ? null
+                              : reader.GetString(reader.GetOrdinal("TaskTitle"))
+        };
+
+    public static ProjectSessionSummary MapProjectSessionSummary(SqlDataReader reader) =>
+        new ProjectSessionSummary
+        {
+            TaskId = reader.GetInt32(reader.GetOrdinal("TaskId")),
+            TaskTitle = reader.GetString(reader.GetOrdinal("TaskTitle")),
+            TotalSeconds = reader.GetInt32(reader.GetOrdinal("TotalSeconds")),
+            LastSessionDate = DateOnly.FromDateTime(
+                                  reader.GetDateTime(reader.GetOrdinal("LastSessionDate")))
+        };
+
 }
