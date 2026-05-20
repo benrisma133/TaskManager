@@ -383,4 +383,102 @@ public static class ProjectRepository
         return list;
     }
 
+    // ======================== [ COMPLETE PROJECT ] ========================
+    public static bool CompleteProject(int projectId)
+    {
+        try
+        {
+            using var conn = new SqlConnection(ConnectionString);
+            using var cmd = new SqlCommand("sp_CompleteProject", conn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            cmd.Parameters.AddWithValue("@ProjectId", projectId);
+            conn.Open();
+
+            cmd.ExecuteNonQuery();
+            return true;
+        }
+        catch (SqlException ex)
+        {
+            clsLog.LogError(nameof(ProjectRepository), nameof(CompleteProject), ex);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            clsLog.LogError(nameof(ProjectRepository), nameof(CompleteProject), ex);
+            throw;
+        }
+    }
+
+    // ======================== [ GET POINTS LOG BY PROJECT ] ========================
+    public static List<ProjectPointsLog> GetPointsLogByProject(int projectId)
+    {
+        var list = new List<ProjectPointsLog>();
+
+        try
+        {
+            using var conn = new SqlConnection(ConnectionString);
+            using var cmd = new SqlCommand("sp_GetPointsLogByProject", conn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            cmd.Parameters.AddWithValue("@ProjectId", projectId);
+            conn.Open();
+
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+                list.Add(ProjectMapper.MapProjectPointsLog(reader));
+        }
+        catch (SqlException ex)
+        {
+            clsLog.LogError(nameof(ProjectRepository), nameof(GetPointsLogByProject), ex);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            clsLog.LogError(nameof(ProjectRepository), nameof(GetPointsLogByProject), ex);
+            throw;
+        }
+
+        return list;
+    }
+
+    // ======================== [ GET SESSION SUMMARY BY PROJECT ] ========================
+    public static List<ProjectSessionSummary> GetSessionSummaryByProject(int projectId)
+    {
+        var list = new List<ProjectSessionSummary>();
+
+        try
+        {
+            using var conn = new SqlConnection(ConnectionString);
+            using var cmd = new SqlCommand("sp_GetSessionSummaryByProject", conn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            cmd.Parameters.AddWithValue("@ProjectId", projectId);
+            conn.Open();
+
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+                list.Add(ProjectMapper.MapProjectSessionSummary(reader));
+        }
+        catch (SqlException ex)
+        {
+            clsLog.LogError(nameof(ProjectRepository), nameof(GetSessionSummaryByProject), ex);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            clsLog.LogError(nameof(ProjectRepository), nameof(GetSessionSummaryByProject), ex);
+            throw;
+        }
+
+        return list;
+    }
+
+
 }

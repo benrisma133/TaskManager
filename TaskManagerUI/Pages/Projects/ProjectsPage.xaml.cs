@@ -23,6 +23,7 @@ public partial class ProjectsPage : UserControl
     private int _totalPages = 1;
     private int _totalCount = 0;
     private const int PageSize = 9;
+    private MainWindow? _mainWindow;
 
     // ============================
     // CONSTRUCTOR
@@ -40,6 +41,7 @@ public partial class ProjectsPage : UserControl
     {
         _isInitialized = true;
         await LoadProjects();
+        _mainWindow = Window.GetWindow(this) as MainWindow;
     }
 
     // ============================
@@ -218,8 +220,17 @@ public partial class ProjectsPage : UserControl
             card.Width = double.NaN;
             card.HorizontalAlignment = HorizontalAlignment.Stretch;
 
-            card.EditBtn.Click += (s, e) => Card_OnEdit(project.ProjectID);
-            card.DeleteBtn.Click += (s, e) => Card_OnDelete(project.ProjectID, project.Title);
+            card.EditBtn.Click += (s, e) =>
+            {
+                e.Handled = true;
+                Card_OnEdit(project.ProjectID);
+            };
+            card.DeleteBtn.Click += (s, e) =>
+            {
+                e.Handled = true;
+                Card_OnDelete(project.ProjectID, project.Title);
+            };
+            card.CardClicked += (s, e) => Card_OnOpen(project.ProjectID);
 
             CardsPanel.Children.Add(card);
         }
@@ -422,6 +433,11 @@ public partial class ProjectsPage : UserControl
                     MessageBoxImage.Error);
                 break;
         }
+    }
+
+    private void Card_OnOpen(int projectId)
+    {
+        _mainWindow?.NavigateToProjectInfo(projectId);
     }
 
     // ============================
