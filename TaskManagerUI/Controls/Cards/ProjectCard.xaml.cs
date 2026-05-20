@@ -9,10 +9,13 @@ namespace TaskManagerUI.Controls.Cards
     public partial class ProjectCard : UserControl
     {
         private bool _isDark;
+        public event EventHandler? CardClicked;
         public ProjectCard()
         {
             InitializeComponent();
             MainWindow.ThemeChanged += OnThemeChanged;
+            CardBorder.MouseLeftButtonUp += (s, e) => CardClicked?.Invoke(this, EventArgs.Empty);
+            CardBorder.Cursor = System.Windows.Input.Cursors.Hand;
             CacheMode = new BitmapCache();
 
             _isDark = Properties.Settings.Default.IsDarkTheme;
@@ -33,7 +36,8 @@ namespace TaskManagerUI.Controls.Cards
                 { "settings",   "IconSettings" },
                 { "cpu",        "IconStats"    },
                 { "briefcase",  "IconFolder"   },
-                { "database",   "IconDatabase"     },
+                { "database",   "IconDatabase" },
+                { "user",       "IconUser"     },
             };
 
             if (map.TryGetValue(iconName!, out var key))

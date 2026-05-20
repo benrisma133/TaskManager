@@ -38,6 +38,7 @@ namespace TaskManagerUI.Controls.Cards
                 { "cpu",         "IconStats"      },
                 { "briefcase",   "IconFolder"     },
                 { "database",   "IconDatabase"     },
+                { "user",       "IconUser"     },
             };
 
             if (map.TryGetValue(iconName, out var key))
