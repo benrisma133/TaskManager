@@ -21,6 +21,7 @@ namespace TaskManagerUI.Pages.Dashboard
 
         private class TaskItem
         {
+            public int TaskID { get; set; }
             public string Title { get; set; } = string.Empty;
             public string ProjectTitle { get; set; } = string.Empty;
             public string Priority { get; set; } = string.Empty;
@@ -245,11 +246,14 @@ namespace TaskManagerUI.Pages.Dashboard
             NoTasksText.Visibility = Visibility.Collapsed;
             ActiveTasksControl.Visibility = Visibility.Visible;
 
+            
+
             var items = tasks
                 .Where(t => !t.IsCompleted)
                 .Take(6)
                 .Select(t => new TaskItem
                 {
+                    TaskID = t.TaskID,
                     Title = t.Title,
                     ProjectTitle = t.ProjectTitle,
                     Priority = t.Priority.ToUpper(),
@@ -346,6 +350,14 @@ namespace TaskManagerUI.Pages.Dashboard
             // You will wire this up when you integrate navigation
             //MessageBox.Show("Navigate to Tasks page", "Info");
             _mainWindow?.NavigateToTasksPage();
+        }
+
+        private void TimerBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.DataContext is TaskItem task)
+            {
+                _mainWindow?.NavigateToTimer(task.TaskID ,fromDashboard : true);
+            }
         }
     }
 }

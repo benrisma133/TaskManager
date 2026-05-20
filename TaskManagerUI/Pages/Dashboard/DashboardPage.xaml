@@ -397,20 +397,49 @@
                                             </Border>
 
                                             <!-- Timer button -->
-                                            <Border Grid.Column="3"
+                                            <Button Grid.Column="3"
+                                                    x:Name="TimerBtn"
                                                     Width="28"
                                                     Height="28"
-                                                    CornerRadius="6"
-                                                    Background="{DynamicResource CardBackgroundBrush}"
-                                                    BorderBrush="{DynamicResource BorderDefaultBrush}"
-                                                    BorderThickness="1"
+                                                    Cursor="Hand"
+                                                    BorderThickness="0"
+                                                    Background="Transparent"
                                                     VerticalAlignment="Center"
-                                                    Cursor="Hand">
-                                                <fa:IconImage Icon="Play"
-                                                              Width="10"
-                                                              Height="10"
-                                                              Foreground="{DynamicResource TextMutedBrush}"/>
-                                            </Border>
+                                                    Click="TimerBtn_Click">
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="Bd"
+                                                                CornerRadius="6"
+                                                                Background="{DynamicResource CardBackgroundBrush}"
+                                                                BorderBrush="{DynamicResource BorderDefaultBrush}"
+                                                                BorderThickness="1">
+                                                            <fa:IconImage x:Name="Icon"
+                                                                          Icon="Play"
+                                                                          Width="10"
+                                                                          Height="10"
+                                                                          Foreground="{DynamicResource TextMutedBrush}"
+                                                                          HorizontalAlignment="Center"
+                                                                          VerticalAlignment="Center"/>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="Bd" Property="Background"
+                                                                        Value="{DynamicResource AccentBrush}"/>
+                                                                <Setter TargetName="Bd" Property="BorderBrush"
+                                                                        Value="{DynamicResource AccentBrush}"/>
+                                                                <Setter TargetName="Bd" Property="BorderThickness"
+                                                                        Value="1.5"/>
+                                                                <Setter TargetName="Icon" Property="Foreground"
+                                                                        Value="White"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsPressed" Value="True">
+                                                                <Setter TargetName="Bd" Property="Background"
+                                                                        Value="{DynamicResource AccentPressedBrush}"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                            </Button>
 
                                         </Grid>
                                     </Border>

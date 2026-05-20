@@ -134,14 +134,19 @@ namespace TaskManagerUI
         // ============================
         // NAVIGATE TO TIMER
         // ============================
-        public void NavigateToTimer(int taskId)
+        public void NavigateToTimer(int taskId, bool fromDashboard = false)
         {
+            if (fromDashboard)
+            {
+                SetActiveMenu(BtnTasks);
+                PageTitle.Text = "Tasks";
+            }
+
             var timerPage = new TimerPage(taskId);
 
             timerPage.BackRequested += (s, e) =>
             {
                 PageContent.Content = _taskPage;
-                // ✅ Timer keeps running in background via ActiveSession
             };
 
             PageContent.Content = timerPage;
