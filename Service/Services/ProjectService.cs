@@ -2,6 +2,7 @@
 using Repository.Repositories;
 using Service.Enums.Category;
 using Service.Enums.Project;
+using Service.Enums.Task;
 
 namespace Service.Services;
 
@@ -290,6 +291,48 @@ public class ProjectService
         catch
         {
             return (enProjectRetrieveResult.Failed, new List<ProjectLookup>());
+        }
+    }
+
+    // ─── Static: Complete Task ─────────────────────────────────────────
+    public static enProjectCompleteResult Complete(int projectId)
+    {
+        try
+        {
+            bool completed = ProjectRepository.CompleteProject(projectId);
+            return completed ? enProjectCompleteResult.Completed : enProjectCompleteResult.Failed;
+        }
+        catch
+        {
+            return enProjectCompleteResult.Failed;
+        }
+    }
+
+    // ─── Static: GetPointsLogByProject ────────────────────────────────────────
+    public static (enProjectRetrieveResult result, List<ProjectPointsLog> logs) GetPointsLog(int projectId)
+    {
+        try
+        {
+            var list = ProjectRepository.GetPointsLogByProject(projectId);
+            return (enProjectRetrieveResult.Found, list);
+        }
+        catch
+        {
+            return (enProjectRetrieveResult.Failed, new List<ProjectPointsLog>());
+        }
+    }
+
+    // ─── Static: GetSessionSummaryByProject ───────────────────────────────────
+    public static (enProjectRetrieveResult result, List<ProjectSessionSummary> sessions) GetSessionSummary(int projectId)
+    {
+        try
+        {
+            var list = ProjectRepository.GetSessionSummaryByProject(projectId);
+            return (enProjectRetrieveResult.Found, list);
+        }
+        catch
+        {
+            return (enProjectRetrieveResult.Failed, new List<ProjectSessionSummary>());
         }
     }
 
