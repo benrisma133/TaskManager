@@ -51,7 +51,7 @@ public partial class TasksPage : UserControl
     // ============================
     private void _LoadProjects()
     {
-        var (result, projects, _) = ProjectService.GetAll(1, int.MaxValue);
+        var (result, projects, _) = ProjectService.GetAll(1, 20);
 
         ProjectFilterCombo.Items.Clear();
 

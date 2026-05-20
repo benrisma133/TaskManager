@@ -164,6 +164,25 @@ namespace TaskManagerUI
         }
 
         // ============================
+        // NAVIGATE TO PROJECT INFO
+        // ============================
+        public void NavigateToProjectInfo(int projectId)
+        {
+            var page = new ProjectInfoPage(projectId, this);
+
+            page.BackRequested += (s, e) =>
+            {
+                SetActiveMenu(BtnProjects);
+                PageTitle.Text = "Projects";
+                PageContent.Content = _projectPage;
+            };
+
+            SetActiveMenu(BtnProjects);
+            PageTitle.Text = "Project Details";
+            PageContent.Content = page;
+        }
+
+        // ============================
         // CLEANUP
         // ============================
         protected override void OnClosed(EventArgs e)
