@@ -1,17 +1,17 @@
 ﻿using Service.Enums.Task;
 using Service.Enums.Timer;
 using Service.Services;
-using System.Windows.Threading;
+using TaskManagerUI.Services;
 
 public static class ActiveSession
 {
     // ============================
     // FIELDS
     // ============================
-    private static DispatcherTimer? _timer;
-    private static TimeSpan _elapsed = TimeSpan.Zero;
+    private static TimeSpan _sessionElapsedOffset = TimeSpan.Zero;  // ← Track when session started
     private static TimeSpan _totalPaused = TimeSpan.Zero;
     private static DateTime? _pausedAt = null;
+    private static TimeSpan _globalTimerAtSessionStart = TimeSpan.Zero;
 
     // ============================
     // PROPERTIES
@@ -21,8 +21,23 @@ public static class ActiveSession
     public static bool IsRunning { get; private set; }
     public static DateTime? StartedAt { get; private set; }
     public static int SessionId { get; private set; }
-    public static TimeSpan Elapsed => _elapsed;
-    public static int ElapsedSeconds => (int)_elapsed.TotalSeconds;
+
+    /// <summary>
+    /// Session elapsed = GlobalTimer elapsed since session started - paused time
+    /// </summary>
+    public static TimeSpan Elapsed
+    {
+        get
+        {
+            if (!HasSession) return TimeSpan.Zero;
+
+            // GlobalTimer only advances while running, so paused time
+            // is already excluded. Don't subtract _totalPaused here.
+            return GlobalTimer.TotalElapsed - _globalTimerAtSessionStart;
+        }
+    }
+
+    public static int ElapsedSeconds => (int)Elapsed.TotalSeconds;
     public static int TotalPausedSeconds => (int)_totalPaused.TotalSeconds;
     public static int TotalLoggedAllTime { get; private set; }
     public static int TotalLoggedToday { get; private set; }
@@ -53,15 +68,31 @@ public static class ActiveSession
         IsRunning = true;
         StartedAt = DateTime.Now;
         SessionId = Timer.SessionId;
-        _elapsed = TimeSpan.Zero;
+        _sessionElapsedOffset = TimeSpan.Zero;
         _totalPaused = TimeSpan.Zero;
         _pausedAt = null;
 
-        _EnsureTimer();
-        _timer!.Start();
+        // ← Record when GlobalTimer was at when this session started
+        _globalTimerAtSessionStart = GlobalTimer.TotalElapsed;
+
+        // ← Subscribe to GlobalTimer for all time tracking
+        GlobalTimer.Tick -= OnGlobalTimerTick;
+        GlobalTimer.Tick += OnGlobalTimerTick;
+
+        GlobalTimer.Start();
 
         SessionChanged?.Invoke();
         return true;
+    }
+
+    // ============================
+    // GLOBAL TIMER TICK
+    // ============================
+    private static void OnGlobalTimerTick()
+    {
+        if (!IsRunning) return;
+
+        Ticked?.Invoke();
     }
 
     // ============================
@@ -73,7 +104,7 @@ public static class ActiveSession
 
         IsRunning = false;
         _pausedAt = DateTime.Now;
-        _timer?.Stop();
+        GlobalTimer.Stop();  // ← Pause the global timer
 
         SessionChanged?.Invoke();
     }
@@ -93,13 +124,14 @@ public static class ActiveSession
         }
 
         IsRunning = true;
-        _timer?.Start();
+        GlobalTimer.Start();  // ← Resume the global timer
 
         SessionChanged?.Invoke();
     }
 
     // ============================
-    // STOP
+    // STOP — The key method
+    // exactDurationSeconds lets you override what gets saved
     // ============================
     public static void Stop(int exactDurationSeconds = -1)
     {
@@ -109,19 +141,26 @@ public static class ActiveSession
             _totalPaused = _totalPaused.Add(pauseDuration);
         }
 
-        if (Timer is not null)
-            Timer.ForceEnd(TotalPausedSeconds, exactDurationSeconds);
+        // ← Use actual elapsed from global timer
+        int sessionDuration = exactDurationSeconds >= 0
+            ? exactDurationSeconds
+            : ElapsedSeconds;
 
-        _timer?.Stop();
+        if (Timer is not null)
+            Timer.ForceEnd(TotalPausedSeconds, sessionDuration);
+
+        GlobalTimer.Tick -= OnGlobalTimerTick;
+        // Don't stop GlobalTimer here — other sessions might be using it
 
         CurrentTask = null;
         IsRunning = false;
         StartedAt = null;
         SessionId = 0;
         Timer = null;
-        _elapsed = TimeSpan.Zero;
+        _sessionElapsedOffset = TimeSpan.Zero;
         _totalPaused = TimeSpan.Zero;
         _pausedAt = null;
+        _globalTimerAtSessionStart = TimeSpan.Zero;
         TotalLoggedAllTime = 0;
         TotalLoggedToday = 0;
 
@@ -154,23 +193,4 @@ public static class ActiveSession
     // HAS SESSION
     // ============================
     public static bool HasSession => CurrentTask is not null;
-
-    // ============================
-    // PRIVATE — ENSURE TIMER
-    // ============================
-    private static void _EnsureTimer()
-    {
-        if (_timer is not null) return;
-
-        _timer = new DispatcherTimer
-        {
-            Interval = TimeSpan.FromSeconds(1)
-        };
-        _timer.Tick += (s, e) =>
-        {
-            if (!IsRunning) return;
-            _elapsed = _elapsed.Add(TimeSpan.FromSeconds(1));
-            Ticked?.Invoke();
-        };
-    }
 }
