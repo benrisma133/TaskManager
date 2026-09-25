@@ -1,10 +1,9 @@
-﻿using System.Media;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
-using NAudio.Wave;
+using TaskManagerUI.Services;
 
 namespace TaskManagerUI.Controls.Components
 {
@@ -13,7 +12,6 @@ namespace TaskManagerUI.Controls.Components
         // ============================
         // FIELDS
         // ============================
-        private readonly DispatcherTimer _timer;
         private readonly DispatcherTimer _tickDotTimer;
         private TimeSpan _remaining;
         private bool _completed;
@@ -67,9 +65,6 @@ namespace TaskManagerUI.Controls.Components
         {
             InitializeComponent();
 
-            _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-            _timer.Tick += Timer_Tick;
-
             _tickDotTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromMilliseconds(500)
@@ -82,13 +77,33 @@ namespace TaskManagerUI.Controls.Components
                 if (!_remainingSetByPage)
                     Reset();
             };
+
+            Unloaded += (s, e) =>
+            {
+                UnsubscribeFromGlobalTimer();
+                _tickDotTimer.Stop();
+            };
         }
 
         // ============================
-        // TIMER TICK
+        // SUBSCRIBE TO GLOBAL TIMER
         // ============================
-        private void Timer_Tick(object? sender, EventArgs e)
+        private void SubscribeToGlobalTimer()
         {
+            GlobalTimer.Tick -= OnGlobalTimerTick;
+            GlobalTimer.Tick += OnGlobalTimerTick;
+        }
+
+        private void UnsubscribeFromGlobalTimer()
+        {
+            GlobalTimer.Tick -= OnGlobalTimerTick;
+        }
+
+        private void OnGlobalTimerTick()
+        {
+            // Only process if this timer is actively counting down
+            if (!GlobalTimer.IsRunning) return;
+
             _remaining = _remaining.Subtract(TimeSpan.FromSeconds(1));
             UpdateDisplay();
             Ticked?.Invoke(this, _remaining);
@@ -135,7 +150,7 @@ namespace TaskManagerUI.Controls.Components
         // ============================
         private void OnCompleted()
         {
-            _timer.Stop();
+            GlobalTimer.Stop();
             _tickDotTimer.Stop();
             _completed = true;
 
@@ -157,7 +172,7 @@ namespace TaskManagerUI.Controls.Components
 
             if (PlayPauseBtn.State == TimerButtonState.Play)
             {
-                _timer.Start();
+                GlobalTimer.Start();  // ← Use GlobalTimer instead
                 _tickDotTimer.Start();
                 PlayPauseBtn.State = TimerButtonState.Pause;
                 StateLabel.Text = "remaining";
@@ -168,7 +183,7 @@ namespace TaskManagerUI.Controls.Components
             }
             else
             {
-                _timer.Stop();
+                GlobalTimer.Stop();  // ← Use GlobalTimer instead
                 _tickDotTimer.Stop();
                 TickDot.Opacity = 1;
                 PlayPauseBtn.State = TimerButtonState.Play;
@@ -196,27 +211,24 @@ namespace TaskManagerUI.Controls.Components
 
         private void _StopInternal()
         {
-            _timer.Stop();
+            GlobalTimer.Stop();
             _tickDotTimer.Stop();
             _remainingSetByPage = false;
 
-            // ── reset button state to Play ────────────────────────────
             PlayPauseBtn.State = TimerButtonState.Play;
             StateLabel.Text = "remaining";
             StateLabel.Foreground = TryFindResource("TextSecondaryBrush") as Brush;
             TickDot.Opacity = 1;
 
             Stopped?.Invoke(this, EventArgs.Empty);
-            // ← NO Reset() — TimerPage._InitTimer handles remaining ✅
         }
 
         // ============================
         // PAUSE INTERNAL
-        // stops visual timer without firing any events
         // ============================
         public void PauseInternal()
         {
-            _timer.Stop();
+            GlobalTimer.Stop();
             _tickDotTimer.Stop();
         }
 
@@ -262,7 +274,6 @@ namespace TaskManagerUI.Controls.Components
         // ============================
         private void UpdateDisplay()
         {
-            // Handle negative time (overtime)
             if (_remaining.TotalSeconds < 0)
             {
                 TimeDisplay.Text = "-" + _remaining.Negate().ToString(
@@ -281,7 +292,6 @@ namespace TaskManagerUI.Controls.Components
 
         // ============================
         // SET REMAINING
-        // called by page after loading sessions
         // ============================
         public void SetRemaining(TimeSpan remaining)
         {
@@ -291,12 +301,12 @@ namespace TaskManagerUI.Controls.Components
             _remaining = remaining;
             _remainingSetByPage = true;
             UpdateDisplay();
+
+            SubscribeToGlobalTimer();  // ← Start listening to global timer
         }
 
         // ============================
         // FORCE SET REMAINING
-        // called every second from OnSessionTicked
-        // does not touch any flags
         // ============================
         public void ForceSetRemaining(TimeSpan remaining)
         {
@@ -350,7 +360,7 @@ namespace TaskManagerUI.Controls.Components
         }
 
         // ============================
-        // SOUNDS
+        // SOUNDS (unchanged)
         // ============================
         private void PlayFlashAnimation()
         {
@@ -387,14 +397,14 @@ namespace TaskManagerUI.Controls.Components
             {
                 var uri = new Uri("pack://application:,,,/TaskManagerUI;component/Assets/Sounds/complete.wav");
                 var info = Application.GetResourceStream(uri);
-                var player = new SoundPlayer(info.Stream);
+                var player = new System.Media.SoundPlayer(info.Stream);
                 player.Play();
             }
             catch { }
         }
 
-        private WaveOutEvent? _tickTockOutput;
-        private AudioFileReader? _tickTockReader;
+        private NAudio.Wave.WaveOutEvent? _tickTockOutput;
+        private NAudio.Wave.AudioFileReader? _tickTockReader;
 
         private void PlayTickTockSound()
         {
@@ -402,8 +412,8 @@ namespace TaskManagerUI.Controls.Components
             {
                 var path = @"C:\Users\DELL\Desktop\My Prog. Career Path\Projects\C#\WPF\TaskManager\TaskManagerUI\Assets\Sounds\ticktock_pcm.wav";
 
-                _tickTockReader = new AudioFileReader(path);
-                _tickTockOutput = new WaveOutEvent();
+                _tickTockReader = new NAudio.Wave.AudioFileReader(path);
+                _tickTockOutput = new NAudio.Wave.WaveOutEvent();
                 _tickTockOutput.Init(_tickTockReader);
                 _tickTockOutput.Play();
 
@@ -434,22 +444,18 @@ namespace TaskManagerUI.Controls.Components
 
         // ============================
         // RESUME INTERNAL
-        // restarts visual timer without firing any events
-        // called when returning to page with active session
         // ============================
         public void ResumeInternal()
         {
             if (_completed) return;
 
-            _timer.Start();
+            GlobalTimer.Start();
             _tickDotTimer.Start();
 
-            // restore visual state
             PlayPauseBtn.State = TimerButtonState.Pause;
             StateLabel.Text = "remaining";
             StateLabel.Foreground = TryFindResource("TextSecondaryBrush") as Brush;
         }
-
 
         public void ResetFromExternal()
         {
