@@ -1,69 +1,55 @@
-﻿using System.Windows.Threading;
+﻿using System.Diagnostics;
+using System.Windows.Threading;
 
 namespace TaskManagerUI.Services
 {
     /// <summary>
     /// Single authoritative timer for the entire application.
-    /// All time-dependent components subscribe to this.
+    /// Elapsed time is measured with a Stopwatch (real wall-clock time),
+    /// not accumulated by counting DispatcherTimer ticks — ticks can drift
+    /// or be skipped, a Stopwatch cannot.
     /// </summary>
     public static class GlobalTimer
     {
         private static readonly DispatcherTimer _timer;
-        private static TimeSpan _totalElapsed = TimeSpan.Zero;
+        private static readonly Stopwatch _clock = new();
 
-        // ============================
-        // EVENTS — components subscribe to this
-        // ============================
         public static event Action? Tick;
 
-        // ============================
-        // PROPERTIES
-        // ============================
-        public static TimeSpan TotalElapsed => _totalElapsed;
-        public static int TotalElapsedSeconds => (int)_totalElapsed.TotalSeconds;
+        public static TimeSpan TotalElapsed => _clock.Elapsed;
+        public static int TotalElapsedSeconds => (int)Math.Round(_clock.Elapsed.TotalSeconds);
         public static bool IsRunning { get; private set; }
 
-        // ============================
-        // STATIC CONSTRUCTOR
-        // ============================
         static GlobalTimer()
         {
-            _timer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromSeconds(1)
+            _timer = new DispatcherTimer 
+            { 
+                Interval = TimeSpan.FromMicroseconds(200) 
             };
-            _timer.Tick += OnTimerTick;
+
+            _timer.Tick += (s, e) => Tick?.Invoke();
         }
 
-        // ============================
-        // START / STOP / RESET
-        // ============================
         public static void Start()
         {
             if (IsRunning) return;
             IsRunning = true;
+            _clock.Start();
             _timer.Start();
         }
 
         public static void Stop()
         {
             IsRunning = false;
+            _clock.Stop();
             _timer.Stop();
         }
 
         public static void Reset()
         {
             Stop();
-            _totalElapsed = TimeSpan.Zero;
+            _clock.Reset();
         }
 
-        // ============================
-        // INTERNAL TICK
-        // ============================
-        private static void OnTimerTick(object? sender, EventArgs e)
-        {
-            _totalElapsed = _totalElapsed.Add(TimeSpan.FromSeconds(1));
-            Tick?.Invoke();
-        }
     }
 }

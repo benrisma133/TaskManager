@@ -1,0 +1,101 @@
+﻿<Window x:Class="TaskManagerUI.Pages.Dialog.AddExtraTimeDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:fa="clr-namespace:FontAwesome.Sharp;assembly=FontAwesome.Sharp"
+        Width="380" Height="auto"
+        SizeToContent="Height"
+        WindowStartupLocation="CenterScreen"
+        Background="Transparent"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        AllowsTransparency="True">
+
+    <Grid Margin="8">
+        <Border CornerRadius="16"
+                Background="{DynamicResource CardBackgroundBrush}"
+                BorderBrush="{DynamicResource BorderDefaultBrush}"
+                BorderThickness="1">
+            <Border.Effect>
+                <DropShadowEffect Color="#000000" BlurRadius="20" ShadowDepth="0" Opacity="0.4"/>
+            </Border.Effect>
+
+            <StackPanel Margin="28,24">
+
+                <StackPanel HorizontalAlignment="Center" Margin="0,0,0,18">
+                    <Border Width="48" Height="48"
+                            CornerRadius="24"
+                            Background="{DynamicResource AccentLightBrush}"
+                            HorizontalAlignment="Center"
+                            Margin="0,0,0,12">
+                        <fa:IconImage Icon="PlusCircle"
+                                      Width="20" Height="20"
+                                      Foreground="{DynamicResource AccentBrush}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                    </Border>
+
+                    <TextBlock Text="Add Extra Time"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               Foreground="{DynamicResource TextPrimaryBrush}"
+                               HorizontalAlignment="Center"/>
+
+                    <TextBlock x:Name="TaskTitleText"
+                               FontSize="12"
+                               Foreground="{DynamicResource TextSecondaryBrush}"
+                               HorizontalAlignment="Center"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               Margin="0,6,0,0"/>
+                </StackPanel>
+
+                <Border x:Name="ErrorBox"
+                        Background="{DynamicResource ErrorLightBrush}"
+                        BorderBrush="{DynamicResource ErrorBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="14,10"
+                        Margin="0,0,0,14"
+                        Visibility="Collapsed">
+                    <TextBlock x:Name="ErrorText"
+                               Foreground="{DynamicResource ErrorBrush}"
+                               FontSize="12"
+                               TextWrapping="Wrap"/>
+                </Border>
+
+                <TextBlock Text="How many extra minutes?"
+                           FontSize="12"
+                           Foreground="{DynamicResource TextSecondaryBrush}"
+                           Margin="0,0,0,8"/>
+                <TextBox x:Name="ExtraMinutesInput"
+                         Height="38"
+                         FontSize="14"
+                         Padding="10,0"
+                         VerticalContentAlignment="Center"
+                         Background="{DynamicResource SurfaceCardBrush}"
+                         Foreground="{DynamicResource TextPrimaryBrush}"
+                         BorderBrush="{DynamicResource BorderDefaultBrush}"
+                         BorderThickness="1"
+                         MaxLength="3"
+                         Margin="0,0,0,18"/>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="CancelBtn"
+                            Content="Cancel"
+                            Width="100" Height="38"
+                            Margin="0,0,10,0"
+                            Cursor="Hand"
+                            Click="Cancel_Click"
+                            Style="{DynamicResource GhostButtonStyle}"/>
+                    <Button x:Name="SaveBtn"
+                            Content="Add Time"
+                            Width="100" Height="38"
+                            Cursor="Hand"
+                            Click="Save_Click"
+                            Style="{DynamicResource PrimaryButtonStyle}"/>
+                </StackPanel>
+
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
