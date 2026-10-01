@@ -136,18 +136,32 @@ public partial class ProjectsPage : UserControl
     }
 
     // ============================
+    // SEARCH BUTTON CLICK (NEW - replaces TextChanged)
+    // ============================
+    private void SearchBtn_Click(object sender, RoutedEventArgs e)
+    {
+        _currentPage = 1;
+        _ = LoadProjects();
+    }
+
+    // ============================
     // SEARCH & FILTER
     // ============================
     private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
     {
-        if (!_isInitialized) return;
+        bool hasText = !string.IsNullOrEmpty(SearchBox.Text);
 
-        SearchPlaceholder.Visibility = string.IsNullOrEmpty(SearchBox.Text)
-            ? Visibility.Visible
-            : Visibility.Collapsed;
+        SearchPlaceholder.Visibility = hasText ? Visibility.Collapsed : Visibility.Visible;
+        ClearSearchBtn.Visibility = hasText ? Visibility.Visible : Visibility.Collapsed;
+    }
 
-        _currentPage = 1;
-        _ = LoadProjects();
+    private void ClearSearchBtn_Click(object sender, RoutedEventArgs e)
+    {
+        SearchBox.Clear();
+        SearchBox.Focus();
+
+        _currentPage = 1;      // back to the first page
+        _ = LoadProjects();    // reload the full list
     }
 
     private void PriorityFilterCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)

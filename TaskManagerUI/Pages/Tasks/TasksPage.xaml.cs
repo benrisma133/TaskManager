@@ -86,6 +86,23 @@ public partial class TasksPage : UserControl
         ProjectFilterCombo.SelectedIndex = 0;
     }
 
+    private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        bool hasText = !string.IsNullOrEmpty(SearchBox.Text);
+
+        SearchPlaceholder.Visibility = hasText ? Visibility.Collapsed : Visibility.Visible;
+        ClearSearchBtn.Visibility = hasText ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void ClearSearchBtn_Click(object sender, RoutedEventArgs e)
+    {
+        SearchBox.Clear();
+        SearchBox.Focus();
+
+        _currentPage = 1;
+        _ = LoadTasks();
+    }
+
     // ============================
     // GET SELECTED PROJECT ID
     // ============================
@@ -105,6 +122,7 @@ public partial class TasksPage : UserControl
     private async Task LoadTasks()
     {
         ShowSkeleton();
+        SearchBtn.IsEnabled = false;  // Disable button while loading
 
         var search = string.IsNullOrWhiteSpace(SearchBox.Text) ? null : SearchBox.Text.Trim();
         var priority = (PriorityFilterCombo.SelectedItem as ComboBoxItem)?.Content?.ToString();
@@ -120,6 +138,7 @@ public partial class TasksPage : UserControl
         if (result == enTaskRetrieveResult.Failed)
         {
             HideSkeleton();
+            SearchBtn.IsEnabled = true;  // Re-enable button on error
             MessageBox.Show("Failed to load tasks. Please try again.",
                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             return;
@@ -131,23 +150,21 @@ public partial class TasksPage : UserControl
 
         RenderCards(_allTasks);
         UpdateFooter();
+        SearchBtn.IsEnabled = true;  // Re-enable button after loading
     }
 
     // ============================
-    // SEARCH & FILTER
+    // SEARCH BUTTON CLICK (NEW - replaces TextChanged)
     // ============================
-    private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+    private void SearchBtn_Click(object sender, RoutedEventArgs e)
     {
-        if (!_isInitialized) return;
-
-        SearchPlaceholder.Visibility = string.IsNullOrEmpty(SearchBox.Text)
-            ? Visibility.Visible
-            : Visibility.Collapsed;
-
         _currentPage = 1;
         _ = LoadTasks();
     }
 
+    // ============================
+    // FILTER CHANGES (still trigger search)
+    // ============================
     private void PriorityFilterCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (!_isInitialized) return;
