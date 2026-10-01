@@ -87,7 +87,6 @@ namespace TaskManagerUI.Pages.Dashboard
             TodayText.Text = service.TodayLabel;
 
             // ── Level ──────────────────────────────────────────────────
-            // ── Level ──────────────────────────────────────────────────
             LevelBadgeIcon.Level = service.LevelType;
             LevelNameText.Text = service.IsMaxLevel
                 ? $"{service.CurrentLevel} · MAX LEVEL"

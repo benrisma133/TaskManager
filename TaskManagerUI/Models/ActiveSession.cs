@@ -37,7 +37,7 @@ public static class ActiveSession
         }
     }
 
-    public static int ElapsedSeconds => (int)Elapsed.TotalSeconds;
+    public static int ElapsedSeconds => (int)Math.Round(Elapsed.TotalSeconds);
     public static int TotalPausedSeconds => (int)_totalPaused.TotalSeconds;
     public static int TotalLoggedAllTime { get; private set; }
     public static int TotalLoggedToday { get; private set; }
