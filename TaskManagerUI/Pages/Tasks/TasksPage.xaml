@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
              xmlns:cards="clr-namespace:TaskManagerUI.Controls.Cards"
+             xmlns:components="clr-namespace:TaskManagerUI.Controls.Components"
              Loaded="TasksPage_Loaded"
              SizeChanged="TasksPage_SizeChanged">
 
@@ -21,55 +22,102 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Search Box -->
-                <Border Grid.Column="0"
-                        Background="{DynamicResource InputBackgroundBrush}"
-                        BorderBrush="{DynamicResource BorderDefaultBrush}"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        Height="42"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Left"
-                        MinWidth="280">
-                    <Grid Margin="12,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                <!-- Search Box + Search Button -->
+                <StackPanel Grid.Column="0"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
 
-                        <Viewbox Width="16" Height="16"
-                                 Margin="0,0,8,0"
-                                 VerticalAlignment="Center">
-                            <Canvas Width="24" Height="24">
-                                <Path Data="{StaticResource IconSearch}"
-                                      Stroke="{DynamicResource TextMutedBrush}"
-                                      StrokeThickness="2"
-                                      Fill="Transparent"
-                                      StrokeStartLineCap="Round"
-                                      StrokeEndLineCap="Round"/>
-                            </Canvas>
-                        </Viewbox>
+                    <!-- Search Box (NO TextChanged event) -->
+                    <Border Background="{DynamicResource InputBackgroundBrush}"
+                            BorderBrush="{DynamicResource BorderDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Height="42"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Left"
+                            MinWidth="280"
+                            Margin="0,0,10,0">
+                        <Grid Margin="12,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                        <TextBox x:Name="SearchBox"
-                                 Grid.Column="1"
-                                 MinWidth="200"
-                                 Background="Transparent"
-                                 BorderThickness="0"
-                                 Foreground="{DynamicResource TextPrimaryBrush}"
-                                 CaretBrush="{DynamicResource AccentBrush}"
-                                 FontSize="14"
-                                 VerticalAlignment="Center"
-                                 TextChanged="SearchBox_TextChanged"/>
+                            <Viewbox Width="16" Height="16"
+                                     Margin="0,0,8,0"
+                                     VerticalAlignment="Center">
+                                <Canvas Width="24" Height="24">
+                                    <Path Data="{StaticResource IconSearch}"
+                                          Stroke="{DynamicResource TextMutedBrush}"
+                                          StrokeThickness="2"
+                                          Fill="Transparent"
+                                          StrokeStartLineCap="Round"
+                                          StrokeEndLineCap="Round"/>
+                                </Canvas>
+                            </Viewbox>
 
-                        <TextBlock x:Name="SearchPlaceholder"
-                                   Grid.Column="1"
-                                   Text="Search tasks..."
-                                   FontSize="14"
-                                   Foreground="{DynamicResource TextPlaceholderBrush}"
-                                   VerticalAlignment="Center"
-                                   IsHitTestVisible="False"/>
-                    </Grid>
-                </Border>
+                            <TextBox x:Name="SearchBox"
+                                     Grid.Column="1"
+                                     MinWidth="200"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     Foreground="{DynamicResource TextPrimaryBrush}"
+                                     CaretBrush="{DynamicResource AccentBrush}"
+                                     FontSize="14"
+                                     VerticalAlignment="Center"
+                                     TextChanged="SearchBox_TextChanged"/>
+
+                            <TextBlock x:Name="SearchPlaceholder"
+                                       Grid.Column="1"
+                                       Text="Search tasks..."
+                                       FontSize="14"
+                                       Foreground="{DynamicResource TextPlaceholderBrush}"
+                                       VerticalAlignment="Center"
+                                       IsHitTestVisible="False"/>
+
+                            <!-- NEW: Clear (X) button, only visible when there is text -->
+                            <Button x:Name="ClearSearchBtn"
+                                    Grid.Column="2"
+                                    Width="24" Height="24"
+                                    Margin="6,0,0,0"
+                                    Cursor="Hand"
+                                    BorderThickness="0"
+                                    Background="Transparent"
+                                    VerticalAlignment="Center"
+                                    Visibility="Collapsed"
+                                    Click="ClearSearchBtn_Click">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="ClearSearchBd"
+                                                Background="{TemplateBinding Background}"
+                                                CornerRadius="6">
+                                            <fa:IconImage x:Name="ClearSearchIcon"
+                                                          Icon="Xmark"
+                                                          Width="11" Height="11"
+                                                          Foreground="{DynamicResource TextMutedBrush}"
+                                                          HorizontalAlignment="Center"
+                                                          VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="ClearSearchBd" Property="Background"
+                                                        Value="{DynamicResource BorderHoverBrush}"/>
+                                                <Setter TargetName="ClearSearchIcon" Property="Foreground"
+                                                        Value="{DynamicResource TextPrimaryBrush}"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <!-- Search Button (NEW) -->
+                    <components:SearchButton x:Name="SearchBtn"
+                                             Click="SearchBtn_Click"/>
+
+                </StackPanel>
 
                 <!-- Right Side Buttons -->
                 <StackPanel Grid.Column="1"
