@@ -242,7 +242,7 @@
                                     Padding="14,10">
 
                                     <TextBlock x:Name="StartTaskText"
-                                           Text="▶ Start Task"
+                                           Text="Open Task"
                                            FontSize="12"
                                            FontWeight="Medium"
                                            Foreground="{DynamicResource AccentBrush}"/>
