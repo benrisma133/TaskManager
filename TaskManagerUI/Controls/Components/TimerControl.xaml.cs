@@ -94,7 +94,11 @@ namespace TaskManagerUI.Controls.Components
             if (_isCompleted) return;
 
             if (!_isRunning)
+            {
                 PlayRequested?.Invoke(this, EventArgs.Empty);
+                PlayTickTockSound();
+            }
+
             else
                 PauseRequested?.Invoke(this, EventArgs.Empty);
         }
@@ -120,7 +124,7 @@ namespace TaskManagerUI.Controls.Components
             if (running)
             {
                 _tickDotTimer.Start();
-                PlayTickTockSound();
+                //PlayTickTockSound();
             }
             else
             {

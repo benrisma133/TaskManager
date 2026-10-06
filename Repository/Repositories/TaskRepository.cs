@@ -64,7 +64,7 @@ public static class TaskRepository
             cmd.Parameters.AddWithValue("@Priority", task.Priority);
             cmd.Parameters.AddWithValue("@DueDate", (object?)task.DueDate?.ToDateTime(TimeOnly.MinValue) ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@EstimatedMinutes", (object?)task.EstimatedMinutes ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@Status", task.Status);
+            //cmd.Parameters.AddWithValue("@Status", task.Status);
 
             conn.Open();
             return cmd.ExecuteNonQuery() > 0;

@@ -3,6 +3,10 @@
     public enum enProjectCompleteResult
     {
         Completed,
-        Failed
+        Failed,
+        HasOpenTasks,
+        NoCompletedTasks,
+        NotActive,
+        AlreadyCompleted
     }
 }

@@ -101,9 +101,11 @@ public partial class AddEditProject : Window
             ProjectTitle.Text = string.Empty;
             ProjectDescription.Text = string.Empty;
             ProjectPriority.SelectedIndex = 1; // Medium
-            ProjectStatus.SelectedIndex = 0; // Active
             ProjectStartDate.Clear();
             ProjectDueDate.Clear();
+
+            // New projects always start Active — display only
+            ProjectStatusBadge.Status = "Active";
         }
         else
         {
@@ -143,10 +145,8 @@ public partial class AddEditProject : Window
             if (item.Content?.ToString() == service.Priority)
             { ProjectPriority.SelectedItem = item; break; }
 
-        // Status
-        foreach (ComboBoxItem item in ProjectStatus.Items)
-            if (item.Content?.ToString() == service.Status)
-            { ProjectStatus.SelectedItem = item; break; }
+        // Status — display only, changed from the project page
+        ProjectStatusBadge.Status = service.Status;
     }
 
     // ============================
@@ -202,9 +202,9 @@ public partial class AddEditProject : Window
                                         : ProjectDescription.Text.Trim();
         _projectService.CategoryID = _GetSelectedCategoryId();
         _projectService.Priority = (ProjectPriority.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Medium";
-        _projectService.Status = (ProjectStatus.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Active";
         _projectService.StartDate = ProjectStartDate.SelectedDate;
         _projectService.DueDate = ProjectDueDate.SelectedDate;
+        // Status is never set from the form.
 
         var result = _projectService.Save();
 
@@ -217,6 +217,13 @@ public partial class AddEditProject : Window
                 WindowTitle.Text = "Edit Project";
                 FormTitle.Text = "Edit Project";
                 FormSubtitle.Text = "Update the project information below.";
+
+                // Re-read the real status so the badge is never stale
+                var (foundResult, fresh) = ProjectService.Find(_projectService.ProjectID);
+                ProjectStatusBadge.Status = foundResult == enProjectRetrieveResult.Found && fresh is not null
+                    ? fresh.Status
+                    : _projectService.Status;
+
                 ShowSuccessMessage("Project saved successfully.");
                 break;
 

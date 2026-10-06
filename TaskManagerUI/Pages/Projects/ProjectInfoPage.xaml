@@ -7,6 +7,36 @@
              xmlns:components="clr-namespace:TaskManagerUI.Controls.Components"
              mc:Ignorable="d">
 
+    <UserControl.Resources>
+        <!-- Flat top-bar button: grey text, accent background + white text on hover.
+         Icon and text colours follow the button's Foreground. -->
+        <Style x:Key="TopBarButtonStyle" TargetType="Button">
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background"      Value="Transparent"/>
+            <Setter Property="Foreground"      Value="{DynamicResource TextSecondaryBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="Transparent"
+                                CornerRadius="8"
+                                Padding="10,6">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource AccentHoverBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
     <Grid Background="{DynamicResource AppBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -60,6 +90,42 @@
 
                 <!-- Right buttons -->
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
+
+                    <!-- Pause / Resume -->
+                    <Button x:Name="PauseBtn"
+                            Style="{StaticResource TopBarButtonStyle}"
+                            Margin="0,0,8,0"
+                            Click="PauseBtn_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage x:Name="PauseIcon"
+                                          Icon="Pause"
+                                          Width="14" Height="14"
+                                          Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                          Margin="0,0,8,0"/>
+                            <TextBlock x:Name="PauseText"
+                                       Text="Pause"
+                                       FontSize="14"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Archive / Restore -->
+                    <Button x:Name="ArchiveBtn"
+                            Style="{StaticResource TopBarButtonStyle}"
+                            Margin="0,0,8,0"
+                            Click="ArchiveBtn_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage x:Name="ArchiveIcon"
+                                          Icon="BoxArchive"
+                                          Width="14" Height="14"
+                                          Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                          Margin="0,0,8,0"/>
+                            <TextBlock x:Name="ArchiveText"
+                                       Text="Archive"
+                                       FontSize="14"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
 
                     <!-- Edit -->
                     <Button x:Name="EditBtn"

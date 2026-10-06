@@ -277,14 +277,14 @@
                             <!-- Status -->
                             <StackPanel Grid.Column="2">
                                 <TextBlock Text="Status" Style="{StaticResource LabelStyle}"/>
-                                <ComboBox x:Name="ProjectStatus"
-                                          Style="{DynamicResource ModernComboBox}"
-                                          SelectedIndex="0">
-                                    <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="Active"/>
-                                    <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="Paused"/>
-                                    <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="Completed"/>
-                                    <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="Archived"/>
-                                </ComboBox>
+                                <components:StatusBadge x:Name="ProjectStatusBadge"
+                                                        Status="Active"
+                                                        HorizontalAlignment="Left"
+                                                        Margin="0,6,0,0"/>
+                                <TextBlock Text="Managed from the project page"
+                                           FontSize="11"
+                                           Foreground="{DynamicResource TextMutedBrush}"
+                                           Margin="0,8,0,0"/>
                             </StackPanel>
                         </Grid>
 

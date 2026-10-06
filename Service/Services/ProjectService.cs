@@ -18,7 +18,7 @@ public class ProjectService
     public string? Description { get; set; }
     public int CategoryID { get; set; }
     public Category? Category { get; private set; }
-    public string Status { get; set; } = null!;
+    public string Status { get; private set; } = null!;
     public string Priority { get; set; } = null!;
     public DateOnly? StartDate { get; set; }
     public DateOnly? DueDate { get; set; }
@@ -295,16 +295,27 @@ public class ProjectService
     }
 
     // ─── Static: Complete Task ─────────────────────────────────────────
-    public static enProjectCompleteResult Complete(int projectId)
+    public static (enProjectCompleteResult result, int openTasks) Complete(int projectId)
     {
         try
         {
-            bool completed = ProjectRepository.CompleteProject(projectId);
-            return completed ? enProjectCompleteResult.Completed : enProjectCompleteResult.Failed;
+            var (code, openTasks) = ProjectRepository.CompleteProject(projectId);
+
+            var result = code switch
+            {
+                "COMPLETED" => enProjectCompleteResult.Completed,
+                "HAS_OPEN_TASKS" => enProjectCompleteResult.HasOpenTasks,
+                "NO_COMPLETED_TASKS" => enProjectCompleteResult.NoCompletedTasks,
+                "NOT_ACTIVE" => enProjectCompleteResult.NotActive,
+                "ALREADY_COMPLETED" => enProjectCompleteResult.AlreadyCompleted,
+                _ => enProjectCompleteResult.Failed
+            };
+
+            return (result, openTasks);
         }
         catch
         {
-            return enProjectCompleteResult.Failed;
+            return (enProjectCompleteResult.Failed, 0);
         }
     }
 
@@ -333,6 +344,43 @@ public class ProjectService
         catch
         {
             return (enProjectRetrieveResult.Failed, new List<ProjectSessionSummary>());
+        }
+    }
+
+    // ─── Static: TogglePause (Active <-> Paused) ──────────────────────────
+    public static enProjectStatusChangeResult TogglePause(int projectId)
+    {
+        try
+        {
+            return ProjectRepository.PauseProject(projectId) switch
+            {
+                "PAUSED" => enProjectStatusChangeResult.Paused,
+                "RESUMED" => enProjectStatusChangeResult.Resumed,
+                "INVALID_STATE" => enProjectStatusChangeResult.InvalidState,
+                _ => enProjectStatusChangeResult.Failed
+            };
+        }
+        catch
+        {
+            return enProjectStatusChangeResult.Failed;
+        }
+    }
+
+    // ─── Static: ToggleArchive (Archived <-> Active) ──────────────────────
+    public static enProjectStatusChangeResult ToggleArchive(int projectId)
+    {
+        try
+        {
+            return ProjectRepository.ArchiveProject(projectId) switch
+            {
+                "ARCHIVED" => enProjectStatusChangeResult.Archived,
+                "RESTORED" => enProjectStatusChangeResult.Restored,
+                _ => enProjectStatusChangeResult.Failed
+            };
+        }
+        catch
+        {
+            return enProjectStatusChangeResult.Failed;
         }
     }
 
