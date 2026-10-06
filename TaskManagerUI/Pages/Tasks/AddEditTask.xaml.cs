@@ -1,8 +1,5 @@
-﻿using Repository.Models;
-using Service.Enums.Task;
+﻿using Service.Enums.Task;
 using Service.Services;
-using System.Collections.Generic;
-using System.Linq;
 using System.Media;
 using System.Windows;
 using System.Windows.Controls;
@@ -77,11 +74,16 @@ public partial class AddEditTask : Window
             TaskDueDate.Clear();
             TaskPriority.SelectedIndex = 1; // Medium default
 
-            // AddNew mode — show project combo + status badge, hide update-only panels
+            // Estimate: editable input only while creating
+            EstimateInputPanel.Visibility = Visibility.Visible;
+            EstimateReadOnlyPanel.Visibility = Visibility.Collapsed;
+            EstimateHintText.Text = string.Empty;
+
+            // AddNew mode — project combo + status badge (always "Todo")
             ProjectPanel.Visibility = Visibility.Visible;
             StatusBadgePanel.Visibility = Visibility.Visible;
             ProjectReadOnlyPanel.Visibility = Visibility.Collapsed;
-            StatusComboPanel.Visibility = Visibility.Collapsed;
+            TaskStatusBadge.Status = "Todo";
 
             _LoadProjects();
         }
@@ -91,11 +93,10 @@ public partial class AddEditTask : Window
             FormTitle.Text = "Edit Task";
             FormSubtitle.Text = "Update the task information below.";
 
-            // Update mode — show read-only project + status combo, hide addnew-only panels
+            // Update mode — read-only project + read-only status badge
             ProjectPanel.Visibility = Visibility.Collapsed;
-            StatusBadgePanel.Visibility = Visibility.Collapsed;
+            StatusBadgePanel.Visibility = Visibility.Visible;
             ProjectReadOnlyPanel.Visibility = Visibility.Visible;
-            StatusComboPanel.Visibility = Visibility.Visible;
         }
 
         HideMessages();
@@ -139,7 +140,6 @@ public partial class AddEditTask : Window
         _taskService = service;
         TaskTitle.Text = service.Title;
         TaskDescription.Text = service.Description ?? string.Empty;
-        TaskEstimatedMinutes.Text = service.EstimatedMinutes?.ToString() ?? string.Empty;
         TaskDueDate.SelectedDate = service.DueDate;
 
         // Read-only project name
@@ -151,10 +151,57 @@ public partial class AddEditTask : Window
             if (item.Content?.ToString() == service.Priority)
             { TaskPriority.SelectedItem = item; break; }
 
-        // Status
-        foreach (ComboBoxItem item in TaskStatus.Items)
-            if (item.Content?.ToString() == service.Status)
-            { TaskStatus.SelectedItem = item; break; }
+        // Status — display only, never editable
+        TaskStatusBadge.Status = service.Status;
+
+        // Estimate — display only. Time grows only through "Add Extra Time".
+        _ShowEstimateReadOnly(service.EstimatedMinutes, service.ExtraMinutes);
+    }
+
+    // ============================
+    // ESTIMATED MINUTES
+    // ============================
+    private void TaskEstimatedMinutes_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (EstimateHintText is null) return;
+
+        // Live hint, only useful once the value reaches an hour: 90 -> "≈ 1h 30m"
+        EstimateHintText.Text =
+            int.TryParse(TaskEstimatedMinutes.Text?.Trim(), out int minutes) && minutes >= 60
+                ? $"≈ {_FormatMinutes(minutes)}"
+                : string.Empty;
+    }
+
+    private void EstimatePreset_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && int.TryParse(btn.Tag?.ToString(), out int minutes))
+            TaskEstimatedMinutes.Text = minutes.ToString();
+    }
+
+    private void _ShowEstimateReadOnly(int? estimatedMinutes, int extraMinutes)
+    {
+        EstimateInputPanel.Visibility = Visibility.Collapsed;
+        EstimateReadOnlyPanel.Visibility = Visibility.Visible;
+
+        EstimateValueText.Text = estimatedMinutes is > 0
+            ? _FormatMinutes(estimatedMinutes.Value)
+            : "—";
+
+        ExtraValueText.Text = extraMinutes > 0
+            ? $"+ {_FormatMinutes(extraMinutes)}"
+            : "None";
+
+        TotalValueText.Text = _FormatMinutes((estimatedMinutes ?? 0) + extraMinutes);
+    }
+
+    private static string _FormatMinutes(int minutes)
+    {
+        if (minutes <= 0) return "0 min";
+        if (minutes < 60) return $"{minutes} min";
+
+        int h = minutes / 60;
+        int m = minutes % 60;
+        return m == 0 ? $"{h}h" : $"{h}h {m}m";
     }
 
     // ============================
@@ -213,14 +260,17 @@ public partial class AddEditTask : Window
                                             : TaskDescription.Text.Trim();
         _taskService.Priority = (TaskPriority.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Medium";
         _taskService.DueDate = TaskDueDate.SelectedDate;
-        _taskService.EstimatedMinutes = int.TryParse(TaskEstimatedMinutes.Text, out int mins)
-                                            ? mins
-                                            : null;
 
+        // Project and estimate are only set when creating.
+        // Status is never set from the form, and in Update mode the estimate is left
+        // exactly as loaded — more time is added only through Add Extra Time.
         if (_formMode == TaskService.enMode.AddNew)
+        {
             _taskService.ProjectID = _GetSelectedProjectId();
-        else
-            _taskService.Status = (TaskStatus.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Todo";
+            _taskService.EstimatedMinutes = int.TryParse(TaskEstimatedMinutes.Text?.Trim(), out int mins)
+                                                ? mins
+                                                : null;
+        }
 
         var result = _taskService.Save();
 
@@ -237,16 +287,21 @@ public partial class AddEditTask : Window
                 FormSubtitle.Text = "Update the task information below.";
 
                 ProjectPanel.Visibility = Visibility.Collapsed;
-                StatusBadgePanel.Visibility = Visibility.Collapsed;
+                StatusBadgePanel.Visibility = Visibility.Visible;
                 ProjectReadOnlyPanel.Visibility = Visibility.Visible;
-                StatusComboPanel.Visibility = Visibility.Visible;
 
                 var (_, projectService) = ProjectService.Find(_taskService.ProjectID);
                 ProjectReadOnlyText.Text = projectService?.Title ?? string.Empty;
 
-                foreach (ComboBoxItem item in TaskStatus.Items)
-                    if (item.Content?.ToString() == _taskService.Status)
-                    { TaskStatus.SelectedItem = item; break; }
+                // Re-read the real status from the DB so the badge is never stale
+                // (e.g. the timer was started while this form was open).
+                var (foundResult, fresh) = TaskService.Find(_taskService.TaskID);
+                TaskStatusBadge.Status = foundResult == enTaskRetrieveResult.Found && fresh is not null
+                    ? fresh.Status
+                    : _taskService.Status;
+
+                // The estimate is now locked, same as when editing an existing task
+                _ShowEstimateReadOnly(_taskService.EstimatedMinutes, _taskService.ExtraMinutes);
 
                 ShowSuccessMessage("Task saved successfully.");
                 break;
@@ -317,6 +372,27 @@ public partial class AddEditTask : Window
         {
             errors.Add("• Please select a priority.");
             result.FirstInvalidControl ??= TaskPriority;
+        }
+
+        // Estimated minutes: required and greater than 0 when creating.
+        // (In Update mode the estimate is read-only, so there is nothing to validate.)
+        if (_formMode == TaskService.enMode.AddNew)
+        {
+            TaskEstimatedMinutes.ValidateForce();
+
+            if (TaskEstimatedMinutes.IsValid)
+            {
+                TaskEstimatedMinutes.Validate(live: false, externalValidator: text =>
+                    int.TryParse(text.Trim(), out int m) && m > 0
+                        ? null!
+                        : "Estimated minutes must be a whole number greater than 0.");
+            }
+
+            if (!TaskEstimatedMinutes.IsValid)
+            {
+                errors.Add($"• {TaskEstimatedMinutes.ValidationMessageText}");
+                result.FirstInvalidControl ??= TaskEstimatedMinutes;
+            }
         }
 
         if (errors.Any())

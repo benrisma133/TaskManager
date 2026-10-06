@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:inputs="clr-namespace:TaskManagerUI.Controls.Inputs"
         xmlns:components="clr-namespace:TaskManagerUI.Controls.Components"
+        xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
         Width="540" Height="700"
         WindowStartupLocation="CenterScreen"
         Background="Transparent"
@@ -12,6 +13,42 @@
         Loaded="Window_Loaded">
 
     <Window.Resources>
+
+        <Style x:Key="ChipButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+            <Setter Property="FontSize"   Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor"     Value="Hand"/>
+            <Setter Property="Margin"     Value="0,0,8,8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{DynamicResource InputBackgroundBrush}"
+                                BorderBrush="{DynamicResource BorderDefaultBrush}"
+                                BorderThickness="1"
+                                CornerRadius="14"
+                                Padding="12,5">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background"
+                                        Value="{DynamicResource AccentLightBrush}"/>
+                                <Setter TargetName="border" Property="BorderBrush"
+                                        Value="{DynamicResource AccentBrush}"/>
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource AccentBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.7"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
         <Style x:Key="MessageBox" TargetType="Border">
             <Setter Property="Padding"      Value="16,12"/>
@@ -258,7 +295,7 @@
                         <!-- ── AddNew only: Status Badge (Todo) ── -->
                         <StackPanel x:Name="StatusBadgePanel" Visibility="Visible">
                             <TextBlock Text="Status" Style="{StaticResource LabelStyle}"/>
-                            <components:StatusBadge x:Name="DefaultStatusBadge"
+                            <components:StatusBadge x:Name="TaskStatusBadge"
                                                     Status="Todo"
                                                     Margin="0,0,0,20"
                                                     HorizontalAlignment="Left"/>
@@ -273,17 +310,7 @@
                                        Margin="0,0,0,20"/>
                         </StackPanel>
 
-                        <!-- ── Update only: Status ComboBox ── -->
-                        <StackPanel x:Name="StatusComboPanel" Visibility="Collapsed">
-                            <TextBlock Text="Status" Style="{StaticResource LabelStyle}"/>
-                            <ComboBox x:Name="TaskStatus"
-                                      Style="{DynamicResource ModernComboBox}"
-                                      Margin="0,0,0,20">
-                                <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="Todo"/>
-                                <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="InProgress"/>
-                                <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="Cancelled"/>
-                            </ComboBox>
-                        </StackPanel>
+                        
 
                         <!-- Priority -->
                         <TextBlock Text="Priority" Style="{StaticResource LabelStyle}"/>
@@ -304,12 +331,119 @@
                                                       YearTo="2036"
                                                       Margin="0,0,0,20"/>
 
-                        <!-- Estimated Minutes -->
-                        <inputs:ModernInput x:Name="TaskEstimatedMinutes"
-                                            Label="Estimated Minutes"
-                                            Placeholder="e.g. 90 (optional)"
-                                            ValidationType="Numeric"
-                                            Margin="0,0,0,20"/>
+                        <!-- AddNew: required input + quick picks + live hint -->
+                        <StackPanel x:Name="EstimateInputPanel" Margin="0,0,0,20">
+
+                            <inputs:ModernInput x:Name="TaskEstimatedMinutes"
+                                                Label="Estimated Minutes"
+                                                Placeholder="e.g. 90"
+                                                IsRequired="True"
+                                                ValidationType="Numeric"
+                                                TextChanged="TaskEstimatedMinutes_TextChanged"/>
+
+                            <WrapPanel Margin="0,10,0,0">
+                                <Button Content="15 min" Tag="15"  Style="{StaticResource ChipButtonStyle}" Click="EstimatePreset_Click"/>
+                                <Button Content="25 min" Tag="25"  Style="{StaticResource ChipButtonStyle}" Click="EstimatePreset_Click"/>
+                                <Button Content="30 min" Tag="30"  Style="{StaticResource ChipButtonStyle}" Click="EstimatePreset_Click"/>
+                                <Button Content="45 min" Tag="45"  Style="{StaticResource ChipButtonStyle}" Click="EstimatePreset_Click"/>
+                                <Button Content="1h"     Tag="60"  Style="{StaticResource ChipButtonStyle}" Click="EstimatePreset_Click"/>
+                                <Button Content="1h 30m" Tag="90"  Style="{StaticResource ChipButtonStyle}" Click="EstimatePreset_Click"/>
+                                <Button Content="2h"     Tag="120" Style="{StaticResource ChipButtonStyle}" Click="EstimatePreset_Click"/>
+                            </WrapPanel>
+
+                            <TextBlock x:Name="EstimateHintText"
+                                       FontSize="12"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource AccentBrush}"
+                                       Margin="2,0,0,0"/>
+                        </StackPanel>
+
+                        <!-- Update: read-only summary (time can only grow through "Add Extra Time") -->
+                        <StackPanel x:Name="EstimateReadOnlyPanel"
+                                    Visibility="Collapsed"
+                                    Margin="0,0,0,20">
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <fa:IconImage Icon="Lock"
+                                              Width="11" Height="11"
+                                              Foreground="{DynamicResource TextMutedBrush}"
+                                              VerticalAlignment="Center"
+                                              Margin="0,0,6,0"/>
+                                <TextBlock Text="Estimated Time"
+                                           Style="{StaticResource LabelStyle}"
+                                           Margin="0"/>
+                            </StackPanel>
+
+                            <Border Background="{DynamicResource InputBackgroundBrush}"
+                                    BorderBrush="{DynamicResource BorderDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="10"
+                                    Padding="16,14">
+                                <StackPanel>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Estimate"
+                                                       FontSize="11"
+                                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                                            <TextBlock x:Name="EstimateValueText"
+                                                       FontSize="16" FontWeight="Bold"
+                                                       Foreground="{DynamicResource TextPrimaryBrush}"
+                                                       Margin="0,4,0,0"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="Extra"
+                                                       FontSize="11"
+                                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                                            <TextBlock x:Name="ExtraValueText"
+                                                       FontSize="16" FontWeight="Bold"
+                                                       Foreground="{DynamicResource TextPrimaryBrush}"
+                                                       Margin="0,4,0,0"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Text="Total"
+                                                       FontSize="11"
+                                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                                            <TextBlock x:Name="TotalValueText"
+                                                       FontSize="16" FontWeight="Bold"
+                                                       Foreground="{DynamicResource AccentBrush}"
+                                                       Margin="0,4,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <Border Height="1"
+                                            Background="{DynamicResource BorderDefaultBrush}"
+                                            Margin="0,12"/>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <fa:IconImage Grid.Column="0"
+                                                      Icon="CircleInfo"
+                                                      Width="12" Height="12"
+                                                      Foreground="{DynamicResource TextMutedBrush}"
+                                                      VerticalAlignment="Top"
+                                                      Margin="0,2,8,0"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="The estimate is locked. More time can only be added from the timer page with Add Extra Time."
+                                                   FontSize="12"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="{DynamicResource TextMutedBrush}"/>
+                                    </Grid>
+
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
 
                     </StackPanel>
                 </ScrollViewer>
