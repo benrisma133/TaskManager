@@ -63,7 +63,6 @@ public static class ProjectRepository
             cmd.Parameters.AddWithValue("@Description", (object?)project.Description ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@CategoryId", project.CategoryID);
             cmd.Parameters.AddWithValue("@Priority", project.Priority);
-            cmd.Parameters.AddWithValue("@Status", project.Status);
             cmd.Parameters.AddWithValue("@StartDate", (object?)project.StartDate?.ToDateTime(TimeOnly.MinValue) ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@DueDate", (object?)project.DueDate?.ToDateTime(TimeOnly.MinValue) ?? DBNull.Value);
 
@@ -384,7 +383,7 @@ public static class ProjectRepository
     }
 
     // ======================== [ COMPLETE PROJECT ] ========================
-    public static bool CompleteProject(int projectId)
+    public static (string Result, int OpenTasks) CompleteProject(int projectId)
     {
         try
         {
@@ -397,8 +396,12 @@ public static class ProjectRepository
             cmd.Parameters.AddWithValue("@ProjectId", projectId);
             conn.Open();
 
-            cmd.ExecuteNonQuery();
-            return true;
+            using var reader = cmd.ExecuteReader();
+            if (reader.Read())
+                return (reader.GetString(reader.GetOrdinal("Result")),
+                        reader.GetInt32(reader.GetOrdinal("OpenTasks")));
+
+            return ("UNKNOWN", 0);
         }
         catch (SqlException ex)
         {
@@ -478,6 +481,44 @@ public static class ProjectRepository
         }
 
         return list;
+    }
+
+
+    // ======================== [ PAUSE / ARCHIVE PROJECT ] ========================
+    public static string PauseProject(int projectId)
+        => ExecuteStatusProc("sp_PauseProject", projectId, nameof(PauseProject));
+
+    public static string ArchiveProject(int projectId)
+        => ExecuteStatusProc("sp_ArchiveProject", projectId, nameof(ArchiveProject));
+
+    private static string ExecuteStatusProc(string procName, int projectId, string caller)
+    {
+        try
+        {
+            using var conn = new SqlConnection(ConnectionString);
+            using var cmd = new SqlCommand(procName, conn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            cmd.Parameters.AddWithValue("@ProjectId", projectId);
+            conn.Open();
+
+            using var reader = cmd.ExecuteReader();
+            return reader.Read()
+                ? reader.GetString(reader.GetOrdinal("Result"))
+                : "UNKNOWN";
+        }
+        catch (SqlException ex)
+        {
+            clsLog.LogError(nameof(ProjectRepository), caller, ex);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            clsLog.LogError(nameof(ProjectRepository), caller, ex);
+            throw;
+        }
     }
 
 

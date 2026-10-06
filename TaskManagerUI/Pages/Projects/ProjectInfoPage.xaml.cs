@@ -18,6 +18,8 @@ public partial class ProjectInfoPage : UserControl
 
     public event EventHandler? BackRequested;
 
+    private int _openTaskCount = 0;
+
     // ============================
     // CONSTRUCTOR
     // ============================
@@ -90,9 +92,8 @@ public partial class ProjectInfoPage : UserControl
             DescriptionPanel.Visibility = Visibility.Visible;
         }
 
-        // Hide done button if already completed
-        if (service.Status == "Completed")
-            DoneBtn.Visibility = Visibility.Collapsed;
+        PriorityBadgeControl.Status = service.Priority;
+        _ApplyStatusButtons(service.Status);
     }
 
     // ============================
@@ -105,6 +106,7 @@ public partial class ProjectInfoPage : UserControl
         int total = tasks.Count;
         int completed = tasks.Count(t => t.IsCompleted);
         int inProgress = tasks.Count(t => t.Status == "InProgress");
+        _openTaskCount = tasks.Count(t => t.Status is "Todo" or "InProgress");
 
         TotalTasksText.Text = total.ToString();
         CompletedTasksText.Text = completed.ToString();
@@ -453,7 +455,27 @@ public partial class ProjectInfoPage : UserControl
         catch { }
     }
 
-    
+    // ============================
+    // STATUS BUTTONS
+    // ============================
+    private void _ApplyStatusButtons(string status)
+    {
+        // Mark as Done: only an Active project can be completed
+        DoneBtn.Visibility = status == "Active" ? Visibility.Visible : Visibility.Collapsed;
+
+        // Pause / Resume: only Active <-> Paused
+        PauseBtn.Visibility = status is "Active" or "Paused" ? Visibility.Visible : Visibility.Collapsed;
+        bool paused = status == "Paused";
+        PauseText.Text = paused ? "Resume" : "Pause";
+        PauseIcon.Icon = paused ? FontAwesome.Sharp.IconChar.Play : FontAwesome.Sharp.IconChar.Pause;
+
+        // Archive / Restore: always available
+        bool archived = status == "Archived";
+        ArchiveText.Text = archived ? "Restore" : "Archive";
+        ArchiveIcon.Icon = archived ? FontAwesome.Sharp.IconChar.BoxOpen : FontAwesome.Sharp.IconChar.BoxArchive;
+    }
+
+
 
     // ============================
     // BUTTON HANDLERS
@@ -473,9 +495,69 @@ public partial class ProjectInfoPage : UserControl
             _Load();
     }
 
+    private void PauseBtn_Click(object sender, RoutedEventArgs e)
+    {
+        if (_projectService is null) return;
+
+        var result = ProjectService.TogglePause(_projectId);
+
+        switch (result)
+        {
+            case enProjectStatusChangeResult.Paused:
+            case enProjectStatusChangeResult.Resumed:
+                _Load();
+                break;
+
+            case enProjectStatusChangeResult.InvalidState:
+                MessageBox.Show("Only an active or paused project can be paused or resumed.",
+                    "Not Allowed", MessageBoxButton.OK, MessageBoxImage.Information);
+                _Load();
+                break;
+
+            default:
+                MessageBox.Show("Failed to change the project status. Please try again.",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                break;
+        }
+    }
+
+    private void ArchiveBtn_Click(object sender, RoutedEventArgs e)
+    {
+        if (_projectService is null) return;
+
+        // Confirm only when archiving; restoring needs no question
+        if (_projectService.Status != "Archived")
+        {
+            var confirm = MessageBox.Show(
+                $"Archive \"{_projectService.Title}\"? You can restore it later.",
+                "Archive Project", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (confirm != MessageBoxResult.Yes) return;
+        }
+
+        var result = ProjectService.ToggleArchive(_projectId);
+
+        if (result is enProjectStatusChangeResult.Archived or enProjectStatusChangeResult.Restored)
+            _Load();
+        else
+            MessageBox.Show("Failed to change the project status. Please try again.",
+                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+    }
+
+    // ============================
+    // MARK AS DONE  (REPLACE the whole existing DoneBtn_Click)
+    // ============================
     private void DoneBtn_Click(object sender, RoutedEventArgs e)
     {
         if (_projectService is null) return;
+
+        // Quick check with the tasks already on screen, so we never ask
+        // "are you sure?" and then refuse.
+        if (_openTaskCount > 0)
+        {
+            _ShowOpenTasksMessage(_openTaskCount);
+            return;
+        }
 
         var confirm = MessageBox.Show(
             $"Mark \"{_projectService.Title}\" as completed?",
@@ -483,17 +565,51 @@ public partial class ProjectInfoPage : UserControl
 
         if (confirm != MessageBoxResult.Yes) return;
 
-        var result = ProjectService.Complete(_projectId);
+        // The stored procedure checks everything again, so this stays safe
+        // even if tasks changed since the page loaded.
+        var (result, openTasks) = ProjectService.Complete(_projectId);
 
-        if (result == Service.Enums.Project.enProjectCompleteResult.Completed)
+        switch (result)
         {
-            DoneBtn.Visibility = Visibility.Collapsed;
-            _Load();
+            case enProjectCompleteResult.Completed:
+            case enProjectCompleteResult.AlreadyCompleted:
+                _Load();
+                break;
+
+            case enProjectCompleteResult.HasOpenTasks:
+                _ShowOpenTasksMessage(openTasks);
+                _Load();
+                break;
+
+            case enProjectCompleteResult.NoCompletedTasks:
+                MessageBox.Show(
+                    "This project has no completed tasks yet.\n\n" +
+                    "Finish at least one task before marking the project as done.",
+                    "Nothing to complete", MessageBoxButton.OK, MessageBoxImage.Information);
+                break;
+
+            case enProjectCompleteResult.NotActive:
+                MessageBox.Show(
+                    "Only an active project can be marked as done.\n\nResume it first.",
+                    "Not Allowed", MessageBoxButton.OK, MessageBoxImage.Information);
+                _Load();
+                break;
+
+            default:
+                MessageBox.Show("Failed to complete project.",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                break;
         }
-        else
-        {
-            MessageBox.Show("Failed to complete project.",
-                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+    }
+
+    private void _ShowOpenTasksMessage(int openTasks)
+    {
+        string verb = openTasks == 1 ? "task is" : "tasks are";
+
+        MessageBox.Show(
+            $"\"{_projectService?.Title}\" can't be marked as done yet.\n\n" +
+            $"{openTasks} {verb} still Todo or In Progress.\n\n" +
+            "Finish them first, then mark the project as done.",
+            "Tasks not finished", MessageBoxButton.OK, MessageBoxImage.Warning);
     }
 }
