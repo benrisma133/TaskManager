@@ -37,6 +37,7 @@ namespace TaskManagerUI
         private TasksPage _taskPage;
         private ProjectsPage _projectPage;
         private DashboardPage _dashboardPage;
+        private ProjectsPage _archivePage;
 
         private DispatcherTimer _sessionTimer = new();
         private TimeSpan _sessionElapsed = TimeSpan.Zero;
@@ -83,7 +84,8 @@ namespace TaskManagerUI
 
             _categoryPage = new CategoriesPage();
             _taskPage = new TasksPage();
-            _projectPage = new ProjectsPage();
+            _projectPage = new ProjectsPage(ProjectsViewMode.Active);
+            _archivePage = new ProjectsPage(ProjectsViewMode.Archived);
             _dashboardPage = new DashboardPage(this);
 
 
@@ -166,18 +168,40 @@ namespace TaskManagerUI
         // ============================
         // NAVIGATE TO PROJECT INFO
         // ============================
+        //public void NavigateToProjectInfo(int projectId)
+        //{
+        //    var page = new ProjectInfoPage(projectId, this);
+
+        //    page.BackRequested += (s, e) =>
+        //    {
+        //        SetActiveMenu(BtnProjects);
+        //        PageTitle.Text = "Projects";
+        //        PageContent.Content = _projectPage;
+        //    };
+
+        //    SetActiveMenu(BtnProjects);
+        //    PageTitle.Text = "Project Details";
+        //    PageContent.Content = page;
+        //}
+
         public void NavigateToProjectInfo(int projectId)
         {
+            // remember where the user came from
+            var origin = PageContent.Content;
+            var originButton = _activeButton;
+            var originTitle = PageTitle.Text;
+
             var page = new ProjectInfoPage(projectId, this);
 
             page.BackRequested += (s, e) =>
             {
-                SetActiveMenu(BtnProjects);
-                PageTitle.Text = "Projects";
-                PageContent.Content = _projectPage;
+                if (originButton is not null)
+                    SetActiveMenu(originButton);
+
+                PageTitle.Text = originTitle;
+                PageContent.Content = origin;   // the page reloads itself in its Loaded event
             };
 
-            SetActiveMenu(BtnProjects);
             PageTitle.Text = "Project Details";
             PageContent.Content = page;
         }
@@ -204,6 +228,7 @@ namespace TaskManagerUI
                 { BtnProjects,   PopupProjects   },
                 { BtnTasks,      PopupTasks      },
                 { BtnCategories, PopupCategories },
+                { BtnArchives,   PopupArchives   },
                 { BtnSettings,   PopupSettings   }
             };
         }
@@ -295,6 +320,7 @@ namespace TaskManagerUI
             CategoriesText.Visibility = vis;
             SettingsText.Visibility = vis;
             ProfileStack.Visibility = vis;
+            ArchivesText.Visibility = vis;
         }
 
         private void SetPageRenderingMode(bool animating)
@@ -339,7 +365,7 @@ namespace TaskManagerUI
         // ── Navigation ────────────────────────────────────────────────
         private async void BtnHome_Click(object sender, RoutedEventArgs e)
         {
-            if (BtnHome.Tag?.ToString() == "Active") return;
+            if (ReferenceEquals(PageContent.Content, _dashboardPage)) return;
             PlaySuccessSound("tap.wav");
             SetActiveMenu(BtnHome);
             PageTitle.Text = "Dashboard";
@@ -351,7 +377,7 @@ namespace TaskManagerUI
 
         private void BtnProjects_Click(object sender, RoutedEventArgs e)
         {
-            if (BtnProjects.Tag?.ToString() == "Active") return;
+            if (ReferenceEquals(PageContent.Content, _projectPage)) return;
             PlaySuccessSound("tap.wav");
             SetActiveMenu(BtnProjects);
             PageTitle.Text = "Projects";
@@ -360,7 +386,7 @@ namespace TaskManagerUI
 
         private void BtnTasks_Click(object sender, RoutedEventArgs e)
         {
-            if (BtnTasks.Tag?.ToString() == "Active") return;
+            if (ReferenceEquals(PageContent.Content, _taskPage)) return;
             PlaySuccessSound("tap.wav");
             SetActiveMenu(BtnTasks);
             PageTitle.Text = "Tasks";
@@ -385,11 +411,20 @@ namespace TaskManagerUI
 
         private void BtnCategories_Click(object sender, RoutedEventArgs e)
         {
-            if (BtnCategories.Tag?.ToString() == "Active") return;
+            if (ReferenceEquals(PageContent.Content, _categoryPage)) return;
             PlaySuccessSound("tap.wav");
             SetActiveMenu(BtnCategories);
             PageTitle.Text = "Categories";
             PageContent.Content = _categoryPage;
+        }
+
+        private void BtnArchives_Click(object sender, RoutedEventArgs e)
+        {
+            if (ReferenceEquals(PageContent.Content, _archivePage)) return;
+            PlaySuccessSound("tap.wav");
+            SetActiveMenu(BtnArchives);
+            PageTitle.Text = "Archives";
+            PageContent.Content = _archivePage;
         }
 
         //private bool _isDark;
