@@ -176,7 +176,8 @@ public static class ProjectRepository
         string? search = null,
         string? priority = null,
         string? status = null,
-        int? categoryId = null)
+        int? categoryId = null,
+        string? excludeStatus = null)
     {
         var list = new List<ProjectDetails>();
         int totalCount = 0;
@@ -195,6 +196,7 @@ public static class ProjectRepository
             cmd.Parameters.AddWithValue("@Priority", (object?)priority ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@Status", (object?)status ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@CategoryId", (object?)categoryId ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@ExcludeStatus", (object?)excludeStatus ?? DBNull.Value);
 
             conn.Open();
 
