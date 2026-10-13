@@ -11,11 +11,22 @@ using TaskManagerUI.Controls.Cards;
 
 namespace TaskManagerUI.Pages.Projects;
 
+/// <summary>
+/// Active   = every project except archived ones (the Projects page)
+/// Archived = only archived projects (the Archives page)
+/// </summary>
+public enum ProjectsViewMode
+{
+    Active,
+    Archived
+}
+
 public partial class ProjectsPage : UserControl
 {
     // ============================
     // FIELDS
     // ============================
+    private readonly ProjectsViewMode _mode;
     private List<ProjectDetails> _allProjects = new();
     private List<Category> _allCategories = new();
     private bool _isInitialized = false;
@@ -26,22 +37,50 @@ public partial class ProjectsPage : UserControl
     private MainWindow? _mainWindow;
 
     // ============================
-    // CONSTRUCTOR
+    // CONSTRUCTORS
     // ============================
-    public ProjectsPage()
+    public ProjectsPage() : this(ProjectsViewMode.Active) { }
+
+    public ProjectsPage(ProjectsViewMode mode)
     {
         InitializeComponent();
+        _mode = mode;
+        _ApplyMode();
         _LoadCategories();
+    }
+
+    // ============================
+    // VIEW MODE
+    // ============================
+    private void _ApplyMode()
+    {
+        bool archived = _mode == ProjectsViewMode.Archived;
+
+        // Nothing is created from the Archives page, and every project there
+        // has the same status, so the status filter makes no sense either.
+        AddBtn.Visibility = archived ? Visibility.Collapsed : Visibility.Visible;
+        StatusFilterPanel.Visibility = archived ? Visibility.Collapsed : Visibility.Visible;
+
+        SearchPlaceholder.Text = archived ? "Search archived projects..." : "Search projects...";
+        FilterTitleText.Text = "Filter Projects";
+
+        EmptyIconText.Text = archived ? "📦" : "📁";
+        EmptyTitleText.Text = archived ? "No archived projects" : "No projects found";
+        EmptySubtitleText.Text = archived
+            ? "Projects you archive will appear here"
+            : "Add your first project to get started";
     }
 
     // ============================
     // PAGE LOADED
     // ============================
+    // Loaded fires every time the page is shown again (MainWindow caches the page),
+    // so the list is refreshed after archiving / restoring a project.
     private async void ProjectsPage_Loaded(object sender, RoutedEventArgs e)
     {
+        _mainWindow = Window.GetWindow(this) as MainWindow;
         _isInitialized = true;
         await LoadProjects();
-        _mainWindow = Window.GetWindow(this) as MainWindow;
     }
 
     // ============================
@@ -106,24 +145,46 @@ public partial class ProjectsPage : UserControl
 
         var search = string.IsNullOrWhiteSpace(SearchBox.Text) ? null : SearchBox.Text.Trim();
         var priority = (PriorityFilterCombo.SelectedItem as ComboBoxItem)?.Content?.ToString();
-        var status = (StatusFilterCombo.SelectedItem as ComboBoxItem)?.Content?.ToString();
         int? categoryId = _GetSelectedCategoryId();
 
         // pass null for "All" — SP treats NULL as no filter
         if (priority == "All") priority = null;
-        if (status == "All") status = null;
+
+        string? status;
+        string? excludeStatus;
+
+        if (_mode == ProjectsViewMode.Archived)
+        {
+            status = "Archived";        // only archived projects
+            excludeStatus = null;
+        }
+        else
+        {
+            status = (StatusFilterCombo.SelectedItem as ComboBoxItem)?.Content?.ToString();
+            if (status == "All") status = null;
+            excludeStatus = "Archived"; // archived projects live in the Archives page
+        }
 
         // ═══ Delay to see shimmer animation ═══════════════════════════
         //await Task.Delay(1000); // 5 seconds
 
         var (result, projects, totalCount) = await Task.Run(()
-            => ProjectService.GetAll(_currentPage, PageSize, search, priority, status, categoryId));
+            => ProjectService.GetAll(_currentPage, PageSize, search, priority, status, categoryId, excludeStatus));
 
         if (result == enProjectRetrieveResult.Failed)
         {
             HideSkeleton();
             MessageBox.Show("Failed to load projects. Please try again.",
                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
+
+        // The list may have shrunk while we were away (archive / restore):
+        // if we are past the last page, step back to it instead of showing "empty".
+        if (projects.Count == 0 && totalCount > 0 && _currentPage > 1)
+        {
+            _currentPage = (int)Math.Ceiling((double)totalCount / PageSize);
+            await LoadProjects();
             return;
         }
 
@@ -136,7 +197,7 @@ public partial class ProjectsPage : UserControl
     }
 
     // ============================
-    // SEARCH BUTTON CLICK (NEW - replaces TextChanged)
+    // SEARCH BUTTON CLICK (replaces TextChanged)
     // ============================
     private void SearchBtn_Click(object sender, RoutedEventArgs e)
     {
