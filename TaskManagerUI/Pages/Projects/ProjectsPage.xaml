@@ -257,7 +257,8 @@
                                                   Height="14"
                                                   Foreground="{DynamicResource TextPrimaryBrush}"
                                                   Margin="0,0,8,0"/>
-                                    <TextBlock Text="Filter Tasks"
+                                    <TextBlock x:Name="FilterTitleText"
+                                               Text="Filter Projects"
                                                FontSize="15"
                                                FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextPrimaryBrush}"
@@ -337,7 +338,7 @@
                             </StackPanel>
 
                             <!-- ── Status Filter ── -->
-                            <StackPanel Margin="0,0,0,14">
+                            <StackPanel x:Name="StatusFilterPanel" Margin="0,0,0,14">
                                 <StackPanel Orientation="Horizontal"
                                             Margin="0,0,0,8">
                                     <fa:IconImage Icon="CircleHalfStroke"
@@ -357,10 +358,9 @@
                                           Style="{DynamicResource ModernComboBox}"
                                           SelectionChanged="StatusFilterCombo_SelectionChanged">
                                     <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="All"/>
-                                    <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="Todo"/>
-                                    <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="InProgress"/>
-                                    <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="Done"/>
-                                    <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="Cancelled"/>
+                                    <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="Active"/>
+                                    <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="Paused"/>
+                                    <ComboBoxItem Style="{StaticResource ModernComboBoxItem}" Content="Completed"/>
                                 </ComboBox>
                             </StackPanel>
 
@@ -716,16 +716,19 @@
                             HorizontalAlignment="Center"
                             Margin="0,80"
                             Visibility="Collapsed">
-                    <TextBlock Text="✅"
+                    <TextBlock x:Name="EmptyIconText"
+                               Text="📁"
                                FontSize="48"
                                HorizontalAlignment="Center"
                                Margin="0,0,0,16"/>
-                    <TextBlock Text="No tasks found"
+                    <TextBlock x:Name="EmptyTitleText"
+                               Text="No projects found"
                                FontSize="18"
                                FontWeight="SemiBold"
                                Foreground="{DynamicResource TextSecondaryBrush}"
                                HorizontalAlignment="Center"/>
-                    <TextBlock Text="Add your first task to get started"
+                    <TextBlock x:Name="EmptySubtitleText"
+                               Text="Add your first project to get started"
                                FontSize="14"
                                Foreground="{DynamicResource TextMutedBrush}"
                                HorizontalAlignment="Center"
@@ -740,6 +743,7 @@
                              Visibility="Collapsed"/>
 
             </Grid>
+            
         </ScrollViewer>
 
         <!-- ═══════════ FOOTER ═══════════ -->

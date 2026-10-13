@@ -211,12 +211,13 @@ public class ProjectService
         string? search = null,
         string? priority = null,
         string? status = null,
-        int? categoryId = null)
+        int? categoryId = null,
+        string? excludeStatus = null)
     {
         try
         {
             var (projects, totalCount) = ProjectRepository.GetAllProjects(
-                pageNumber, pageSize, search, priority, status, categoryId);
+                pageNumber, pageSize, search, priority, status, categoryId ,excludeStatus);
 
             return (enProjectRetrieveResult.Found, projects, totalCount);
         }

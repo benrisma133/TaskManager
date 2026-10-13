@@ -566,6 +566,46 @@
                                     </Popup>
                                 </Grid>
 
+                                <!-- ═══ ACHIVES ═══ -->
+                                <Grid>
+                                    <Button x:Name="BtnArchives"
+                                            Style="{DynamicResource MenuButton}"
+                                            Click="BtnArchives_Click"
+                                            MouseEnter="MenuBtn_MouseEnter"
+                                            MouseLeave="MenuBtn_MouseLeave"
+                                            Tag="Archives">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="24"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Viewbox Width="18" Height="18" HorizontalAlignment="Center">
+                                                <Path Data="{StaticResource IconArchive}"
+                                                      Fill="{Binding Foreground,
+                                                             RelativeSource={RelativeSource AncestorType=Button}}"
+                                                      Stretch="Uniform"/>
+                                            </Viewbox>
+                                            <TextBlock x:Name="ArchivesText"
+                                                       Grid.Column="1"
+                                                       Text="Archives"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="14"
+                                                       Margin="10,0,0,0"/>
+                                        </Grid>
+                                    </Button>
+
+                                    <Popup x:Name="PopupArchives"
+                                           PlacementTarget="{Binding ElementName=BtnArchives}"
+                                           Placement="Right"
+                                           AllowsTransparency="True"
+                                           IsHitTestVisible="False"
+                                           PopupAnimation="None"
+                                           StaysOpen="True"
+                                           VerticalOffset="8">
+                                        <controls:SidebarToolTip Title="Archives"/>
+                                    </Popup>
+                                </Grid>
+
                                 <!-- Divider -->
                                 <Border Height="1"
                                     Background="{DynamicResource BorderDefaultBrush}"
