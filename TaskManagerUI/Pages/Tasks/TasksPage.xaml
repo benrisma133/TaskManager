@@ -412,16 +412,43 @@
 
                 <!-- Empty State -->
                 <StackPanel x:Name="EmptyState"
-                            VerticalAlignment="Center" HorizontalAlignment="Center"
-                            Margin="0,80" Visibility="Collapsed">
-                    <TextBlock Text="✅" FontSize="48"
-                               HorizontalAlignment="Center" Margin="0,0,0,16"/>
-                    <TextBlock Text="No tasks found" FontSize="18" FontWeight="SemiBold"
+                            VerticalAlignment="Center" 
+                            HorizontalAlignment="Center"
+                            Margin="0,80" 
+                            Visibility="Collapsed">
+
+                    <!-- Border بحجم موحد 94x94 وأيقونة Vector خاصة بالمهام -->
+                    <Border Width="94" Height="94"
+                            Background="{DynamicResource SurfaceCardBrush}"
+                            BorderBrush="{DynamicResource BorderDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="16"
+                            HorizontalAlignment="Center"
+                            Margin="0,0,0,16">
+                        <Viewbox Width="44" Height="44" 
+                                 HorizontalAlignment="Center" 
+                                 VerticalAlignment="Center">
+                            <Path Data="{StaticResource IconTasks}"
+                                  Stroke="{DynamicResource TextMutedBrush}"
+                                  StrokeThickness="1.8"
+                                  StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round"
+                                  Fill="Transparent"
+                                  Stretch="Uniform"/>
+                        </Viewbox>
+                    </Border>
+
+                    <TextBlock Text="No tasks found" 
+                               FontSize="18" 
+                               FontWeight="SemiBold"
                                Foreground="{DynamicResource TextSecondaryBrush}"
                                HorizontalAlignment="Center"/>
-                    <TextBlock Text="Add your first task to get started" FontSize="14"
+
+                    <TextBlock Text="Add your first task to get started" 
+                               FontSize="14"
                                Foreground="{DynamicResource TextMutedBrush}"
-                               HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                               HorizontalAlignment="Center" 
+                               Margin="0,8,0,0"/>
                 </StackPanel>
 
                 <!-- Cards Panel -->
