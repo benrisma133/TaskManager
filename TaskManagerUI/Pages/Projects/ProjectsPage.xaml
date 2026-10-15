@@ -712,42 +712,42 @@
 
                 <!-- Empty State -->
                 <StackPanel x:Name="EmptyState"
-            VerticalAlignment="Center"
-            HorizontalAlignment="Center"
-            Margin="0,80"
-            Visibility="Collapsed">
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Margin="0,80"
+                            Visibility="Collapsed">
 
                     <!-- Border بحجم موحد 94x94 ومسار SVG يدعم التبديل Dynamic -->
                     <Border Width="94" Height="94"
-            Background="{DynamicResource SurfaceCardBrush}"
-            BorderBrush="{DynamicResource BorderDefaultBrush}"
-            BorderThickness="1"
-            CornerRadius="16"
-            HorizontalAlignment="Center"
-            Margin="0,0,0,16">
+                            Background="{DynamicResource SurfaceCardBrush}"
+                            BorderBrush="{DynamicResource BorderDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="16"
+                            HorizontalAlignment="Center"
+                            Margin="0,0,0,16">
                         <Viewbox Width="44" Height="44" 
-                 HorizontalAlignment="Center" 
-                 VerticalAlignment="Center">
+                                 HorizontalAlignment="Center" 
+                                 VerticalAlignment="Center">
                             <Path x:Name="EmptyStateIconPath"
-                  Data="{StaticResource IconFolder}"
-                  Fill="{DynamicResource TextMutedBrush}"
-                  Stretch="Uniform"/>
+                                  Data="{StaticResource IconFolder}"
+                                  Fill="{DynamicResource TextMutedBrush}"
+                                  Stretch="Uniform"/>
                         </Viewbox>
                     </Border>
 
                     <TextBlock x:Name="EmptyTitleText"
-               Text="No projects found"
-               FontSize="18"
-               FontWeight="SemiBold"
-               Foreground="{DynamicResource TextSecondaryBrush}"
-               HorizontalAlignment="Center"/>
+                               Text="No projects found"
+                               FontSize="18"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextSecondaryBrush}"
+                               HorizontalAlignment="Center"/>
 
                     <TextBlock x:Name="EmptySubtitleText"
-               Text="Add your first project to get started"
-               FontSize="14"
-               Foreground="{DynamicResource TextMutedBrush}"
-               HorizontalAlignment="Center"
-               Margin="0,8,0,0"/>
+                               Text="Add your first project to get started"
+                               FontSize="14"
+                               Foreground="{DynamicResource TextMutedBrush}"
+                               HorizontalAlignment="Center"
+                               Margin="0,8,0,0"/>
                 </StackPanel>
 
                 <!-- Cards Panel -->
