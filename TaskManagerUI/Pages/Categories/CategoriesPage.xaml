@@ -196,15 +196,30 @@
                             HorizontalAlignment="Center"
                             Margin="0,80"
                             Visibility="Collapsed">
-                    <TextBlock Text="🗂️"
-                               FontSize="48"
-                               HorizontalAlignment="Center"
-                               Margin="0,0,0,16"/>
+
+                    <!-- الأيقونة الموحدة مطابقة للـ Menu باستخدام IconCategories -->
+                    <Border Width="94" Height="94"
+                            Background="{DynamicResource SurfaceCardBrush}"
+                            BorderBrush="{DynamicResource BorderDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="16"
+                            HorizontalAlignment="Center"
+                            Margin="0,0,0,16">
+                        <Viewbox Width="44" Height="44" 
+                                 HorizontalAlignment="Center" 
+                                 VerticalAlignment="Center">
+                            <Path Data="{StaticResource IconCategories}"
+                                  Fill="{DynamicResource TextMutedBrush}"
+                                  Stretch="Uniform"/>
+                        </Viewbox>
+                    </Border>
+
                     <TextBlock Text="No categories found"
                                FontSize="18"
                                FontWeight="SemiBold"
                                Foreground="{DynamicResource TextSecondaryBrush}"
                                HorizontalAlignment="Center"/>
+
                     <TextBlock Text="Add your first category to get started"
                                FontSize="14"
                                Foreground="{DynamicResource TextMutedBrush}"
