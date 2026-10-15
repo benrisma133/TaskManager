@@ -56,19 +56,33 @@ public partial class ProjectsPage : UserControl
     {
         bool archived = _mode == ProjectsViewMode.Archived;
 
-        // Nothing is created from the Archives page, and every project there
-        // has the same status, so the status filter makes no sense either.
+        // Control visibility of actions & filters
         AddBtn.Visibility = archived ? Visibility.Collapsed : Visibility.Visible;
         StatusFilterPanel.Visibility = archived ? Visibility.Collapsed : Visibility.Visible;
 
         SearchPlaceholder.Text = archived ? "Search archived projects..." : "Search projects...";
         FilterTitleText.Text = "Filter Projects";
 
-        EmptyIconText.Text = archived ? "📦" : "📁";
+        // Set the appropriate vector SVG icon based on mode
+        _SetEmptyStateIcon(archived);
+
         EmptyTitleText.Text = archived ? "No archived projects" : "No projects found";
         EmptySubtitleText.Text = archived
             ? "Projects you archive will appear here"
             : "Add your first project to get started";
+    }
+
+    /// <summary>
+    /// Updates the Empty State vector path based on whether the page is in Active or Archived mode.
+    /// </summary>
+    private void _SetEmptyStateIcon(bool isArchived)
+    {
+        string resourceKey = isArchived ? "IconArchive" : "IconFolder";
+
+        if (TryFindResource(resourceKey) is Geometry iconGeometry)
+        {
+            EmptyStateIconPath.Data = iconGeometry;
+        }
     }
 
     // ============================
