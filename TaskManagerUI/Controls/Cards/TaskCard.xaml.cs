@@ -22,7 +22,7 @@ namespace TaskManagerUI.Controls.Cards
         {
             // Row 0 — Title + Subtitle
             TitleText.Text = task.Title;
-            if(task.Project != null)
+            if (task.Project != null)
                 SubtitleText.Text = task.Project.Title;
 
             ApplyCategoryColor(task.Project!.Category!.Color);
@@ -33,8 +33,6 @@ namespace TaskManagerUI.Controls.Cards
             DueDateText.Text = task.DueDate.HasValue
                                           ? task.DueDate.Value.ToString("MMM dd")
                                           : "No date";
-
-            
 
             // Row 4 — Estimated + DaysLeft
             EstimatedTimeText.Text = task.EstimatedText;
@@ -50,14 +48,19 @@ namespace TaskManagerUI.Controls.Cards
                 ExtraTimePanel.Visibility = System.Windows.Visibility.Collapsed;
             }
 
-
-            DaysLeftText.Text = task.DaysLeftText;
-
-            // Row 4 — DaysLeft color
-            if (task.IsOverdue)
-                DaysLeftText.Foreground = (Brush)FindResource("ErrorBrush");
+            // ── منطق عرض الوقت الديناميكي للمهمة (UX Logic) ──
+            if (task.IsCompleted)
+            {
+                DaysLeftTextBlock.Text = "Completed";
+                DaysLeftTextBlock.Foreground = (Brush)FindResource("TextSecondaryBrush");
+            }
             else
-                DaysLeftText.Foreground = (Brush)FindResource("TextSecondaryBrush");
+            {
+                DaysLeftTextBlock.Text = task.DaysLeftText;
+                DaysLeftTextBlock.Foreground = task.IsOverdue
+                    ? (Brush)FindResource("ErrorBrush")
+                    : (Brush)FindResource("TextSecondaryBrush");
+            }
 
             // Row 6 — Buttons
             StartTaskBtn.Click += (s, e) => { };
@@ -95,14 +98,19 @@ namespace TaskManagerUI.Controls.Cards
                 ExtraTimePanel.Visibility = System.Windows.Visibility.Collapsed;
             }
 
-
-
-            DaysLeftText.Text = task.DaysLeftText;
-
-            // Row 4 — DaysLeft color
-            DaysLeftText.Foreground = task.IsOverdue
-                ? (Brush)FindResource("ErrorBrush")
-                : (Brush)FindResource("TextSecondaryBrush");
+            // ── منطق عرض الوقت الديناميكي للمهمة (UX Logic) ──
+            if (task.IsCompleted)
+            {
+                DaysLeftTextBlock.Text = "Completed";
+                DaysLeftTextBlock.Foreground = (Brush)FindResource("TextSecondaryBrush");
+            }
+            else
+            {
+                DaysLeftTextBlock.Text = task.DaysLeftText;
+                DaysLeftTextBlock.Foreground = task.IsOverdue
+                    ? (Brush)FindResource("ErrorBrush")
+                    : (Brush)FindResource("TextSecondaryBrush");
+            }
 
             // Row 6 — Buttons
             StartTaskBtn.Click += (s, e) => { };

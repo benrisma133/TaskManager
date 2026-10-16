@@ -60,7 +60,20 @@ namespace TaskManagerUI.Controls.Cards
             DueDateText.Text = project.DueDate.HasValue
                                    ? project.DueDate.Value.ToString("MMM dd")
                                    : "No date";
-            DaysLeftText.Text = project.DaysLeftText;
+
+            // ── منطق عرض الوقت الديناميكي حسب حالة المشروع (UX Logic) ──
+            if (project.Status == "Completed" || project.Status == "Archived")
+            {
+                DaysLeftText.Text = project.Status == "Completed" ? "Completed" : "Archived";
+                DaysLeftText.Foreground = (Brush)FindResource("TextSecondaryBrush");
+            }
+            else
+            {
+                DaysLeftText.Text = project.DaysLeftText;
+                DaysLeftText.Foreground = project.IsOverdue
+                    ? (Brush)FindResource("ErrorBrush")
+                    : (Brush)FindResource("TextSecondaryBrush");
+            }
 
             // Row 4 — Progress
             // Progress is based on completed tasks — pass 0 for now until tasks are loaded
@@ -86,7 +99,20 @@ namespace TaskManagerUI.Controls.Cards
             DueDateText.Text = project.DueDate.HasValue
                                    ? project.DueDate.Value.ToString("MMM dd")
                                    : "No date";
-            DaysLeftText.Text = project.DaysLeftText;
+
+            // ── منطق عرض الوقت الديناميكي حسب حالة المشروع (UX Logic) ──
+            if (project.Status == "Completed" || project.Status == "Archived")
+            {
+                DaysLeftText.Text = project.Status == "Completed" ? "Completed" : "Archived";
+                DaysLeftText.Foreground = (Brush)FindResource("TextSecondaryBrush"); // لون هادئ وغير تحذيري
+            }
+            else
+            {
+                DaysLeftText.Text = project.DaysLeftText;
+                DaysLeftText.Foreground = project.IsOverdue
+                    ? (Brush)FindResource("ErrorBrush")
+                    : (Brush)FindResource("TextSecondaryBrush");
+            }
 
             // ── Row 4 : Progress ───────────────────────────────────────────
             UpdateProgress(project.ProgressPercentage);
