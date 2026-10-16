@@ -2,6 +2,7 @@
 using Repository.Repositories;
 using Service.Enums.Project;
 using Service.Enums.Task;
+using Service.Utils;
 
 namespace Service.Services;
 
@@ -39,23 +40,13 @@ public class TaskService
         }
         : "No estimate";
 
+    public int DaysLeft => DateHelper.GetDaysLeft(DueDate);
+
     public bool IsOverdue => DueDate.HasValue
         && DateOnly.FromDateTime(DateTime.Today) > DueDate.Value
         && !IsCompleted;
 
-    public int DaysLeft => DueDate.HasValue
-        ? DueDate.Value.DayNumber - DateOnly.FromDateTime(DateTime.Today).DayNumber
-        : 0;
-
-    public string DaysLeftText => DueDate.HasValue
-        ? DaysLeft switch
-        {
-            < 0 => $"{Math.Abs(DaysLeft)}d overdue",
-            0 => "Due today",
-            1 => "Due tomorrow",
-            _ => $"{DaysLeft}d left"
-        }
-        : "No due date";
+    public string DaysLeftText => DateHelper.GetRelativeTimeText(DueDate);
 
     public int TotalEstimatedMinutes => (EstimatedMinutes ?? 0) + ExtraMinutes;
 

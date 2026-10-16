@@ -45,6 +45,9 @@ public partial class ProjectInfoPage : UserControl
     // ============================
     // LOAD PROJECT
     // ============================
+    // ============================
+    // LOAD PROJECT
+    // ============================
     private void _LoadProject()
     {
         var (result, service) = ProjectService.Find(_projectId);
@@ -72,11 +75,26 @@ public partial class ProjectInfoPage : UserControl
         StatusBadgeControl.Status = service.Status;
         PriorityBadgeControl.Status = service.Priority;
 
-        // Due date
+        // Due date & UX Relative Time Logic
         if (service.DueDate.HasValue)
         {
             DueDateText.Text = $"Due {service.DueDate.Value:MMM dd}";
-            DaysLeftText.Text = service.DaysLeftText;
+
+            // ── منطق الـ UX الزمني الديناميكي ──
+            if (service.Status == "Completed" || service.Status == "Archived")
+            {
+                DaysLeftText.Text = service.Status == "Completed" ? "Completed" : "Archived";
+                DaysLeftText.SetResourceReference(TextBlock.ForegroundProperty, "TextSecondaryBrush");
+            }
+            else
+            {
+                DaysLeftText.Text = service.DaysLeftText;
+                if (service.IsOverdue)
+                    DaysLeftText.SetResourceReference(TextBlock.ForegroundProperty, "ErrorBrush");
+                else
+                    DaysLeftText.SetResourceReference(TextBlock.ForegroundProperty, "TextSecondaryBrush");
+            }
+
             DaysLeftBadge.Visibility = Visibility.Visible;
         }
         else

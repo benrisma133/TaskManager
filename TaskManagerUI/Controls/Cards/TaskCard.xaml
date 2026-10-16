@@ -208,7 +208,7 @@
                                FontSize="11"
                                Foreground="{DynamicResource TextMutedBrush}"/>
                         <Border Height="4"/>
-                        <TextBlock x:Name="DaysLeftText"
+                        <TextBlock x:Name="DaysLeftTextBlock"
                                Text="--"
                                FontSize="13"
                                Foreground="{DynamicResource TextSecondaryBrush}"

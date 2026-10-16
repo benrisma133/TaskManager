@@ -1,4 +1,6 @@
-﻿namespace Repository.Models
+﻿using Service.Utils;
+
+namespace Repository.Models
 {
     public class TaskItemDetails
     {
@@ -31,19 +33,11 @@
             && DateOnly.FromDateTime(DateTime.Today) > DueDate.Value
             && !IsCompleted;
 
-        public int DaysLeft => DueDate.HasValue
-            ? DueDate.Value.DayNumber - DateOnly.FromDateTime(DateTime.Today).DayNumber
-            : 0;
+        // استعانة بـ DateHelper لحساب الأيام
+        public int DaysLeft => DateHelper.GetDaysLeft(DueDate);
 
-        public string DaysLeftText => DueDate.HasValue
-            ? DaysLeft switch
-            {
-                < 0 => $"{Math.Abs(DaysLeft)}d overdue",
-                0 => "Due today",
-                1 => "Due tomorrow",
-                _ => $"{DaysLeft}d left"
-            }
-            : "No due date";
+        // استعانة بـ DateHelper لجلب النص النسبي (أيام، أسابيع، أشهر، سنوات)
+        public string DaysLeftText => DateHelper.GetRelativeTimeText(DueDate);
 
         public int TotalEstimatedMinutes =>
             (EstimatedMinutes ?? 0) + ExtraMinutes;

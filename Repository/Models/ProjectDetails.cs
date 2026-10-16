@@ -1,4 +1,6 @@
-﻿namespace Repository.Models
+﻿using Service.Utils;
+
+namespace Repository.Models
 {
     public class ProjectDetails
     {
@@ -27,23 +29,13 @@
             ? (int)Math.Round((double)CompletedTasks / TotalTasks * 100)
             : 0;
 
-        public int DaysLeft => DueDate.HasValue
-            ? DueDate.Value.DayNumber - DateOnly.FromDateTime(DateTime.Today).DayNumber
-            : 0;
+        public int DaysLeft => DateHelper.GetDaysLeft(DueDate);
 
         public bool IsOverdue => DueDate.HasValue
             && DateOnly.FromDateTime(DateTime.Today) > DueDate.Value
             && Status != "Completed"
             && Status != "Archived";
 
-        public string DaysLeftText => DueDate.HasValue
-            ? DaysLeft switch
-            {
-                < 0 => $"{Math.Abs(DaysLeft)}d overdue",
-                0 => "Due today",
-                1 => "Due tomorrow",
-                _ => $"{DaysLeft}d left"
-            }
-            : "No due date";
+        public string DaysLeftText => DateHelper.GetRelativeTimeText(DueDate);
     }
 }
