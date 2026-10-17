@@ -101,60 +101,73 @@
                     Background="{DynamicResource BorderDefaultBrush}"
                     VerticalAlignment="Center"/>
 
-                <!-- Row 2: Priority, Status, Due Date -->
+                <!-- Row 2: Priority, Status, Start Date, Due Date -->
                 <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="40"/>
+                        <!-- 0 Priority -->
+                        <ColumnDefinition Width="10"/>
+                        <!-- 1 gap -->
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="40"/>
+                        <!-- 2 Status -->
+                        <ColumnDefinition Width="10"/>
+                        <!-- 3 gap -->
                         <ColumnDefinition Width="*"/>
+                        <!-- 4 Start -->
+                        <ColumnDefinition Width="10"/>
+                        <!-- 5 gap -->
+                        <ColumnDefinition Width="*"/>
+                        <!-- 6 Due -->
                     </Grid.ColumnDefinitions>
 
                     <!-- Priority -->
-                    <StackPanel Grid.Column="0" Margin="0,0,12,0">
-                        <TextBlock Text="Priority"
-                               FontSize="11"
-                               Foreground="{DynamicResource TextMutedBrush}"/>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Priority" FontSize="11"
+                                   Foreground="{DynamicResource TextMutedBrush}"/>
                         <Border Height="4"/>
                         <components:PriorityBadge x:Name="PriorityBadgeControl"
-                                              Margin="0,3,0,0"
-                                              VerticalAlignment="Center"
-                                              HorizontalAlignment="Left"
-                                              Status="Critical"/>
+                                                  Margin="0,3,0,0"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Left"
+                                                  Status="Critical"/>
                     </StackPanel>
-
-                    <!-- Spacer -->
-                    <Border Grid.Column="1"/>
 
                     <!-- Status -->
-                    <StackPanel Grid.Column="2" Margin="0,0,12,0">
-                        <TextBlock Text="Status"
-                               FontSize="11"
-                               Foreground="{DynamicResource TextMutedBrush}"/>
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Status" FontSize="11"
+                                   Foreground="{DynamicResource TextMutedBrush}"/>
                         <Border Height="4"/>
                         <components:StatusBadge x:Name="StatusBadgeControl"
-                                            Margin="0,3,0,0"
-                                            VerticalAlignment="Center"
-                                            HorizontalAlignment="Left"
-                                            Status="Active"/>
+                                                Margin="0,3,0,0"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left"
+                                                Status="Active"/>
                     </StackPanel>
 
-                    <!-- Spacer -->
-                    <Border Grid.Column="3"/>
+                    <!-- Start Date -->
+                    <StackPanel Grid.Column="4">
+                        <TextBlock Text="Start" FontSize="11"
+                                   Foreground="{DynamicResource TextMutedBrush}"/>
+                        <Border Height="4"/>
+                        <TextBlock x:Name="StartDateText"
+                                   Text="--"
+                                   FontSize="13"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                   Margin="0,6,0,0"
+                                   TextTrimming="CharacterEllipsis"/>
+                    </StackPanel>
 
                     <!-- Due Date -->
-                    <StackPanel Grid.Column="4">
-                        <TextBlock Text="Due Date"
-                               FontSize="11"
-                               Foreground="{DynamicResource TextMutedBrush}"/>
+                    <StackPanel Grid.Column="6">
+                        <TextBlock Text="Due Date" FontSize="11"
+                                   Foreground="{DynamicResource TextMutedBrush}"/>
                         <Border Height="4"/>
                         <TextBlock x:Name="DueDateText"
-                               Text="May 15"
-                               FontSize="13"
-                               Foreground="{DynamicResource TextSecondaryBrush}"
-                               Margin="0,6,0,0"
-                               TextTrimming="CharacterEllipsis"/>
+                                   Text="May 15"
+                                   FontSize="13"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                   Margin="0,6,0,0"
+                                   TextTrimming="CharacterEllipsis"/>
                     </StackPanel>
                 </Grid>
 
