@@ -185,54 +185,54 @@
 
                     <!-- Task Info -->
                     <StackPanel Grid.Column="0"
-            VerticalAlignment="Center">
+                                VerticalAlignment="Top">
 
                         <TextBlock x:Name="TaskTitleText"
-               FontSize="22"
-               FontWeight="Bold"
-               Foreground="{DynamicResource TextPrimaryBrush}"
-               TextWrapping="Wrap"/>
+                                   FontSize="22"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"
+                                   TextWrapping="Wrap"/>
 
                         <StackPanel Orientation="Horizontal"
-                Margin="0,8,0,0">
+                                    Margin="0,8,0,0">
 
                             <TextBlock x:Name="ProjectTitleText"
-                   FontSize="13"
-                   Foreground="{DynamicResource TextSecondaryBrush}"
-                   VerticalAlignment="Center"/>
+                                       FontSize="13"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       VerticalAlignment="Center"/>
 
                             <Ellipse Width="4" Height="4"
-                 Fill="{DynamicResource TextMutedBrush}"
-                 Margin="8,0"
-                 VerticalAlignment="Center"/>
+                                     Fill="{DynamicResource TextMutedBrush}"
+                                     Margin="8,0"
+                                     VerticalAlignment="Center"/>
 
                             <components:PriorityBadge x:Name="PriorityText" 
-                                  Margin="0,3,0,0" 
-                                  VerticalAlignment="Center"
-                                  HorizontalAlignment="Center"
-                                  Status="Critical"/>
+                                                      Margin="0,3,0,0" 
+                                                      VerticalAlignment="Center"
+                                                      HorizontalAlignment="Center"
+                                                      Status="Critical"/>
 
                             <Ellipse Width="4" Height="4"
-                 Fill="{DynamicResource TextMutedBrush}"
-                 Margin="8,0"
-                 VerticalAlignment="Center"/>
+                                     Fill="{DynamicResource TextMutedBrush}"
+                                     Margin="8,0"
+                                     VerticalAlignment="Center"/>
 
                             <components:StatusBadge x:Name="StatusText"
-                                Margin="0,3,0,0"
-                                VerticalAlignment="Center"
-                                HorizontalAlignment="Left"
-                                Status="Active"/>
+                                                    Margin="0,3,0,0"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Left"
+                                                    Status="Active"/>
                         </StackPanel>
 
                         <!-- ── Description moved here ── -->
                         <StackPanel x:Name="DescriptionPanel"
-                Margin="0,12,0,0"
-                Visibility="Collapsed">
+                                    Margin="0,12,0,0"
+                                    Visibility="Collapsed">
                             <TextBlock x:Name="DescriptionText"
-                   FontSize="13"
-                   Foreground="{DynamicResource TextSecondaryBrush}"
-                   TextWrapping="Wrap"
-                   LineHeight="20"/>
+                                       FontSize="13"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       TextWrapping="Wrap"
+                                       LineHeight="20"/>
                         </StackPanel>
 
                     </StackPanel>
@@ -272,109 +272,92 @@
                         Margin="0,0,0,24"/>
 
 
-                <!-- ── STATS ROW ──────────────────────────────────── -->
-                <Grid Margin="0,0,0,24">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                <!-- ── STATS ROW — 4 cards, 2 columns when narrow ── -->
+                <UniformGrid x:Name="StatsGrid" Columns="4" Margin="-6,0,-6,24">
 
                     <!-- Estimated -->
-                    <Border Grid.Column="0"
-                            Background="{DynamicResource SurfaceCardBrush}"
+                    <Border Background="{DynamicResource SurfaceCardBrush}"
                             BorderBrush="{DynamicResource BorderDefaultBrush}"
-                            BorderThickness="1"
-                            CornerRadius="12"
-                            Padding="16,14"
-                            Margin="0,0,8,0">
+                            BorderThickness="1" CornerRadius="12"
+                            Padding="16,14" Margin="6">
                         <StackPanel>
-                            <StackPanel Orientation="Horizontal"
-                                        Margin="0,0,0,6">
-                                <fa:IconImage Icon="Clock"
-                                              Width="12"
-                                              Height="12"
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                <fa:IconImage Icon="Clock" Width="12" Height="12"
                                               Foreground="{DynamicResource TextMutedBrush}"
                                               Margin="0,0,6,0"/>
-                                <TextBlock Text="Estimated"
-                                           FontSize="12"
+                                <TextBlock Text="Estimated" FontSize="12"
                                            Foreground="{DynamicResource TextMutedBrush}"
                                            VerticalAlignment="Center"/>
                             </StackPanel>
-                            <TextBlock x:Name="EstimatedText"
-                                       FontSize="16"
-                                       FontWeight="Bold"
+                            <TextBlock x:Name="EstimatedText" FontSize="16" FontWeight="Bold"
                                        Foreground="{DynamicResource TextPrimaryBrush}"/>
                         </StackPanel>
                     </Border>
 
-                    <!-- Due Date -->
-                    <Border Grid.Column="1"
-                            Background="{DynamicResource SurfaceCardBrush}"
+                    <!-- Start Date -->
+                    <Border Background="{DynamicResource SurfaceCardBrush}"
                             BorderBrush="{DynamicResource BorderDefaultBrush}"
-                            BorderThickness="1"
-                            CornerRadius="12"
-                            Padding="16,14"
-                            Margin="8,0">
+                            BorderThickness="1" CornerRadius="12"
+                            Padding="16,14" Margin="6">
                         <StackPanel>
-                            <StackPanel Orientation="Horizontal"
-                                        Margin="0,0,0,6">
-                                <fa:IconImage Icon="CalendarDay"
-                                              Width="12"
-                                              Height="12"
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                <fa:IconImage Icon="CalendarPlus" Width="12" Height="12"
                                               Foreground="{DynamicResource TextMutedBrush}"
                                               Margin="0,0,6,0"/>
-                                <TextBlock Text="Due Date"
-                                           FontSize="12"
+                                <TextBlock Text="Start Date" FontSize="12"
                                            Foreground="{DynamicResource TextMutedBrush}"
                                            VerticalAlignment="Center"/>
                             </StackPanel>
-                            <TextBlock x:Name="DueDateText"
-                                       FontSize="16"
-                                       FontWeight="Bold"
+                            <TextBlock x:Name="StartDateText" FontSize="16" FontWeight="Bold"
+                                        Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Due Date -->
+                    <Border Background="{DynamicResource SurfaceCardBrush}"
+                            BorderBrush="{DynamicResource BorderDefaultBrush}"
+                            BorderThickness="1" CornerRadius="12"
+                            Padding="16,14" Margin="6">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                <fa:IconImage Icon="CalendarDay" Width="12" Height="12"
+                                              Foreground="{DynamicResource TextMutedBrush}"
+                                              Margin="0,0,6,0"/>
+                                <TextBlock Text="Due Date" FontSize="12"
+                                           Foreground="{DynamicResource TextMutedBrush}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <TextBlock x:Name="DueDateText" FontSize="16" FontWeight="Bold"
                                        Foreground="{DynamicResource TextPrimaryBrush}"/>
                         </StackPanel>
                     </Border>
 
                     <!-- Progress -->
-                    <Border Grid.Column="2"
-                            Background="{DynamicResource SurfaceCardBrush}"
+                    <Border Background="{DynamicResource SurfaceCardBrush}"
                             BorderBrush="{DynamicResource BorderDefaultBrush}"
-                            BorderThickness="1"
-                            CornerRadius="12"
-                            Padding="16,14"
-                            Margin="8,0,0,0">
+                            BorderThickness="1" CornerRadius="12"
+                            Padding="16,14" Margin="6">
                         <StackPanel>
-                            <StackPanel Orientation="Horizontal"
-                                        Margin="0,0,0,6">
-                                <fa:IconImage Icon="ChartSimple"
-                                              Width="12"
-                                              Height="12"
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                <fa:IconImage Icon="ChartSimple" Width="12" Height="12"
                                               Foreground="{DynamicResource TextMutedBrush}"
                                               Margin="0,0,6,0"/>
-                                <TextBlock Text="Progress"
-                                           FontSize="12"
+                                <TextBlock Text="Progress" FontSize="12"
                                            Foreground="{DynamicResource TextMutedBrush}"
                                            VerticalAlignment="Center"/>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal"
-                                        Margin="0,0,0,6">
-                                <TextBlock x:Name="ProgressText"
-                                           FontSize="16"
-                                           FontWeight="Bold"
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                <TextBlock x:Name="ProgressText" FontSize="16" FontWeight="Bold"
                                            Foreground="{DynamicResource TextPrimaryBrush}"/>
-                                <TextBlock Text="%"
-                                           FontSize="16"
-                                           FontWeight="Bold"
+                                <TextBlock Text="%" FontSize="16" FontWeight="Bold"
                                            Foreground="{DynamicResource TextPrimaryBrush}"
                                            Margin="2,0,0,0"/>
                             </StackPanel>
-                            <components:ProgressBar x:Name="ProgressBarControl"
-                                                    ProgressWidth="0"/>
+                            <components:ProgressBar x:Name="ProgressBarControl" ProgressWidth="0"/>
                         </StackPanel>
                     </Border>
 
-                </Grid>
+                </UniformGrid>
 
                 <!-- ── DIVIDER ─────────────────────────────────────── -->
                 <Border Height="1"
