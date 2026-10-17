@@ -363,6 +363,10 @@ namespace TaskManagerUI.Pages.Tasks.Timer
             DueDateText.Text = task.DueDate.HasValue
                 ? task.DueDate.Value.ToString("MMM dd")
                 : "No date";
+
+            StartDateText.Text = task.StartDate.HasValue
+                ? task.StartDate.Value.ToString("MMM dd")
+                : "Not set";
         }
 
         private void _LoadSummary()

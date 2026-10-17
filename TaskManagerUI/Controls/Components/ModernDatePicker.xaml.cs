@@ -179,44 +179,61 @@ public partial class ModernDatePicker : UserControl
         LabelText.Text = Label;
         Loaded += (s, e) =>
         {
+            // Populate combos without triggering SelectionChanged → _TryBuildDate
+            _isSyncing = true;
             _LoadYears();
             _LoadMonths();
-
-            // default to today
-            var today = DateOnly.FromDateTime(DateTime.Today);
-            _isSyncing = true;
-            _SelectByTag(YearCombo, today.Year);
-            _SelectByTag(MonthCombo, today.Month);
             _isSyncing = false;
-            _LoadDays();
-            _SelectByTag(DayCombo, today.Day);
-            _TryBuildDate();
+
+            // Show whatever SelectedDate already holds (null shows placeholders)
+            _SyncFromDate(SelectedDate);
         };
     }
 
     // ============================
     // POPULATE COMBOS
     // ============================
+    
     private void _LoadYears()
     {
-        int? selectedYear = _GetSelectedYear();
-        YearCombo.Items.Clear();
+        // Suppress SelectionChanged while rebuilding, so the placeholder
+        // doesn't trigger _TryBuildDate and wipe SelectedDate
+        bool wasSyncing = _isSyncing;
+        _isSyncing = true;
+        try
+        {
+            int? selectedYear = _GetSelectedYear();
+            YearCombo.Items.Clear();
 
-        // placeholder
-        YearCombo.Items.Add(_MakeItem("YYYY", null));
+            // placeholder
+            YearCombo.Items.Add(_MakeItem("YYYY", null));
 
-        int currentYear = DateTime.Today.Year;
-        int from = YearFrom > 0 ? YearFrom : currentYear;
-        int to = YearTo > 0 ? YearTo : currentYear + 10;
+            int currentYear = DateTime.Today.Year;
+            int from = YearFrom > 0 ? YearFrom : currentYear;
+            int to = YearTo > 0 ? YearTo : currentYear + 10;
 
-        for (int y = from; y <= to; y++)
-            YearCombo.Items.Add(_MakeItem(y.ToString(), y));
+            // Widen the range so a saved date's year is always selectable
+            if (SelectedDate.HasValue)
+            {
+                from = Math.Min(from, SelectedDate.Value.Year);
+                to = Math.Max(to, SelectedDate.Value.Year);
+            }
 
-        // restore selection
-        if (selectedYear.HasValue)
-            _SelectByTag(YearCombo, selectedYear.Value);
-        else
-            YearCombo.SelectedIndex = 0;
+            for (int y = from; y <= to; y++)
+                YearCombo.Items.Add(_MakeItem(y.ToString(), y));
+
+            // restore selection
+            if (selectedYear.HasValue)
+                _SelectByTag(YearCombo, selectedYear.Value);
+            else if (SelectedDate.HasValue)
+                _SelectByTag(YearCombo, SelectedDate.Value.Year);
+            else
+                YearCombo.SelectedIndex = 0;
+        }
+        finally
+        {
+            _isSyncing = wasSyncing;
+        }
     }
 
     private void _LoadMonths()

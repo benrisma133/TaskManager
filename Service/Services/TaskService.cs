@@ -23,6 +23,7 @@ public class TaskService
     public ProjectService? Project { get; set; } = null!;
     public string Priority { get; set; } = null!;
     public string Status { get; set; } = null!;
+    public DateOnly? StartDate { get; set; }
     public DateOnly? DueDate { get; set; }
     public bool IsCompleted { get; private set; }
     public DateTime? CompletedAt { get; private set; }
@@ -68,6 +69,7 @@ public class TaskService
         ProjectID = task.ProjectID;
         Priority = task.Priority;
         Status = task.Status;
+        StartDate = task.StartDate;
         DueDate = task.DueDate;
         IsCompleted = task.IsCompleted;
         CompletedAt = task.CompletedAt;
@@ -96,6 +98,7 @@ public class TaskService
                 ProjectID = ProjectID,
                 Priority = Priority,
                 Status = Status,
+                StartDate = StartDate,
                 DueDate = DueDate,
                 EstimatedMinutes = EstimatedMinutes
             };
@@ -129,6 +132,7 @@ public class TaskService
                 Description = Description,
                 ProjectID = ProjectID,
                 Priority = Priority,
+                StartDate = StartDate,
                 Status = Status,
                 DueDate = DueDate,
                 EstimatedMinutes = EstimatedMinutes

@@ -10,6 +10,7 @@ namespace Repository.Models
         public int ProjectID { get; set; }
         public string Priority { get; set; } = null!;
         public string Status { get; set; } = null!;
+        public DateOnly? StartDate { get; set; }
         public DateOnly? DueDate { get; set; }
         public bool IsCompleted { get; set; }
         public DateTime? CompletedAt { get; set; }

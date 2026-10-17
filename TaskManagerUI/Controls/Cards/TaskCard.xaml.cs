@@ -34,6 +34,10 @@ namespace TaskManagerUI.Controls.Cards
                                           ? task.DueDate.Value.ToString("MMM dd")
                                           : "No date";
 
+            StartDateText.Text = task.StartDate.HasValue
+                                        ? task.StartDate.Value.ToString("MMM dd")
+                                        : "Not set";
+
             // Row 4 — Estimated + DaysLeft
             EstimatedTimeText.Text = task.EstimatedText;
 
@@ -84,6 +88,10 @@ namespace TaskManagerUI.Controls.Cards
             DueDateText.Text = task.DueDate.HasValue
                                             ? task.DueDate.Value.ToString("MMM dd")
                                             : "No date";
+
+            StartDateText.Text = task.StartDate.HasValue
+                                ? task.StartDate.Value.ToString("MMM dd")
+                                : "Not set";
 
             EstimatedTimeText.Text = task.EstimatedText;
 

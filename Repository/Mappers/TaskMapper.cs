@@ -16,6 +16,9 @@ public static class TaskMapper
             ProjectID = reader.GetInt32(reader.GetOrdinal("ProjectId")),
             Status = reader.GetString(reader.GetOrdinal("Status")),
             Priority = reader.GetString(reader.GetOrdinal("Priority")),
+            StartDate = reader.IsDBNull(reader.GetOrdinal("StartDate"))
+                                    ? null
+                                    : DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("StartDate"))),
             DueDate = reader.IsDBNull(reader.GetOrdinal("DueDate"))
                                     ? null
                                     : DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("DueDate"))),
@@ -44,6 +47,9 @@ public static class TaskMapper
         ProjectID = reader.GetInt32(reader.GetOrdinal("ProjectId")),
         Status = reader.GetString(reader.GetOrdinal("Status")),
         Priority = reader.GetString(reader.GetOrdinal("Priority")),
+        StartDate = reader.IsDBNull(reader.GetOrdinal("StartDate"))
+                                    ? null
+                                    : DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("StartDate"))),
         DueDate = reader.IsDBNull(reader.GetOrdinal("DueDate"))
                             ? null
                             : DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("DueDate"))),

@@ -71,7 +71,8 @@ public partial class AddEditTask : Window
             TaskTitle.Text = string.Empty;
             TaskDescription.Text = string.Empty;
             TaskEstimatedMinutes.Text = string.Empty;
-            TaskDueDate.Clear();
+            TaskStartDate.SelectedDate = DateOnly.FromDateTime(DateTime.Now);
+            TaskDueDate.SelectedDate = DateOnly.FromDateTime(DateTime.Now);
             TaskPriority.SelectedIndex = 1; // Medium default
 
             // Estimate: editable input only while creating
@@ -141,6 +142,7 @@ public partial class AddEditTask : Window
         TaskTitle.Text = service.Title;
         TaskDescription.Text = service.Description ?? string.Empty;
         TaskDueDate.SelectedDate = service.DueDate;
+        TaskStartDate.SelectedDate = service.StartDate;
 
         // Read-only project name
         var (_, projectService) = ProjectService.Find(service.ProjectID);
@@ -260,6 +262,7 @@ public partial class AddEditTask : Window
                                             : TaskDescription.Text.Trim();
         _taskService.Priority = (TaskPriority.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Medium";
         _taskService.DueDate = TaskDueDate.SelectedDate;
+        _taskService.StartDate = TaskStartDate.SelectedDate;
 
         // Project and estimate are only set when creating.
         // Status is never set from the form, and in Update mode the estimate is left
