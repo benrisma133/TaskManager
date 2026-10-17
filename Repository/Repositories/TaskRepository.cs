@@ -27,6 +27,7 @@ public static class TaskRepository
             cmd.Parameters.AddWithValue("@Description", (object?)task.Description ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@ProjectId", task.ProjectID);
             cmd.Parameters.AddWithValue("@Priority", task.Priority);
+            cmd.Parameters.AddWithValue("@StartDate", (object?)task.StartDate?.ToDateTime(TimeOnly.MinValue) ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@DueDate", (object?)task.DueDate?.ToDateTime(TimeOnly.MinValue) ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@EstimatedMinutes", (object?)task.EstimatedMinutes ?? DBNull.Value);
 
@@ -62,9 +63,9 @@ public static class TaskRepository
             cmd.Parameters.AddWithValue("@Title", task.Title);
             cmd.Parameters.AddWithValue("@Description", (object?)task.Description ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@Priority", task.Priority);
+            cmd.Parameters.AddWithValue("@StartDate", (object?)task.StartDate?.ToDateTime(TimeOnly.MinValue) ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@DueDate", (object?)task.DueDate?.ToDateTime(TimeOnly.MinValue) ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@EstimatedMinutes", (object?)task.EstimatedMinutes ?? DBNull.Value);
-            //cmd.Parameters.AddWithValue("@Status", task.Status);
 
             conn.Open();
             return cmd.ExecuteNonQuery() > 0;
@@ -172,9 +173,9 @@ public static class TaskRepository
 
     // ======================== [ GET ALL TASKS PAGED ] ========================
     public static (List<TaskItemDetails> tasks, int totalCount) GetAllTasks(
-    int pageNumber = 1, int pageSize = 9,
-    string? search = null, string? priority = null, string? status = null,
-    int? projectId = null)
+                int pageNumber = 1, int pageSize = 9,
+                string? search = null, string? priority = null, string? status = null,
+                int? projectId = null)
     {
         var list = new List<TaskItemDetails>();
         int totalCount = 0;
