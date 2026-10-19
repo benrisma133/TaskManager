@@ -164,6 +164,52 @@
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
+
+                <!-- Continue: reopen a task that was completed early, nothing is added -->
+                <Button x:Name="ContinueBtn" Grid.Column="2"
+                        Cursor="Hand"
+                        BorderThickness="0"
+                        Background="Transparent"
+                        HorizontalAlignment="Right"
+                        Visibility="Collapsed"
+                        Click="ContinueBtn_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Bd"
+                                    Background="Transparent"
+                                    CornerRadius="8"
+                                    Padding="10,6">
+                                <StackPanel Orientation="Horizontal"
+                                            VerticalAlignment="Center">
+                                    <fa:IconImage Icon="Play"
+                                                  x:Name="ContinueIcon"
+                                                  Width="14"
+                                                  Height="14"
+                                                  Foreground="{DynamicResource TextSecondaryBrush}"
+                                                  Margin="0,0,8,0"/>
+                                    <TextBlock Text="Continue"
+                                               x:Name="ContinueText"
+                                               FontSize="14"
+                                               Foreground="{DynamicResource TextSecondaryBrush}"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd"
+                                            Property="Background"
+                                            Value="{DynamicResource AccentHoverBrush}"/>
+                                    <Setter TargetName="ContinueIcon"
+                                            Property="Foreground"
+                                            Value="White"/>
+                                    <Setter TargetName="ContinueText"
+                                            Property="Foreground"
+                                            Value="White"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
             </Grid>
             
         </Border>

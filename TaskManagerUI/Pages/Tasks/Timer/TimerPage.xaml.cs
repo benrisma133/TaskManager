@@ -53,13 +53,7 @@ namespace TaskManagerUI.Pages.Tasks.Timer
             _InitTimer();
 
             if (_taskService.Task.Status == "Done")
-            {
-                Timer.Visibility = Visibility.Collapsed;
-                StatusLabel.Visibility = Visibility.Visible;
-                StatusText.Status = "Done";
-                AddExtraTimeBtn.Visibility = Visibility.Visible;
-                DoneBtn.Visibility = Visibility.Collapsed;
-            }
+                _ShowDoneState();
 
             _UpdateProgress();
         }
@@ -258,10 +252,54 @@ namespace TaskManagerUI.Pages.Tasks.Timer
             _LoadSummary();
             _UpdateProgress();
 
-            Timer.Visibility = Visibility.Collapsed;
-            StatusLabel.Visibility = Visibility.Visible;
-            AddExtraTimeBtn.Visibility = Visibility.Visible;
-            DoneBtn.Visibility = Visibility.Collapsed;
+            // Continue (time left) or Add Extra Time (no time left)
+            _ShowDoneState();
+        }
+
+        // ============================
+        // CONTINUE — task was completed early and still has time left.
+        // Reopens it WITHOUT adding minutes and resumes from the exact logged seconds.
+        // ============================
+        private void ContinueBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var confirm = MessageBox.Show(
+                $"Continue working on \"{_taskService.Title}\"?\n\n" +
+                $"{_FormatSeconds(_SecondsLeft())} left. The points earned for completing it " +
+                "are taken back until you finish it again.",
+                "Continue Task", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (confirm != MessageBoxResult.Yes) return;
+
+            var result = TaskService.ContinueTask(_taskId);
+
+            switch (result)
+            {
+                case enTaskContinueResult.Continued:
+                    if (!_ReloadAsOpenTask()) return;
+
+                    // resume right away: nothing was added, so the timer starts
+                    // from the seconds already logged
+                    Timer_PlayRequested(this, EventArgs.Empty);
+                    break;
+
+                case enTaskContinueResult.NoTimeLeft:
+                    MessageBox.Show(
+                        "There is no time left on this task.\n\nUse Add Extra Time to give it more.",
+                        "No time left", MessageBoxButton.OK, MessageBoxImage.Information);
+                    _LoadSummary();
+                    _ShowDoneState();
+                    break;
+
+                case enTaskContinueResult.NotDone:
+                    // already reopened somewhere else: just refresh the page
+                    _ReloadAsOpenTask();
+                    break;
+
+                default:
+                    MessageBox.Show("Something went wrong. Please try again.",
+                        "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    break;
+            }
         }
 
         // ============================
@@ -294,13 +332,50 @@ namespace TaskManagerUI.Pages.Tasks.Timer
                 MessageBox.Show("Something went wrong try again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
+            _ReloadAsOpenTask();
+        }
+
+        // ============================
+        // PAGE STATE — Done / open
+        // ============================
+
+        // Estimate shown by the timer: estimate + extra, or 25 min when the task has none
+        private int _EstimateMinutes() =>
+            _taskService.TotalEstimatedMinutes > 0 ? _taskService.TotalEstimatedMinutes : 25;
+
+        private int _SecondsLeft() =>
+            Math.Max(_EstimateMinutes() * 60 - _totalSecondsAllTime, 0);
+
+        private bool _HasTimeLeft() => _SecondsLeft() > 0;
+
+        // UI for a Done task. Needs _LoadSummary() to have run so the logged time is fresh.
+        //   time left  -> "Continue"        (reopen, nothing added)
+        //   no time    -> "Add Extra Time"  (the only way to get more time)
+        private void _ShowDoneState()
+        {
+            bool hasTimeLeft = _HasTimeLeft();
+
+            Timer.Visibility = Visibility.Collapsed;
+            StatusLabel.Visibility = Visibility.Visible;
+            StatusLabel.Text = hasTimeLeft ? "Completed early" : "Completed";
+            StatusText.Status = "Done";
+            DoneBtn.Visibility = Visibility.Collapsed;
+
+            ContinueBtn.Visibility = hasTimeLeft ? Visibility.Visible : Visibility.Collapsed;
+            AddExtraTimeBtn.Visibility = hasTimeLeft ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        // UI for an open (not Done) task, after it was reopened by Continue or Add Extra Time.
+        // Returns false if the task could not be reloaded.
+        private bool _ReloadAsOpenTask()
+        {
             var (isFound, service) = TaskService.Find(_taskId);
-            if (isFound != enTaskRetrieveResult.Found) return;
+            if (isFound != enTaskRetrieveResult.Found) return false;
 
             _taskService = service!;
             // _LoadSummary() reloads _totalSecondsAllTime fresh from the DB —
             // this must run before _InitTimer(), since remaining time is computed
-            // as (new estimate) - (DB total), never from stale in-memory numbers.
+            // as (estimate) - (DB total), never from stale in-memory numbers.
             _LoadUIText();
             _LoadSummary();
             _InitTimer();
@@ -308,10 +383,12 @@ namespace TaskManagerUI.Pages.Tasks.Timer
 
             Timer.Visibility = Visibility.Visible;
             StatusLabel.Visibility = Visibility.Collapsed;
+            ContinueBtn.Visibility = Visibility.Collapsed;
             AddExtraTimeBtn.Visibility = Visibility.Collapsed;
             DoneBtn.Visibility = Visibility.Visible;
 
             Timer.SetIdle();
+            return true;
         }
 
         // ============================
@@ -432,7 +509,7 @@ namespace TaskManagerUI.Pages.Tasks.Timer
 
             if (_sessionStarted && ActiveSession.HasSession && ActiveSession.CurrentTask?.Task.TaskID == _taskId)
             {
-                SessionsPanel.Children.Insert(0 ,new SessionCard
+                SessionsPanel.Children.Insert(0, new SessionCard
                 {
                     StartTime = ActiveSession.StartedAt?.ToString("hh:mm tt") ?? "—",
                     Duration = _FormatSeconds(ActiveSession.ElapsedSeconds),

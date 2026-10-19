@@ -398,4 +398,35 @@ public static class TaskRepository
         }
     }
 
+    // ======================== [ CONTINUE TASK ] ========================
+    public static string ContinueTask(int taskId)
+    {
+        try
+        {
+            using var conn = new SqlConnection(ConnectionString);
+            using var cmd = new SqlCommand("sp_ContinueTask", conn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            cmd.Parameters.AddWithValue("@TaskId", taskId);
+            conn.Open();
+
+            using var reader = cmd.ExecuteReader();
+            return reader.Read()
+                ? reader.GetString(reader.GetOrdinal("Result"))
+                : "UNKNOWN";
+        }
+        catch (SqlException ex)
+        {
+            clsLog.LogError(nameof(TaskRepository), nameof(ContinueTask), ex);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            clsLog.LogError(nameof(TaskRepository), nameof(ContinueTask), ex);
+            throw;
+        }
+    }
+
 }
