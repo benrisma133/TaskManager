@@ -309,4 +309,23 @@ public class TaskService
         }
     }
 
+    // ─── Static: ContinueTask (reopen a Done task, no minutes added) ──────
+    public static enTaskContinueResult ContinueTask(int taskId)
+    {
+        try
+        {
+            return TaskRepository.ContinueTask(taskId) switch
+            {
+                "CONTINUED" => enTaskContinueResult.Continued,
+                "NOT_DONE" => enTaskContinueResult.NotDone,
+                "NO_TIME_LEFT" => enTaskContinueResult.NoTimeLeft,
+                _ => enTaskContinueResult.Failed
+            };
+        }
+        catch
+        {
+            return enTaskContinueResult.Failed;
+        }
+    }
+
 }
